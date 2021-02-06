@@ -38,7 +38,7 @@ export default class CameraScreen extends React.Component {
   uploadImage = async () => {
     const reference = storage().ref('images');
     const pathToFile = `${this.state.productImage1}`;
-    console.log(pathToFile)
+    //console.log(pathToFile)
     // uploads file
     await reference.putFile(pathToFile);
   };
@@ -75,7 +75,7 @@ export default class CameraScreen extends React.Component {
                 imageUrl1: this.state.productImage1,
                 imageUrl2: this.state.productImage2,
                 imageUrl3: this.state.productImage3,
-                createAt: this.state.productCreateAt,
+                createAt: new Date().toString(),
                 timeUpdate: '',
                 idUser: this.state.idUser,
               });
@@ -169,7 +169,7 @@ export default class CameraScreen extends React.Component {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => this.uploadImage()}>
+          onPress={() => this.addNewproduct()}>
           <Text style={styles.textbutton}>Ok</Text>
         </TouchableOpacity>
       </View>

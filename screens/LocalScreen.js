@@ -11,52 +11,47 @@ import {
 } from "react-native";
 import React, { Component } from "react";
 import { Rating, AirbnbRating } from "react-native-ratings";
+import { firebaseApp } from "../Components/FirebaseConfig";
 
 export default class LocalScreen extends React.Component {
-  data = [
-    {
-      id: 1,
-      label: "Label 01",
-      price: "12$",
-    },
-    {
-      id: 2,
-      label: "Label 02",
-      price: "12$",
-    },
-    {
-      id: 3,
-      label: "Label 03",
-      price: "12$",
-    },
-    {
-      id: 4,
-      label: "Label 04",
-      price: "12$",
-    },
-    {
-      id: 5,
-      label: "Label 05",
-      price: "12$",
-    },
-    {
-      id: 6,
-      label: "Label 06",
-      price: "12$",
-    },
-  ];
-  _keyExtractor = (item, index) => item.id;
+  constructor(props) {
+    super(props);
+    this.itemRef = firebaseApp.database();
+    this.state = {
+      data: [],
+     
+    };
+  }
+  
+  componentDidMount() {
+    console.log('nguyen')
+    this.itemRef.ref('Products').on('value', (snapshot) => {
+      var li = [];
+      snapshot.forEach((child) => {
+        li.push({
+          key: child.key,
+          name: child.val().name,
+          description: child.val().description,
+          price: child.val().price,
+          imageUrl: child.val().imageUrl1,
+        })
+      });
+      this.setState({ data: li });
+      console.log(this.state.data)
+    
+    });
+  }
 
   render() {
     return (
       <ScrollView style={styles.container}>
         <FlatList
-          data={this.data}
+          data={this.state.data}
           renderItem={({ item }) => {
             return (
               <TouchableOpacity style={styles.card}>
                 <Image
-                  source={require("../assets/icons/iphonex.jpg")}
+                  source={{ uri: item.imageUrl }}
                   style={styles.image}
                 />
                 <AirbnbRating
@@ -71,8 +66,8 @@ export default class LocalScreen extends React.Component {
                     justifyContent: "center",
                   }}
                 >
-                  <Text style={styles.title}>{item.label}</Text>
-                  <Text style={styles.price}>{item.price}</Text>
+                  <Text style={styles.title}>{item.name}</Text>
+                  <Text style={styles.price}>{item.price}$</Text>
                 </View>
               </TouchableOpacity>
             );
@@ -99,7 +94,6 @@ const styles = StyleSheet.create({
     marginLeft: 50,
     width: 100,
     height: 150,
-    borderRadius: 10,
     justifyContent: "center",
   },
   title: {
