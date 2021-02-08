@@ -5,6 +5,7 @@ import { Image } from "react-native";
 import DashScreen from "../screens/DashScreen";
 import BuyNowScreen from "../screens/BuyNowScreen";
 import LocalScreen from "../screens/LocalScreen";
+import StackProductDetail from "./StackProductDetail";
 
 
 const HomeTopNavigator = createMaterialTopTabNavigator(

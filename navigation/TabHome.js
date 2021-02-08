@@ -7,11 +7,13 @@ import CameraScreen from "../screens/CameraScreen";
 import ChatScreen from "../screens/ChatScreen";
 import UserScreen from "../screens/UserScreen";
 import StackLike from "./StackLike";
+import StackUser from "./StackUser";
+import StackProductDetail from "./StackProductDetail";
 
 const TabHome = createBottomTabNavigator(
   {
     Home: {
-      screen: HomeScreen,
+      screen: StackProductDetail,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image source={require("../assets/icons/icons8-home-24.png")} style={{ width: 30, height: 30 }}/>
@@ -46,7 +48,7 @@ const TabHome = createBottomTabNavigator(
       },
     },
     User: {
-      screen: UserScreen,
+      screen: StackUser,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image source={require("../assets/icons/icons8-user-32.png")}  style={{ width: 35, height: 35 }}/>

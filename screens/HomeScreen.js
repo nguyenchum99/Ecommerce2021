@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import SearchItem from "../Components/SearchItem";
 import HomeTopNavigator from "../navigation/HomeTopNavigator";
+import LocalScreen from "./LocalScreen";
 
 
 
@@ -54,7 +55,8 @@ export default class HomeScreen extends React.Component {
         </View>
         {/* <Image source={require("../assets/icons/sale2.jpg")} style = {{height: 100, width: 450}}></Image> */}
         {/* <FlatListItem {...this.props} /> */}
-        <HomeTopNavigator/>
+        {/* <HomeTopNavigator/> */}
+        <LocalScreen {...this.props}/>
       </View>
     );
   }
