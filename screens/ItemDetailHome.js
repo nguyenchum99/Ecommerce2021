@@ -18,29 +18,37 @@ import {
     constructor(props) {
       super(props);
       this.state = {
-        images: [
-          "https://source.unsplash.com/1024x768/?nature",
-          "https://source.unsplash.com/1024x768/?water",
-          "https://source.unsplash.com/1024x768/?girl",
-          "https://source.unsplash.com/1024x768/?tree", // Network image
-          // Local image
-        ],
+        images: [],
+        productName: '',
+        productDescription: '',
+        productPrice: '',
+        productCreateAt: '',
+        productCategory: '',
+        idUser: '',
+        location: '',       
       };
     }
+
     render() {
+
+      firebaseApp.database().ref(`Products/${this.state.key}`).once('value', (snapshot) => {
+        this.state.productName = snapshot.child('name').val();
+        this.state.productPrice = snapshot.child('price').val();
+        this.state.productDescription = snapshot.child('description').val();
+        this.state.location = snapshot.child('location').val();
+        var images = [];
+        images.push([
+          snapshot.child('imageUrl1').val(),
+          snapshot.child('imageUrl2').val(),
+          snapshot.child('imageUrl3').val()
+        ])
+        this.setState({images: images});
+        console.log("images" + this.state.images);
+    });
       return (
         <SafeAreaView style={styles.container}>
           <ScrollView style={styles.scrollView}>
-            <SliderBox 
-              images={this.state.images}
-              sliderBoxHeight={300}
-              onCurrentImagePressed={(index) =>
-                console.warn(`image ${index} pressed`)
-              }
-              currentImageEmitter={(index) =>
-                console.warn(`current pos is: ${index}`)
-              }
-            />
+           
   
             <Text
               style={{
@@ -51,7 +59,7 @@ import {
                 marginBottom: 20,
               }}
             >
-              Iphone X - 12$
+              {this.state.productName} - {this.state.productPrice}
             </Text>
             <View
               style={{
@@ -77,12 +85,7 @@ import {
               }}
             >
               <Text>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla
+               {this.state.productDescription}
               </Text>
             </View>
             <CardInfoShop />

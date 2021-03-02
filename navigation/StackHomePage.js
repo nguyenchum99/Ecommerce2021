@@ -3,9 +3,11 @@ import { createStackNavigator } from "react-navigation-stack";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import TabHome from "./TabHome";
+import StartUpScreen from '../screens/StartUpScreen';
 
 
 const StackHomePage = createStackNavigator({
+  
   Login: {
     screen: LoginScreen,
   },
@@ -14,7 +16,7 @@ const StackHomePage = createStackNavigator({
   },
   Home: {
     screen: TabHome
-  }
+  },
 });
 
 export default createAppContainer(StackHomePage);

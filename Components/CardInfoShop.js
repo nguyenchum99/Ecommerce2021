@@ -9,17 +9,18 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { Component } from "react";
+import {useSelector} from 'react-redux';
 
-export default class CardInfoShop extends React.Component {
-  render() {
+const  CardInfoShop = (props)=> {
+
     return (
-      <TouchableOpacity style={styles.card} onPress={this.props.onPress}>
+      <TouchableOpacity style={styles.card} onPress={props.onPress}>
         <View style={{ flexDirection: "row" }}>
           <Image
             source={require("../assets/icons/avatar.png")}
             style={styles.image}
           />
-          <Text style={styles.title}>nguyenchum</Text>
+          <Text style={styles.title}>{userName}</Text>
         </View>
         <View
           style={{
@@ -34,8 +35,9 @@ export default class CardInfoShop extends React.Component {
         </View>
       </TouchableOpacity>
     );
-  }
-}
+  };
+
+  export default CardInfoShop;
 
 const styles = StyleSheet.create({
   card: {
