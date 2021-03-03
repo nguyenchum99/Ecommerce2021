@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
+import {connect} from 'react-redux';
 
 const city = [
   {label: 'Hà Nội', value: 'Hà Nội'},
@@ -68,11 +69,15 @@ const city = [
   {label: 'Bạc Liêu', value: 'Bạc Liêu'},
   {label: 'Cà Mau', value: 'Cà Mau'},
 ];
-export default class EditProfileUser extends React.Component {
+
+
+class EditProfileUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
+
+  
 
   render() {
     return (
@@ -81,17 +86,17 @@ export default class EditProfileUser extends React.Component {
         <TextInput
           style={styles.input}
           //   onChangeText={(productName) => this.setState({productName})}
-          value={this.state.productName}></TextInput>
+          value={this.props.userName}></TextInput>
         <Text style={styles.title}>Email</Text>
         <TextInput
           style={styles.input}
           //   onChangeText={(productName) => this.setState({productName})}
-          value={this.state.productName}></TextInput>
+          value={this.props.userEmail} readonly></TextInput>
         <Text style={styles.title}>Phone</Text>
         <TextInput
           style={styles.input}
           //   onChangeText={(productName) => this.setState({productName})}
-          value={this.state.productName}></TextInput>
+          value={this.props.userPhone}></TextInput>
         <Text style={styles.title}>Select location</Text>
         <View style={{marginLeft: 20}}>
           <RNPickerSelect
@@ -108,6 +113,16 @@ export default class EditProfileUser extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    ...state.auth,
+  };
+};
+
+export default connect(mapStateToProps, null)(EditProfileUser);
+
+
 
 const styles = StyleSheet.create({
   container: {

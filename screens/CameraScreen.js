@@ -93,6 +93,8 @@ const city = [
   {label: 'Cà Mau', value: 'Cà Mau'},
 ];
 const productRef = firebaseApp.database();
+
+
 const CameraScreen = (props) => {
   //cho nay nen lam 1 cai formReducer, luc nao a refactor cho sau
   //giong getter vs setter trong java
@@ -104,9 +106,11 @@ const CameraScreen = (props) => {
   const [productImage3, setProductImage3] = useState();
   const [productCreateAt, setProductCreateAt] = useState();
   const [productCategory, setProductCategory] = useState();
+  const [userName, setUserName] = useState();
   const [idUser, setIdUser] = useState();
   const [location, setLocation] = useState();
   const userId = useSelector((state) => state.auth.userId);
+  const nameUser = useSelector((state) => state.auth.userName);
   const [loading, setLoading] = useState(true);
 
   const uploadImage = async () => {
@@ -119,6 +123,7 @@ const CameraScreen = (props) => {
 
   //tạo sản phẩm
   const addNewproduct = () => {
+   
     if (
       productName.length == 0 ||
       productPrice.length == 0 ||
@@ -155,7 +160,8 @@ const CameraScreen = (props) => {
                   createAt: new Date().toISOString(),
                   timeUpdate: '',               
                   location: location,
-                  idUser: userId
+                  idUser: userId,
+                  userName: nameUser
                 });
             
                 setProductName(null);
@@ -167,6 +173,7 @@ const CameraScreen = (props) => {
                 setProductCreateAt(null);
                 setLocation(null);
                 setIdUser(null);
+                setUserName(null);
                 props.navigation.navigate('Home');
               }
             },
@@ -209,8 +216,7 @@ const CameraScreen = (props) => {
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Sell your product</Text>
-      <Text style={styles.text}>What are you selling? </Text>
-      <Text style={styles.text}>Upload clear photos for more offers</Text>
+      <Text style={styles.title}>{nameUser}</Text>   
       <TextInput
         placeholder="Name..."
         style={styles.input}

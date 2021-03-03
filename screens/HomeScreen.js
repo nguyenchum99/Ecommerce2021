@@ -42,9 +42,6 @@ const HomeScreen = (props) => {
           <SearchItem />
         </View>
       </View>
-      {/* <Image source={require("../assets/icons/sale2.jpg")} style = {{height: 100, width: 450}}></Image> */}
-      {/* <FlatListItem {...this.props} /> */}
-      {/* <HomeTopNavigator/> */}
       <LocalScreen {...props} />
     </View>
     

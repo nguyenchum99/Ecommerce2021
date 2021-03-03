@@ -39,9 +39,14 @@ export const login = () => async (dispatch) => {
     token: userInfo.user.token,
     userId: userInfo.user.uid,
     userName: userInfo.user.displayName,
+    userEmail: userInfo.user.email,
+    userPhone: userInfo.user.phoneNumber,
+    userPhoto: userInfo.user.photoURL
+
   });
   const expiryDate = new Date(new Date().getTime() + 1000 * 1000);
-  saveToStorage(userInfo.user.uid, userInfo.user.uid, expiryDate);
+  saveToStorage(userInfo.user.displayName, userInfo.user.uid, userInfo.user.email, 
+    userInfo.user.phoneNumber,userInfo.user.photoURL, expiryDate);
 };
 
 export const signOut = () => async (dispatch, getState) => {
@@ -57,14 +62,16 @@ export const signOut = () => async (dispatch, getState) => {
   removeUserData();
 };
 
-const saveToStorage = async (token, userId,userName, expiryDate) => {
+const saveToStorage = async (userName, userId, userEmail, userPhone, userPhoto, expiryDate) => {
   try {
     await AsyncStorage.setItem(
       'userData',
-      JSON.stringify({
-        token: token,
+      JSON.stringify({      
         userId: userId,
         userName: userName,
+        userEmail: userEmail,
+        userPhone: userPhone,
+        userPhoto: userPhoto,
         expiryDate: expiryDate.toISOString(),
       }),
     );
