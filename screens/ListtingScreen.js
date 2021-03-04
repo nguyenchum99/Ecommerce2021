@@ -1,13 +1,13 @@
 import {
-  SafeAreaView,
   View,
   FlatList,
   StyleSheet,
   Text,
   Image,
-  StatusBar,
   TouchableOpacity,
   ScrollView,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
@@ -18,6 +18,7 @@ class ListingScreen extends React.Component {
     super(props);
     this.state = {
       data: [],
+      isLoading: false,
     };
   }
 
@@ -46,16 +47,68 @@ class ListingScreen extends React.Component {
       });
   }
 
+  selectProductEdit = (key) => {
+    Alert.alert(
+      'Sửa thông tin sản phẩm',
+      '',
+      [
+        {
+          text: 'Xóa sản phẩm',
+          onPress: () => {
+            Alert.alert(
+              'Cảnh báo',
+              'Bạn có chắc muốn xóa không?',
+              [
+                {
+                  text: 'Không',
+                  onPress: () => console.log('Cancel'),
+                  style: 'cancel',
+                },
+                {
+                  text: 'Có',
+                  onPress: () => {
+                    firebaseApp.database().ref(`Products/${key}`).remove();
+                    this.setState({
+                      isLoading: true,
+                    });
+                    alert('Bạn đã xóa thành công');
+                  },
+                },
+              ],
+              {cancelable: false},
+            );
+          },
+        },
+        {
+          text: 'Sửa thông tin',
+          onPress: () => {
+            console.log('asfdhfsfsd');
+            this.props.navigation.navigate('EditProduct',{
+              keyFood: key
+            })
+          },
+        },
+      ],
+      {cancelable: true},
+      {
+        onDismiss: () => {
+          console.log('Dismissed');
+        },
+      },
+    );
+  };
+
   render() {
-    console.log("info" + this.props);
+    console.log('info' + this.props);
     return (
       <ScrollView style={styles.container}>
         <FlatList
           data={this.state.data}
           renderItem={({item}) => {
-            // return <CardItem nameItem={item.label} priceItem={item.price} onPress= {()=> this.props.navigation.navigate('Detail')} />;
             return (
-              <TouchableOpacity style={styles.card}>
+              <TouchableOpacity
+                style={styles.card}
+                onPress={() => this.selectProductEdit(item.key)}>
                 <Image source={{uri: item.productImage}} style={styles.image} />
                 <View style={{flexDirection: 'row', marginBottom: 10}}>
                   <Text style={styles.title}>{item.productName}</Text>
@@ -92,19 +145,19 @@ const styles = StyleSheet.create({
   },
   image: {
     marginTop: 10,
-    marginLeft: 10,
+    marginLeft: 50,
     marginRight: 10,
     width: 100,
     height: 150,
     justifyContent: 'center',
   },
   title: {
-    marginLeft: 10,
+    marginLeft: 50,
     color: 'red',
     fontWeight: 'bold',
   },
   price: {
-    marginLeft: 10,
+    marginLeft: 20,
     color: '#000000',
   },
 });

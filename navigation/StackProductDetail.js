@@ -14,8 +14,9 @@ const StackProductDetail = createStackNavigator(
     },
   },
   {
+    headerMode: 'List',
     navigationOptions:  {
-        headerShown: false
+      headerShown: false
     },
   }
 );

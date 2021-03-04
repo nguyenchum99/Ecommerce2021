@@ -58,6 +58,7 @@ const TabHome = createBottomTabNavigator(
   },
 
   {
+   
     tabBarOptions: {
       showIcon: true,
       activeTintColor: "#ff1a1a",
@@ -68,7 +69,8 @@ const TabHome = createBottomTabNavigator(
       labelStyle: {
         fontSize: 12,
       },
-      showLabel: false
+      showLabel: false,
+     
     },
   }
 );

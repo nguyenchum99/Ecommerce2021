@@ -7,8 +7,6 @@ import ListingScreen from '../screens/ListtingScreen';
 import FollowingScreen from '../screens/FollowingScreen';
 import FollowersScreen from '../screens/FollowersScreen';
 
-
-
 const UserTopNavigator = createMaterialTopTabNavigator(
     {
         Listing: { 

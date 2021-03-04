@@ -3,7 +3,6 @@ import { createStackNavigator } from "react-navigation-stack";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import TabHome from "./TabHome";
-import StartUpScreen from '../screens/StartUpScreen';
 
 
 const StackHomePage = createStackNavigator({
@@ -17,6 +16,15 @@ const StackHomePage = createStackNavigator({
   Home: {
     screen: TabHome
   },
+}, {
+  headerMode : 'Login',
+  headerMode : 'Home',
+  navigationOptions:  {
+    headerShown: false
+  },
+  
 });
+
+
 
 export default createAppContainer(StackHomePage);

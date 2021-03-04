@@ -12,41 +12,52 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import SearchItem from '../Components/SearchItem';
 import HomeTopNavigator from '../navigation/HomeTopNavigator';
+import {SearchBar} from 'react-native-elements';
 import LocalScreen from './LocalScreen';
 import {useSelector} from 'react-redux';
 
-const HomeScreen = (props) => {
-  const userId = useSelector((state) => state.auth.userName);
-  return (
-    
-    <View
-      style={{
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-      }}>
-      <Text>Hello {userId}</Text>
-      <View style={{flexDirection: 'row'}}>
-        <View style={{flex: 1, marginTop: 15, marginLeft: 10, marginRight: 5}}>
-          <TouchableOpacity onPress={() => props.navigation.navigate('Search')}>
-            <Image
-              source={require('../assets/icons/menu.png')}
-              style={{height: 25, width: 25}}></Image>
-          </TouchableOpacity>
-        </View>
-        <View style={{flex: 10}}>
-          <SearchItem />
-        </View>
+export default class HomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      search: '',
+    };
+  }
+
+  updateSearch = (search) => {
+    this.setState({search});
+  };
+
+  render() {
+    return (
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+        }}>
+          <SearchBar
+            placeholder="Search item..."
+            onChangeText={this.updateSearch}
+            value={this.state.search}
+            lightTheme
+            round
+            containerStyle={
+              Platform.OS === 'android'
+                ? {backgroundColor: '#ffffff'}
+                : {backgroundColor: '#ffffff'}
+            }
+            inputStyle={{color: '#000000'}}
+          />
+     
+        <LocalScreen {...this.props} />
       </View>
-      <LocalScreen {...props} />
-    </View>
-    
-  );
-};
+    );
+  }
+}
 
 const styles = StyleSheet.create({});
-export default HomeScreen;

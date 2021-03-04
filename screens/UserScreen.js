@@ -29,7 +29,7 @@ class UserScreen extends React.Component {
             </View>
           </TouchableOpacity>
         </View>
-        <UserTopNavigator />
+        <UserTopNavigator/>
       </View>
     );
   }
