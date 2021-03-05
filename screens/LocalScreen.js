@@ -23,6 +23,7 @@ class LocalScreen extends React.Component {
     this.state = {
       data: [],
       isLoading: true,
+      clickLikeItem: false,
     };
   }
 
@@ -39,6 +40,7 @@ class LocalScreen extends React.Component {
             description: child.val().description,
             price: child.val().price,
             imageUrl: child.val().imageUrl1,
+            isLike: false,
           });
         });
         this.setState({
@@ -46,6 +48,10 @@ class LocalScreen extends React.Component {
           isLoading: false,
         });
       });
+  }
+
+  selectLikeProduct = (idProduct, isLike)=> {
+    isLike = true;
   }
 
   render() {
@@ -64,21 +70,33 @@ class LocalScreen extends React.Component {
             renderItem={({item, index}) => {
               return (
                 <View style={styles.card}>
-                  {/* <TouchableOpacity onPress={() =>this.setState({
-                  showLikeImg: false
-                })}>
-                              <Image
-                                source={require('../assets/icons/menu.png')}
-                                style={{height: 25, width: 25}}></Image>
-                            </TouchableOpacity> */}
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('Detail', {
-                        idProduct: item.key,
-                      })
-                    }>
-                    <Image source={{uri: item.imageUrl}} style={styles.image} />
-                  </TouchableOpacity>
+                  <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('Detail', {
+                          idProduct: item.key,
+                        })
+                      }>
+                      <Image
+                        source={{uri: item.imageUrl}}
+                        style={styles.image}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                     >
+                      {item.isLike ? (
+                        <Image
+                          source={require('../assets/icons/heart(1).png')}
+                          style={{height: 25, width: 25, margin: 5}}
+                        />
+                      ) : (
+                        <Image
+                          source={require('../assets/icons/heart.png')}
+                          style={{height: 25, width: 25, margin: 5}}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  </View>
                   <AirbnbRating
                     size={15}
                     showRating={false}

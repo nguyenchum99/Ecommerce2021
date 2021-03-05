@@ -18,7 +18,7 @@ import {utils} from '@react-native-firebase/app';
 import storage from '@react-native-firebase/storage';
 import RNPickerSelect from 'react-native-picker-select';
 import {useSelector} from 'react-redux';
-
+import {connect} from 'react-redux';
 const options = {
   title: 'Select Avatar',
   storageOptions: {
@@ -95,25 +95,49 @@ const city = [
 const productRef = firebaseApp.database();
 
 
-const CameraScreen = (props) => {
+class CameraScreen extends React.Component{
   //cho nay nen lam 1 cai formReducer, luc nao a refactor cho sau
   //giong getter vs setter trong java
-  const [productName, setProductName] = useState();
-  const [productDescription, setProductDescription] = useState();
-  const [productPrice, setProductPrice] = useState();
-  const [productImage1, setProductImage1] = useState();
-  const [productImage2, setProductImage2] = useState();
-  const [productImage3, setProductImage3] = useState();
-  const [productCreateAt, setProductCreateAt] = useState();
-  const [productCategory, setProductCategory] = useState();
-  const [userName, setUserName] = useState();
-  const [idUser, setIdUser] = useState();
-  const [location, setLocation] = useState();
-  const userId = useSelector((state) => state.auth.userId);
-  const nameUser = useSelector((state) => state.auth.userName);
-  const [loading, setLoading] = useState(true);
+  // const [productName, setProductName] = useState();
+  // const [productDescription, setProductDescription] = useState();
+  // const [productPrice, setProductPrice] = useState();
+  // const [productImage1, setProductImage1] = useState();
+  // const [productImage2, setProductImage2] = useState();
+  // const [productImage3, setProductImage3] = useState();
+  // const [productCreateAt, setProductCreateAt] = useState();
+  // const [productCategory, setProductCategory] = useState();
+  // const [userName, setUserName] = useState();
+  // const [idUser, setIdUser] = useState();
+  // const [location, setLocation] = useState();
+  // const userId = useSelector((state) => state.auth.userId);
+  // const nameUser = useSelector((state) => state.auth.userName);
+  // const [loading, setLoading] = useState(true);
 
-  const uploadImage = async () => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      productName: '',
+      productDescription: '',
+      productPrice: '',
+      productImage1: '',
+      productCreateAt: '',
+      productCategory: '',
+      idUser: '',
+      location: '',
+      userName: ''
+    };
+  }
+
+  componentDidMount(){
+    const category = this.props.navigation.getParam('category');
+    console.log('get param' + category)
+  }
+  // componentWillReceiveProps(){
+  //   const category = this.props.navigation.getParam('category');
+  //   console.log('get param' + category)
+  // }
+
+   uploadImage = async () => {
     const reference = storage().ref(`${productImage1}`);
     const pathToFile = `${productImage1}`;
     //console.log(pathToFile)
@@ -122,12 +146,12 @@ const CameraScreen = (props) => {
   };
 
   //tạo sản phẩm
-  const addNewproduct = () => {
+  addNewproduct = () => {
    
     if (
-      productName.length == 0 ||
-      productPrice.length == 0 ||
-      productDescription.length == 0
+      this.state.productName.length == 0 ||
+      this.state.productPrice.length == 0 ||
+      this.state.productDescription.length == 0
     ) {
       alert('Bạn phải nhập đầy đủ thông tin');
     } else {
@@ -144,37 +168,39 @@ const CameraScreen = (props) => {
             text: 'Yes',
             onPress: () => {
               if (
-                productName == null ||
-                productPrice == null ||
-                productDescription == null ||
-                location == null
+                this.state.productName == null ||
+                this.state.productPrice == null ||
+                this.state.productDescription == null ||
+                this.state.location == null
               ) {
                 alert('Bạn phải nhập đầy đủ thông tin');
               } else {
-                uploadImage();
+                this.uploadImage();
                 productRef.ref('Products').push({
-                  name: productName,
-                  description: productDescription,
-                  price: productPrice,
-                  imageUrl1: productImage1,            
+                  name: this.state.productName,
+                  description: this.state.productDescription,
+                  price: this.state.productPrice,
+                  imageUrl1: this.state.productImage1,            
                   createAt: new Date().toISOString(),
                   timeUpdate: '',               
-                  location: location,
-                  idUser: userId,
-                  userName: nameUser
+                  location: this.state.location,
+                  idUser: this.props.userId,
+                  userName: this.props.userName
                 });
             
-                setProductName(null);
-                setProductDescription(null);
-                setProductPrice(null);
-                setProductImage1(null);
-                setProductImage2(null);
-                setProductImage3(null);
-                setProductCreateAt(null);
-                setLocation(null);
-                setIdUser(null);
-                setUserName(null);
-                props.navigation.navigate('Home');
+                this.setState({
+                  productName: null,
+                  productDescription: null,
+                  productPrice: null,
+                  productImage1: null,
+                  productCreateAt: null,
+                  productDescription: null,
+                  idUser: null,
+                  location: null,
+                  userName: null,
+
+                })
+                this.props.navigation.navigate('Home');
               }
             },
           },
@@ -184,23 +210,16 @@ const CameraScreen = (props) => {
     }
   };
 
-  const takeCamera = () => {
-    //  this.setState({productImage1: ''});
-    // launchCamera({
-    //   mediaType: 'photo'
-    // }, (response) => {
-    //   console.log("take phpto" + response.uri);
-    //   this.setState({productImage1: response.uri});
-    // });
+  takeCamera = () => {
     ImagePicker.launchCamera(options, (response) => {
       // Same code as in above section!
       console.log('take phpto' + response.uri);
-      setProductImage1(response.uri);
-      // this.setState({productImage1: response.uri});
+      
+       this.setState({productImage1: response.uri});
     });
   };
 
-  const takePhotoLibrary = () => {
+  takePhotoLibrary = () => {
     // launchImageLibrary({}, (response) => {
     //   console.log(response.uri);
     //   this.setState({productImage1: response.uri});
@@ -208,51 +227,53 @@ const CameraScreen = (props) => {
     ImagePicker.launchImageLibrary(options, (response) => {
       // Same code as in above section!
       console.log(response.uri);
-      setProductImage1(response.uri);
-      // this.setState({productImage1: response.uri});
+      //setProductImage1(response.uri);
+       this.setState({productImage1: response.uri});
     });
   };
 
+
+  render(){
   return (
     <View style={styles.screen}>
       <Text style={styles.title}>Sell your product</Text>
-      <Text style={styles.title}>{nameUser}</Text>   
+    
       <TextInput
         placeholder="Name..."
         style={styles.input}
-        onChangeText={(text) => setProductName(text)}
-        value={productName}></TextInput>
+        onChangeText={(productName) => this.setState({productName})}
+        value={this.state.productName}></TextInput>
       <TextInput
         keyboardType="numeric"
         placeholder="Price..."
         style={styles.input}
-        onChangeText={(text) => setProductPrice(text)}
-        value={productPrice}></TextInput>
+        onChangeText={(productPrice) =>this.setState({productPrice})}
+        value={this.state.productPrice}></TextInput>
       <TextInput
         placeholder="Description..."
         style={styles.input}
-        onChangeText={(text) => setProductDescription(text)}
-        value={productDescription}></TextInput>
+        onChangeText={(productDescription) => this.setState({productDescription})}
+        value={this.state.productDescription}></TextInput>
       <View style={{marginLeft: 20, marginRight: 20, marginTop: 20}}>
         <RNPickerSelect
-          onValueChange={(text) => setLocation(text)}
+          onValueChange={(location) => this.setState({location})}
           items={city}
           placeholder={{
             label: 'Select a city...',
-            value: location,
+            value: this.state.location,
           }}
-          value={location}
+          value={this.state.location}
         />
       </View>
       <View style={{flexDirection: 'column'}}>
         <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity onPress={takeCamera}>
+          <TouchableOpacity onPress={()=> this.takeCamera()}>
             <Image
               source={require('../assets/icons/icons8-camera-40.png')}
               style={styles.icon}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={takePhotoLibrary}>
+          <TouchableOpacity onPress={()=>this.takePhotoLibrary()}>
             <Image
               source={require('../assets/icons/icons8-photo-gallery-40.png')}
               style={styles.icon}
@@ -260,23 +281,30 @@ const CameraScreen = (props) => {
           </TouchableOpacity>
         </View>
         <View style={{flexDirection: 'row', marginLeft: 20}}>
-          <Image style={styles.imageUrl} source={{uri: productImage1}}></Image>
-          <Image style={styles.imageUrl} source={{uri: productImage2}}></Image>
-          <Image style={styles.imageUrl} source={{uri: productImage3}}></Image>
+          <Image style={styles.imageUrl} source={{uri: this.state.productImage1}}></Image>
+          {/* <Image style={styles.imageUrl} source={{uri: productImage2}}></Image>
+          <Image style={styles.imageUrl} source={{uri: productImage3}}></Image> */}
         </View>
       </View>
 
-      <TouchableOpacity style={styles.choose}>
+      <TouchableOpacity style={styles.choose} onPress = {()=> this.props.navigation.navigate('Category')}>
         <Text style={styles.textBtn}>Choose category</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={addNewproduct}>
+      <TouchableOpacity style={styles.button} onPress={()=>this.addNewproduct()}>
         <Text style={styles.textbutton}>Ok</Text>
       </TouchableOpacity>
     </View>
   );
+}
+}
+const mapStateToProps = (state) => {
+  return {
+    ...state.auth,
+  };
 };
 
-export default CameraScreen;
+export default connect(mapStateToProps, null)(CameraScreen);
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,

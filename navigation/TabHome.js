@@ -9,6 +9,7 @@ import UserScreen from "../screens/UserScreen";
 import StackLike from "./StackLike";
 import StackUser from "./StackUser";
 import StackProductDetail from "./StackProductDetail";
+import StackCreateProduct from "./StackCreateProduct";
 
 const TabHome = createBottomTabNavigator(
   {
@@ -32,7 +33,7 @@ const TabHome = createBottomTabNavigator(
       },
     },
     Camera: {
-      screen: CameraScreen,
+      screen: StackCreateProduct,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image source={require("../assets/icons/icons8-camera-50.png")}  style={{ width: 35, height: 35 }}/>
