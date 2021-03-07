@@ -5,6 +5,9 @@ import TabHome from './TabHome';
 
 const AppNavigator = createSwitchNavigator(
   {
+    Startup: {
+      screen: StartUpScreen,
+    },
     Auth: {
       screen: LoginScreen,
     },

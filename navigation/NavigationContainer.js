@@ -12,7 +12,9 @@ const NavigationContainer = (props) => {
     console.log(state);
     console.log(`isAuthenticated ${isAuth}`);
     if (!isAuth) {
-      navRef.current.dispatch(NavigationActions.navigate({routeName: 'Auth'}));
+      navRef.current.dispatch(
+        NavigationActions.navigate({routeName: 'Startup'}),
+      );
     }
   }, [isAuth]);
 

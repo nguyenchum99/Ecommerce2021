@@ -62,8 +62,8 @@ const formReducer = (state, action) => {
 };
 
 const LoginScreen = (props) => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const initialEmail = props.navigation.getParam('email');
+  const initialPassword = props.navigation.getParam('password');
   const [isSignup, setIsSignup] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
   const [error, setError] = useState();
@@ -116,14 +116,14 @@ const LoginScreen = (props) => {
 
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
-      email: '',
-      password: '',
+      email: initialEmail ? initialEmail : '',
+      password: initialPassword ? initialPassword : '',
     },
     inputValidities: {
-      email: false,
-      password: false,
+      email: !!initialEmail,
+      password: !!initialPassword,
     },
-    isValidForm: false,
+    isValidForm: !!initialEmail && !!initialPassword,
   });
 
   const inputChangeHandler = useCallback(
@@ -164,8 +164,8 @@ const LoginScreen = (props) => {
           keyboardType="email-address"
           email
           returnKeyType="next"
-          initialValue={email}
-          initiallyValid={!!email}
+          initialValue={initialEmail}
+          initiallyValid={!!initialEmail}
           required
           onInputChange={inputChangeHandler}
           errorText="*Please enter a valid email!"
@@ -174,8 +174,8 @@ const LoginScreen = (props) => {
           id="password"
           label="Password"
           required
-          initialValue={password}
-          initiallyValid={!!password}
+          initialValue={initialPassword}
+          initiallyValid={!!initialPassword}
           keyboardType="number-pad"
           onInputChange={inputChangeHandler}
           secureTextEntry={true}

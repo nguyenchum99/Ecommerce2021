@@ -10,13 +10,13 @@ const StartUpScreen = (props) => {
         const userData = await AsyncStorage.getItem('$userAccount');
 
         if (!userData) {
-          alert('UserData is null');
+          console.log('userData is null');
           props.navigation.navigate('Auth');
           return;
         }
         const transData = JSON.parse(userData);
-        console.log(transData);
         const {email, password} = transData;
+        console.log(email + ' ' + password);
         props.navigation.navigate('Auth', {email: email, password: password});
       } catch (err) {
         console.log(err.message);
