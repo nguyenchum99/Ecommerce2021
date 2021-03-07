@@ -1,21 +1,17 @@
+import React from 'react';
 import {
-  SafeAreaView,
-  View,
+  ActivityIndicator,
   FlatList,
+  Image,
+  ScrollView,
   StyleSheet,
   Text,
-  Image,
-  StatusBar,
   TouchableOpacity,
-  ScrollView,
-  ActivityIndicator,
+  View,
 } from 'react-native';
-import React, {Component, useState, useEffect} from 'react';
-import {Rating, AirbnbRating} from 'react-native-ratings';
-import {firebaseApp} from '../Components/FirebaseConfig';
-import isEqual from 'lodash/isEqual';
+import {AirbnbRating} from 'react-native-ratings';
 import {connect} from 'react-redux';
-import {Avatar, Button, Card, Title, Paragraph} from 'react-native-paper';
+import {firebaseApp} from '../Components/FirebaseConfig';
 
 class LocalScreen extends React.Component {
   constructor(props) {
@@ -50,9 +46,9 @@ class LocalScreen extends React.Component {
       });
   }
 
-  selectLikeProduct = (idProduct, isLike)=> {
+  selectLikeProduct = (idProduct, isLike) => {
     isLike = true;
-  }
+  };
 
   render() {
     console.log(this.state.isLoading);
@@ -82,8 +78,7 @@ class LocalScreen extends React.Component {
                         style={styles.image}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity
-                     >
+                    <TouchableOpacity>
                       {item.isLike ? (
                         <Image
                           source={require('../assets/icons/heart(1).png')}

@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import React from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
 import {connect} from 'react-redux';
@@ -100,7 +100,7 @@ class EditInfoProduct extends React.Component {
       //timeUpdate: new Date().toTimeString(),
     });
     alert('Bạn đã sửa thông tin sản phẩm thành công.');
-    this.props.navigation.navigate('List')
+    this.props.navigation.navigate('List');
   }
 
   render() {
@@ -124,9 +124,9 @@ class EditInfoProduct extends React.Component {
         <TextInput
           style={styles.input}
           onChangeText={(text) => this.setState({productName: text})}
-          placeholder = {this.state.productName}
+          placeholder={this.state.productName}
           //value={this.state.productName}
-          ></TextInput>
+        ></TextInput>
         <Text style={styles.text}>Đơn giá(VNĐ)</Text>
         <TextInput
           style={styles.input}
@@ -136,9 +136,7 @@ class EditInfoProduct extends React.Component {
         <Text style={styles.text}>Mô tả sản phẩm</Text>
         <TextInput
           style={styles.input}
-          onChangeText={(text) =>
-            this.setState({productDescription: text})
-          }
+          onChangeText={(text) => this.setState({productDescription: text})}
           placeholder={this.state.productDescription}></TextInput>
         <Text style={styles.text}>Số lượng</Text>
         <TextInput
@@ -160,14 +158,18 @@ class EditInfoProduct extends React.Component {
         <TouchableOpacity
           style={styles.button}
           onPress={() => {
-            firebaseApp.database().ref('Products').child(this.state.idProduct).update({
-              name: this.state.productName,
-              description: this.state.productDescription,
-              price: this.state.productPrice,
-              //timeUpdate: new Date().toTimeString(),
-            });
+            firebaseApp
+              .database()
+              .ref('Products')
+              .child(this.state.idProduct)
+              .update({
+                name: this.state.productName,
+                description: this.state.productDescription,
+                price: this.state.productPrice,
+                //timeUpdate: new Date().toTimeString(),
+              });
             alert('Bạn đã sửa thông tin sản phẩm thành công.');
-            this.props.navigation.navigate('List')
+            this.props.navigation.navigate('List');
           }}>
           <Text style={styles.textbutton}>Ok</Text>
         </TouchableOpacity>

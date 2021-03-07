@@ -1,24 +1,18 @@
-import React, {Component, useState} from 'react';
+import storage from '@react-native-firebase/storage';
+import React from 'react';
 import {
+  Alert,
+  Image,
   StyleSheet,
   Text,
-  View,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-  Dimensions,
-  PermissionsAndroid,
-  Alert,
-  Platform,
   TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
-import {firebaseApp} from '../Components/FirebaseConfig';
-import {utils} from '@react-native-firebase/app';
-import storage from '@react-native-firebase/storage';
 import RNPickerSelect from 'react-native-picker-select';
-import {useSelector} from 'react-redux';
 import {connect} from 'react-redux';
+import {firebaseApp} from '../Components/FirebaseConfig';
 import {CITIES} from '../constants/Cities';
 const options = {
   title: 'Select Avatar',

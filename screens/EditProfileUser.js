@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
 import {connect} from 'react-redux';
@@ -70,14 +70,11 @@ const city = [
   {label: 'Cà Mau', value: 'Cà Mau'},
 ];
 
-
 class EditProfileUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
-
-  
 
   render() {
     return (
@@ -91,7 +88,8 @@ class EditProfileUser extends React.Component {
         <TextInput
           style={styles.input}
           //   onChangeText={(productName) => this.setState({productName})}
-          value={this.props.userEmail} readonly></TextInput>
+          value={this.props.userEmail}
+          readonly></TextInput>
         <Text style={styles.title}>Phone</Text>
         <TextInput
           style={styles.input}
@@ -122,8 +120,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, null)(EditProfileUser);
 
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -149,7 +145,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginLeft: 20,
-    marginTop: 10
+    marginTop: 10,
   },
   location: {
     fontSize: 15,

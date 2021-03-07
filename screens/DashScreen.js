@@ -1,16 +1,5 @@
-
-import React, { Component } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  Button,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Alert,
-} from "react-native";
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 
 export default class DashScreen extends React.Component {
   constructor(props) {

@@ -1,15 +1,14 @@
+import React from 'react';
 import {
-  View,
+  Alert,
   FlatList,
+  Image,
+  ScrollView,
   StyleSheet,
   Text,
-  Image,
   TouchableOpacity,
-  ScrollView,
-  Alert,
-  ActivityIndicator,
+  View,
 } from 'react-native';
-import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
 
@@ -81,10 +80,10 @@ class ListingScreen extends React.Component {
         },
         {
           text: 'Sửa thông tin',
-          onPress: () => {        
-            this.props.navigation.navigate('Detail',{
-              key: key
-            })
+          onPress: () => {
+            this.props.navigation.navigate('Detail', {
+              key: key,
+            });
           },
         },
       ],

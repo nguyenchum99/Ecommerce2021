@@ -1,11 +1,8 @@
-import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import {createAppContainer} from 'react-navigation';
-import React, {Component} from 'react';
-import {Image} from 'react-native';
-import DashScreen from '../screens/DashScreen';
+import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import BuyNowScreen from '../screens/BuyNowScreen';
+import DashScreen from '../screens/DashScreen';
 import LocalScreen from '../screens/LocalScreen';
-import StackProductDetail from './StackProductDetail';
 
 const HomeTopNavigator = createMaterialTopTabNavigator(
   {

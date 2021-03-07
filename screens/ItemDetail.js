@@ -1,27 +1,19 @@
-import {
-  SafeAreaView,
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  ScrollView,
-} from "react-native";
-import React, { Component } from "react";
-import ButtonGoBack from "../Components/ButtonGoBack";
-import ButtonBuyItem from "../Components/ButtonBuyItem";
-import ButtonChat from "../Components/ButtonChat";
-import CardInfoShop from "../Components/CardInfoShop";
-import ModalBuyItem from "../Components/ModalBuyItem";
-import { SliderBox } from "react-native-image-slider-box";
+import React from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {SliderBox} from 'react-native-image-slider-box';
+import ButtonBuyItem from '../Components/ButtonBuyItem';
+import ButtonChat from '../Components/ButtonChat';
+import CardInfoShop from '../Components/CardInfoShop';
+import ModalBuyItem from '../Components/ModalBuyItem';
 export default class ItemDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       images: [
-        "https://source.unsplash.com/1024x768/?nature",
-        "https://source.unsplash.com/1024x768/?water",
-        "https://source.unsplash.com/1024x768/?girl",
-        "https://source.unsplash.com/1024x768/?tree", // Network image
+        'https://source.unsplash.com/1024x768/?nature',
+        'https://source.unsplash.com/1024x768/?water',
+        'https://source.unsplash.com/1024x768/?girl',
+        'https://source.unsplash.com/1024x768/?tree', // Network image
         // Local image
       ],
     };
@@ -30,7 +22,7 @@ export default class ItemDetail extends React.Component {
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
-          <SliderBox 
+          <SliderBox
             images={this.state.images}
             sliderBoxHeight={300}
             onCurrentImagePressed={(index) =>
@@ -44,22 +36,20 @@ export default class ItemDetail extends React.Component {
           <Text
             style={{
               fontSize: 20,
-              fontWeight: "bold",
+              fontWeight: 'bold',
               marginLeft: 20,
               marginTop: 20,
               marginBottom: 20,
-            }}
-          >
+            }}>
             Iphone X - 12$
           </Text>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
+              flexDirection: 'row',
+              justifyContent: 'space-between',
               marginLeft: 20,
               marginRight: 20,
-            }}
-          >
+            }}>
             <ButtonBuyItem
               onPress={() => this.refs.modalBuyItem.showAddModal()}
             />
@@ -72,9 +62,8 @@ export default class ItemDetail extends React.Component {
               marginRight: 20,
               padding: 5,
               borderRadius: 10,
-              backgroundColor: "#ffffff",
-            }}
-          >
+              backgroundColor: '#ffffff',
+            }}>
             <Text>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
@@ -85,7 +74,7 @@ export default class ItemDetail extends React.Component {
             </Text>
           </View>
           <CardInfoShop />
-          <ModalBuyItem ref={"modalBuyItem"} />
+          <ModalBuyItem ref={'modalBuyItem'} />
         </ScrollView>
       </SafeAreaView>
     );
@@ -95,6 +84,6 @@ export default class ItemDetail extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: '#f2f2f2',
   },
 });

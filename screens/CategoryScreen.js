@@ -84,15 +84,14 @@ export default class CategoryScreen extends React.Component {
       id_phanLoai: '',
       namePhanLoai: '',
       idCategory: '',
-      nameCategory: ''
+      nameCategory: '',
     };
   }
 
-
-  chooseCategory(idPL,namePL, id_category, name_category){
-    console.log("category" + idPL + ' ' + id_category + ' ' + name_category)
-   // this.props.navigation.setParams({ category: id_category });
-    this.props.navigation.navigate('Camera', {category : name_category});
+  chooseCategory(idPL, namePL, id_category, name_category) {
+    console.log('category' + idPL + ' ' + id_category + ' ' + name_category);
+    // this.props.navigation.setParams({ category: id_category });
+    this.props.navigation.navigate('Camera', {category: name_category});
   }
 
   render() {
@@ -102,10 +101,18 @@ export default class CategoryScreen extends React.Component {
           data={data_category}
           renderItem={({item, index}) => {
             return (
-              <View >
+              <View>
                 <Text style={styles.emptyListStyle}>{item.title}</Text>
                 {item.list.map((element, key) => (
-                  <TouchableOpacity onPress = {()=> this.chooseCategory(item.id,item.title,  element.id_con, element.name)}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.chooseCategory(
+                        item.id,
+                        item.title,
+                        element.id_con,
+                        element.name,
+                      )
+                    }>
                     <Text style={styles.textStyle}> {element.name} </Text>
                     <View
                       style={{
@@ -158,7 +165,7 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 18,
     backgroundColor: '#ff9933',
-    color: '#ffffff'
+    color: '#ffffff',
   },
   itemStyle: {
     padding: 10,

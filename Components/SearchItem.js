@@ -1,21 +1,20 @@
-import { SearchBar } from 'react-native-elements';
-import React, { Component } from "react";
-
+import React from 'react';
+import {SearchBar} from 'react-native-elements';
 
 export default class SearchItem extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            search: ''
-        }
-      }
+  constructor(props) {
+    super(props);
+    this.state = {
+      search: '',
+    };
+  }
 
   updateSearch = (search) => {
-    this.setState({ search });
+    this.setState({search});
   };
 
   render() {
-    const { search } = this.state;
+    const {search} = this.state;
 
     return (
       <SearchBar
@@ -24,9 +23,12 @@ export default class SearchItem extends React.Component {
         value={search}
         lightTheme
         round
-        containerStyle={Platform.OS==="android"? {backgroundColor: '#ffffff'}: {backgroundColor: '#ffffff'} }
+        containerStyle={
+          Platform.OS === 'android'
+            ? {backgroundColor: '#ffffff'}
+            : {backgroundColor: '#ffffff'}
+        }
         inputStyle={{color: '#000000'}}
-       
       />
     );
   }

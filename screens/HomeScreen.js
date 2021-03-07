@@ -1,24 +1,7 @@
-import React, {Component} from 'react';
-import {createAppContainer} from 'react-navigation';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  TextInput,
-  Button,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import SearchItem from '../Components/SearchItem';
-import HomeTopNavigator from '../navigation/HomeTopNavigator';
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
 import {SearchBar} from 'react-native-elements';
 import LocalScreen from './LocalScreen';
-import {useSelector} from 'react-redux';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -40,20 +23,19 @@ export default class HomeScreen extends React.Component {
           flexDirection: 'column',
           justifyContent: 'flex-start',
         }}>
-          <SearchBar
-            placeholder="Search item..."
-            onChangeText={this.updateSearch}
-            value={this.state.search}
-            lightTheme
-            round
-            containerStyle={
-              Platform.OS === 'android'
-                ? {backgroundColor: '#ffffff'}
-                : {backgroundColor: '#ffffff'}
-            }
-            inputStyle={{color: '#000000'}}
-          />
-     
+        <SearchBar
+          placeholder="Search item..."
+          onChangeText={this.updateSearch}
+          value={this.state.search}
+          lightTheme
+          round
+          containerStyle={
+            Platform.OS === 'android'
+              ? {backgroundColor: '#ffffff'}
+              : {backgroundColor: '#ffffff'}
+          }
+          inputStyle={{color: '#000000'}}
+        />
         <LocalScreen {...this.props} />
       </View>
     );

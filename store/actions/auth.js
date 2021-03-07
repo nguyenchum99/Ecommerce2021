@@ -1,5 +1,4 @@
 import {GoogleSignin} from '@react-native-community/google-signin';
-import AsyncStorage from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 
 const WEB_API_KEY = 'AIzaSyB6AlBiawWCOgXpAdOYuqm8vNEJX4I1EVQ';
