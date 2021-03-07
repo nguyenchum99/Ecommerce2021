@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
 import {connect} from 'react-redux';
-
+import {firebaseApp} from '../Components/FirebaseConfig';
 const city = [
   {label: 'Hà Nội', value: 'Hà Nội'},
   {label: 'Hà Giang', value: 'Hà Giang'},
@@ -70,44 +70,107 @@ const city = [
   {label: 'Cà Mau', value: 'Cà Mau'},
 ];
 
-
 class EditInfoProduct extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      idProduct: '',
+      productName: '',
+      productDescription: '',
+      productPrice: '',
+      productImage1: '',
+      productCreateAt: '',
+      productCategory: '',
+      idUser: '',
+      location: '',
+      userName: '',
+    };
   }
 
+  componentDidMount() {
+    const idProduct = this.props.navigation.getParam('key');
+    this.setState({idProduct: idProduct});
+  }
+
+  editInfoProduct() {
+    firebaseApp.database().ref('Products').child(this.state.idProduct).update({
+      name: this.state.productName,
+      description: this.state.productDescription,
+      price: this.state.productPrice,
+      //timeUpdate: new Date().toTimeString(),
+    });
+    alert('Bạn đã sửa thông tin sản phẩm thành công.');
+    this.props.navigation.navigate('List')
+  }
 
   render() {
+    firebaseApp
+      .database()
+      .ref(`Products/${this.state.idProduct}`)
+      .once('value', (snapshot) => {
+        this.state.productName = snapshot.child('name').val();
+        this.state.productDescription = snapshot.child('description').val();
+        this.state.productPrice = snapshot.child('price').val();
+        this.state.productImage1 = snapshot.child('imageUrl1').val();
+        this.state.productCreateAt = snapshot.child('createAt').val();
+        //this.state.productCategory = snapshot.child('').val();
+        this.state.location = snapshot.child('location').val();
+        //  this.state.productCategory = snapshot.child('description').val();
+      });
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Full Name</Text>
+        <Text style={styles.title}>Sửa thông tin sản phẩm</Text>
+        <Text style={styles.text}>Tên sản phẩm</Text>
         <TextInput
           style={styles.input}
-          //   onChangeText={(productName) => this.setState({productName})}
-          value={this.props.userName}></TextInput>
-        <Text style={styles.title}>Email</Text>
+          onChangeText={(text) => this.setState({productName: text})}
+          placeholder = {this.state.productName}
+          //value={this.state.productName}
+          ></TextInput>
+        <Text style={styles.text}>Đơn giá(VNĐ)</Text>
         <TextInput
           style={styles.input}
-          //   onChangeText={(productName) => this.setState({productName})}
-          value={this.props.userEmail} readonly></TextInput>
-        <Text style={styles.title}>Phone</Text>
+          onChangeText={(text) => this.setState({productPrice: text})}
+          placeholder={this.state.productPrice}
+          readonly></TextInput>
+        <Text style={styles.text}>Mô tả sản phẩm</Text>
         <TextInput
           style={styles.input}
-          //   onChangeText={(productName) => this.setState({productName})}
-          value={this.props.userPhone}></TextInput>
-        <Text style={styles.title}>Select location</Text>
+          onChangeText={(text) =>
+            this.setState({productDescription: text})
+          }
+          placeholder={this.state.productDescription}></TextInput>
+        <Text style={styles.text}>Số lượng</Text>
+        <TextInput
+          style={styles.input}
+          //onChangeText={(text) => this.setState({productName: text})}
+          value="2"></TextInput>
+        <Text style={styles.text}>Địa điểm</Text>
         <View style={{marginLeft: 20}}>
           <RNPickerSelect
             onValueChange={(value) => this.setState({location: value})}
             items={city}
             placeholder={{
-              label: 'Select a city...',
+              label: 'Chọn thành phố...',
               value: this.state.location,
             }}
             value={this.state.location}
           />
         </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            firebaseApp.database().ref('Products').child(this.state.idProduct).update({
+              name: this.state.productName,
+              description: this.state.productDescription,
+              price: this.state.productPrice,
+              //timeUpdate: new Date().toTimeString(),
+            });
+            alert('Bạn đã sửa thông tin sản phẩm thành công.');
+            this.props.navigation.navigate('List')
+          }}>
+          <Text style={styles.textbutton}>Ok</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -120,8 +183,6 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, null)(EditInfoProduct);
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -148,7 +209,13 @@ const styles = StyleSheet.create({
   },
   title: {
     marginLeft: 20,
-    marginTop: 10
+    marginTop: 10,
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  text: {
+    marginLeft: 20,
+    marginTop: 10,
   },
   location: {
     fontSize: 15,
@@ -157,5 +224,17 @@ const styles = StyleSheet.create({
   price: {
     marginLeft: 20,
     color: '#000000',
+  },
+  button: {
+    backgroundColor: '#ff8533',
+    padding: 10,
+    borderRadius: 10,
+    marginLeft: 20,
+    marginRight: 20,
+  },
+  textbutton: {
+    color: '#ffffff',
+    textAlign: 'center',
+    fontSize: 20,
   },
 });

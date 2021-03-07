@@ -1,39 +1,33 @@
-import React, {useEffect} from 'react';
-import {ActivityIndicator, View, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {useDispatch} from 'react-redux';
-
-import * as authActions from '../store/actions/auth';
+import React, {useEffect} from 'react';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
 
 const StartUpScreen = (props) => {
-  const dispatch = useDispatch();
   useEffect(() => {
     const tryLogin = async () => {
-      const userData = await AsyncStorage.getItem('userData');
-      if (!userData) {
-        alert('UserData is null');
-        props.navigation.navigate('Login');
-        return;
+      console.log('Getting save account');
+      try {
+        const userData = await AsyncStorage.getItem('$userAccount');
+
+        if (!userData) {
+          alert('UserData is null');
+          props.navigation.navigate('Auth');
+          return;
+        }
+        const transData = JSON.parse(userData);
+        console.log(transData);
+        const {email, password} = transData;
+        props.navigation.navigate('Auth', {email: email, password: password});
+      } catch (err) {
+        console.log(err.message);
       }
-      const transData = JSON.parse(userData);
-      const {token, userId, expiryDate} = transData;
-      const expirationDate = new Date(expiryDate);
-      if (expirationDate <= new Date() || !token || !userId) {
-        console.log(expirationDate.toISOString() + ' ' + token + ' ' + userId);
-        props.navigation.navigate('Login');
-        return;
-      }
-      dispatch(authActions.authenticate(token, userId));
-      props.navigation.navigate('Home');
     };
     tryLogin();
-  }, [dispatch]);
-
-  useEffect(() => {}, []);
+  }, []);
 
   return (
     <View style={styles.screen}>
-      <ActivityIndicator size="large" />
+      <ActivityIndicator size="large" color="red" />
     </View>
   );
 };

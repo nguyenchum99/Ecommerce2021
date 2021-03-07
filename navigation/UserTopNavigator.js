@@ -6,11 +6,12 @@ import {Image} from 'react-native';
 import ListingScreen from '../screens/ListtingScreen';
 import FollowingScreen from '../screens/FollowingScreen';
 import FollowersScreen from '../screens/FollowersScreen';
+import StackEditProduct from './StackEditProduct';
 
 const UserTopNavigator = createMaterialTopTabNavigator(
     {
         Listing: { 
-            screen: ListingScreen,
+            screen: StackEditProduct,
             navigationOptions: {
               tabBarLabel:"Listing",
             },

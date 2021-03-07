@@ -52,23 +52,23 @@ const styles = StyleSheet.create({
   },
   card: {
     flexDirection: 'row',
-    marginTop: 20,
-    marginLeft: 20,
+    marginTop: 10,
+    marginLeft: 10,
     marginBottom: 10,
   },
   image: {
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
     borderRadius: 50,
   },
   title: {
     marginLeft: 25,
     color: '#000000',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 15,
   },
   location: {
-    fontSize: 15,
+    fontSize: 13,
     marginLeft: 25,
   },
   price: {

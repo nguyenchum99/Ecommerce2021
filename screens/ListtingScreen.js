@@ -81,10 +81,9 @@ class ListingScreen extends React.Component {
         },
         {
           text: 'Sửa thông tin',
-          onPress: () => {
-            console.log('asfdhfsfsd');
-            this.props.navigation.navigate('EditProduct',{
-              keyFood: key
+          onPress: () => {        
+            this.props.navigation.navigate('Detail',{
+              key: key
             })
           },
         },
@@ -112,7 +111,7 @@ class ListingScreen extends React.Component {
                 <Image source={{uri: item.productImage}} style={styles.image} />
                 <View style={{flexDirection: 'row', marginBottom: 10}}>
                   <Text style={styles.title}>{item.productName}</Text>
-                  <Text style={styles.price}>{item.productPrice} $</Text>
+                  <Text style={styles.price}>{item.productPrice} đ</Text>
                 </View>
               </TouchableOpacity>
             );

@@ -1,8 +1,7 @@
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
-import CameraScreen from "../screens/CameraScreen";
-import CategoryScreen from "../screens/CategoryScreen";
-
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+import CameraScreen from '../screens/CameraScreen';
+import CategoryScreen from '../screens/CategoryScreen';
 
 const StackCreateProduct = createStackNavigator(
   {
@@ -15,10 +14,10 @@ const StackCreateProduct = createStackNavigator(
   },
   {
     headerMode: 'Camera',
-    navigationOptions:  {
-      headerShown: false
+    navigationOptions: {
+      headerShown: false,
     },
-  }
+  },
 );
 
 export default createAppContainer(StackCreateProduct);

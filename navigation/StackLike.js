@@ -1,7 +1,7 @@
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
-import ItemDetail from "../screens/ItemDetail";
-import LikeScreen from "../screens/LikeScreen";
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+import ItemDetail from '../screens/ItemDetail';
+import LikeScreen from '../screens/LikeScreen';
 
 const StackLike = createStackNavigator(
   {
@@ -14,10 +14,10 @@ const StackLike = createStackNavigator(
   },
   {
     headerMode: 'List',
-    navigationOptions:  {
-      headerShown: false
+    navigationOptions: {
+      headerShown: false,
     },
-  }
+  },
 );
 
 export default createAppContainer(StackLike);
