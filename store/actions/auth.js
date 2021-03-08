@@ -11,7 +11,7 @@ GoogleSignin.configure({
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
 
-export const getUserData = async () => {
+export const getUserData = async (token) => {
   try {
     const respone = await fetch(
       `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${WEB_API_KEY}`,
@@ -124,10 +124,11 @@ export const authenticate = (isSignup, email, password) => {
       if (isSignup) {
         alert('We send email verification to ' + resData.email);
       }
+      console.log('Duc ' + resData.localId);
       dispatch({
         type: AUTHENTICATE,
         token: resData.idToken,
-        useId: resData.localId,
+        userId: resData.localId,
       });
     } catch (err) {
       throw err;
@@ -162,7 +163,9 @@ export const googleLogin = () => async (dispatch) => {
 };
 
 export const logout = () => {
-  return dispatch({type: LOGOUT});
+  return async (dispatch) => {
+    dispatch({type: LOGOUT});
+  };
 };
 
 export const signOut = () => {

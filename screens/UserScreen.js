@@ -1,45 +1,64 @@
-import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {connect} from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Button,
+} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import UserTopNavigator from '../navigation/UserTopNavigator';
 
-class UserScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+import * as authActions from '../store/actions/auth';
 
-  render() {
-    console.log(this.props);
+const UserScreen = (props) => {
+  const dispatch = useDispatch();
+  const logoutHandler = () => {
+    dispatch(authActions.logout());
+  };
+  const [userInfo, setUserInfo] = useState();
+  const token = useSelector((state) => state.auth.token);
+
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      const user = await authActions.getUserData(token);
+      console.log(user);
+      setUserInfo(user);
+    };
+    if (!userInfo) {
+      loadUserInfo();
+    }
+  }, [userInfo]);
+
+  if (!userInfo) {
     return (
-      <View style={styles.container}>
-        <View style={styles.card}>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Setting')}>
-            <Image source={{uri: this.props.userPhoto}} style={styles.image} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Profile')}>
-            <View>
-              <Text style={styles.title}>{this.props.userName}</Text>
-              <Text style={styles.location}>Location: Ha noi</Text>
-              <Text style={styles.location}>Edit Profile</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <UserTopNavigator />
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="white" />
       </View>
     );
   }
-}
 
-const mapStateToProps = (state) => {
-  return {
-    ...state.auth,
-  };
+  return (
+    <View style={styles.container}>
+      <View style={styles.card}>
+        <TouchableOpacity onPress={() => props.navigation.navigate('Setting')}>
+          <Image source={{uri: props.userPhoto}} style={styles.image} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => props.navigation.navigate('Profile')}>
+          <View>
+            <Text style={styles.title}>{props.userName}</Text>
+            <Text style={styles.location}>Location: Ha noi</Text>
+            <Text style={styles.location}>Editttt Profile</Text>
+            <Button title="Log out" onPress={logoutHandler} />
+          </View>
+        </TouchableOpacity>
+      </View>
+      <UserTopNavigator />
+    </View>
+  );
 };
-
-export default connect(mapStateToProps, null)(UserScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -71,3 +90,5 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
 });
+
+export default UserScreen;

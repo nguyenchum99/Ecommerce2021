@@ -189,17 +189,17 @@ const LoginScreen = (props) => {
         <ActivityIndicator size="large" corlor="white" />
       ) : (
         <TouchableOpacity
-          style={styles.loginBtn}
+          style={styles.buttonContainer}
           onPress={authenticationHandler}>
-          <Text style={styles.loginText}>{isSignup ? 'Signup' : 'Login'}</Text>
+          <Text style={styles.buttonText}>{isSignup ? 'Signup' : 'Login'}</Text>
         </TouchableOpacity>
       )}
       <TouchableOpacity
-        style={styles.loginBtn}
+        style={styles.buttonContainer}
         onPress={() => {
           setIsSignup((isSignup) => !isSignup);
         }}>
-        <Text style={styles.loginText}>
+        <Text style={styles.buttonText}>
           Switch to {isSignup ? 'Login' : 'Signup'}
         </Text>
       </TouchableOpacity>
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 11,
   },
-  loginBtn: {
+  buttonContainer: {
     width: '80%',
     backgroundColor: '#fb5b5a',
     borderRadius: 25,
@@ -245,6 +245,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20,
     marginBottom: 10,
+  },
+  buttonText: {
+    fontSize: 20,
   },
 });
 

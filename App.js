@@ -1,3 +1,10 @@
+// GIT COMMANDS
+// git add -A
+// git commit -m "commit-message (replace this by your commit message)"
+// git push -u origin master
+
+import 'react-native-gesture-handler';
+
 import React from 'react';
 import {Provider} from 'react-redux';
 import {applyMiddleware, combineReducers, createStore} from 'redux';

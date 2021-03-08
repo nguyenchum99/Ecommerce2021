@@ -1,8 +1,9 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 
 const StartUpScreen = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const tryLogin = async () => {
       console.log('Getting save account');
@@ -22,12 +23,13 @@ const StartUpScreen = (props) => {
         console.log(err.message);
       }
     };
-    tryLogin();
-  }, []);
+    setIsLoading(true);
+    tryLogin().then(setIsLoading(false));
+  }, [setIsLoading]);
 
   return (
     <View style={styles.screen}>
-      <ActivityIndicator size="large" color="red" />
+      {isLoading && <ActivityIndicator size="large" color="white" />}
     </View>
   );
 };
