@@ -1,20 +1,18 @@
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import EditInfoProduct from '../screens/EditInfoProduct';
 import EditProfileUser from '../screens/EditProfileUser';
+import LoginScreen from '../screens/LoginScreen';
 import UserScreen from '../screens/UserScreen';
+import StackExpand from './StackExpand';
 
 const StackUser = createStackNavigator(
   {
     User: {
-      screen: UserScreen,
+      screen: StackExpand,
     },
     Profile: {
       screen: EditProfileUser,
-    },
-    EditProduct: {
-      screen: EditInfoProduct,
-    },
+    }
   },
   {
     headerMode: 'User',

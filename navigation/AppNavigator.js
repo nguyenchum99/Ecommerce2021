@@ -1,6 +1,7 @@
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import LoginScreen from '../screens/LoginScreen';
 import StartUpScreen from '../screens/StartUpScreen';
+import UserScreen from '../screens/UserScreen';
 import TabHome from './TabHome';
 
 const AppNavigator = createSwitchNavigator(
@@ -13,6 +14,9 @@ const AppNavigator = createSwitchNavigator(
     },
     Home: {
       screen: TabHome,
+    },
+    UserScreen: {
+      screen: UserScreen,
     },
   },
   {

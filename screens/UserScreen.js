@@ -18,42 +18,23 @@ const UserScreen = (props) => {
   const logoutHandler = () => {
     dispatch(authActions.logout());
   };
-  const [userInfo, setUserInfo] = useState();
-  const token = useSelector((state) => state.auth.token);
-
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      const user = await authActions.getUserData(token);
-      console.log(user);
-      setUserInfo(user);
-    };
-    if (!userInfo) {
-      loadUserInfo();
-    }
-  }, [userInfo]);
-
-  if (!userInfo) {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" color="white" />
-      </View>
-    );
-  }
+  const userName = useSelector((state) => state.auth.userName);
+  const userPhoto = useSelector((state) => state.auth.userPhoto);
 
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Setting')}>
-          <Image source={{uri: props.userPhoto}} style={styles.image} />
+        <TouchableOpacity onPress={() => props.navigation.navigate('Expand')}>
+          <Image source={{uri: userPhoto}} style={styles.image} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => props.navigation.navigate('Profile')}>
           <View>
-            <Text style={styles.title}>{props.userName}</Text>
+            <Text style={styles.title}>{userName}</Text>
             <Text style={styles.location}>Location: Ha noi</Text>
             <Text style={styles.location}>Editttt Profile</Text>
-            <Button title="Log out" onPress={logoutHandler} />
           </View>
         </TouchableOpacity>
+        {/* <Button title="Log out" onPress={logoutHandler} /> */}
       </View>
       <UserTopNavigator />
     </View>

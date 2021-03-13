@@ -3,6 +3,10 @@ import {AUTHENTICATE, LOGOUT} from '../actions/auth';
 const initialState = {
   token: null,
   userId: null,
+  userName: null,
+  userEmail: null,
+  userPhone: null,
+  userPhoto: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -11,11 +15,17 @@ const authReducer = (state = initialState, action) => {
       return {
         token: action.token,
         userId: action.userId,
+        userName: action.userName,
+        userPhone: action.userPhone,
+        userEmail: action.userEmail,
+        userPhoto: action.userPhoto,
       };
     case LOGOUT:
+      console.log('Log out');
       return initialState;
+    default:
+      return state;
   }
-  return state;
 };
 
 export default authReducer;

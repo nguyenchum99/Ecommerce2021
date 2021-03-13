@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import {connect} from 'react-redux';
+import EditInfoProduct from '../Components/EditInfoProduct';
 import {firebaseApp} from '../Components/FirebaseConfig';
 
 class ListingScreen extends React.Component {
@@ -81,9 +82,8 @@ class ListingScreen extends React.Component {
         {
           text: 'Sửa thông tin',
           onPress: () => {
-            this.props.navigation.navigate('Detail', {
-              key: key,
-            });
+            this.refs.editModal.showEditModal(key)
+             
           },
         },
       ],
@@ -99,7 +99,7 @@ class ListingScreen extends React.Component {
   render() {
     console.log('info' + this.props);
     return (
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         <FlatList
           data={this.state.data}
           renderItem={({item}) => {
@@ -118,7 +118,8 @@ class ListingScreen extends React.Component {
           keyExtractor={(item) => item.key}
           numColumns={3}
         />
-      </ScrollView>
+        <EditInfoProduct ref={'editModal'} parentFlatList={this} />
+      </View>
     );
   }
 }
@@ -133,7 +134,7 @@ export default connect(mapStateToProps, null)(ListingScreen);
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#e6e6e6',
+    backgroundColor: '#ffffff',
   },
   card: {
     flex: 1,

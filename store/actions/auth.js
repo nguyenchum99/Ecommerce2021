@@ -11,61 +11,6 @@ GoogleSignin.configure({
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
 
-export const getUserData = async (token) => {
-  try {
-    const respone = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${WEB_API_KEY}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idToken: token,
-        }),
-      },
-    );
-    const resData = await respone.json();
-    if (!respone.ok) {
-      throw new Error(resData.error.message);
-    }
-    console.log('ResDAta ' + resData);
-    return resData;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const deleteUnverifiedUser = () => {
-  return async (dispatch, getState) => {
-    const token = getState().auth.token;
-    try {
-      const respone = await fetch(
-        `https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${WEB_API_KEY}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            idToken: token,
-          }),
-        },
-      );
-      const resData = await respone.json();
-      if (!respone.ok) {
-        throw new Error(resData.error.message);
-      }
-      console.log('ResDAta ' + resData);
-      dispatch({
-        type: LOGOUT,
-      });
-    } catch (err) {
-      throw err;
-    }
-  };
-};
-
 export const sendEmailVerification = () => {
   return async (getState) => {
     const token = getState().auth.token;
@@ -154,16 +99,31 @@ export const googleLogin = () => async (dispatch) => {
     userInfo = await auth().signInWithCredential(googleCredential);
     dispatch({
       type: AUTHENTICATE,
-      token: respone.idToken,
+      token: userInfo.user.token,
       userId: userInfo.user.uid,
+      userName: userInfo.user.displayName,
+      userEmail: userInfo.user.email,
+      userPhone: userInfo.user.phoneNumber,
+      userPhoto: userInfo.user.photoURL,
     });
   } catch (err) {
     throw err;
   }
 };
 
+const googleLogOut = async () => {
+  try {
+    await GoogleSignin.revokeAccess();
+    await GoogleSignin.signOut();
+    this.setState({user: null}); // Remember to remove the user from your app's state as well
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const logout = () => {
   return async (dispatch) => {
+    await googleLogOut();
     dispatch({type: LOGOUT});
   };
 };
