@@ -10,6 +10,7 @@ import {
 import {TextInput} from 'react-native-gesture-handler';
 import {firebaseApp} from '../Components/FirebaseConfig';
 
+
 class FindFriendScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -18,33 +19,33 @@ class FindFriendScreen extends React.Component {
     };
   }
 
-  
+  // componentDidMount() {
+  //   this.listAllUsers();
+  // }
+
+  // listAllUsers = (nextPageToken) => {
+  //   // List batch of users, 1000 at a time.
+  //   firebaseApp
+  //     .auth()
+  //     .listUsers(1000, nextPageToken)
+  //     .then((listUsersResult) => {
+  //       listUsersResult.users.forEach((userRecord) => {
+  //         console.log('user', userRecord.toJSON());
+  //       });
+  //       if (listUsersResult.pageToken) {
+  //         // List next batch of users.
+  //         listAllUsers(listUsersResult.pageToken);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log('Error listing users:', error);
+  //     });
+  // };
 
   render() {
-      firebaseApp
-        .database()
-        .ref('users')
-        .once('value', (snapshot) => {
-          const li = [];
-           console.log('listuser' + snapshot.val());
-          snapshot.forEach((child) => {
-            //   li.push({
-            //     key: child.key,
-            //     productName: child.val().name,
-            //     productDescription: child.val().description,
-            //     productPrice: child.val().price,
-            //     productImage: child.val().imageUrl1,
-            //     location: child.val().location,
-            //     createAt: child.val().createAt,
-            //   });
-            console.log('listuser' + child.val().email);
-          });
-
-          //this.setState({data: li});
-        });
     return (
       <View style={styles.container}>
-          <Text>test</Text>
+        <Text>test</Text>
         {/* <FlatList
           data={this.state.data}
           renderItem={({item}) => {
@@ -81,5 +82,4 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
 });

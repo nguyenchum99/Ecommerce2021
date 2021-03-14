@@ -1,7 +1,9 @@
 import React from 'react';
-import {Image} from 'react-native';
-import {createAppContainer} from 'react-navigation';
-import {createBottomTabNavigator} from 'react-navigation-tabs';
+import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { createAppContainer } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import ChatScreen from '../screens/ChatScreen';
 import StackCreateProduct from './StackCreateProduct';
 import StackLike from './StackLike';
@@ -10,77 +12,37 @@ import StackUser from './StackUser';
 
 const TabHome = createBottomTabNavigator(
   {
-    Home: {
-      screen: StackProductDetail,
-      navigationOptions: {
-        tabBarIcon: ({tintColor}) => (
-          <Image
-            source={require('../assets/icons/icons8-home-24.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
-      },
-    },
-    Like: {
-      screen: StackLike,
-      navigationOptions: {
-        tabBarIcon: ({tintColor}) => (
-          <Image
-            source={require('../assets/icons/icons8-heart-24.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
-      },
-    },
-    Camera: {
-      screen: StackCreateProduct,
-      navigationOptions: {
-        tabBarIcon: ({tintColor}) => (
-          <Image
-            source={require('../assets/icons/icons8-camera-50.png')}
-            style={{width: 35, height: 35}}
-          />
-        ),
-      },
-    },
-    Chat: {
-      screen: ChatScreen,
-      navigationOptions: {
-        tabBarIcon: ({tintColor}) => (
-          <Image
-            source={require('../assets/icons/icons8-chat-50.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
-      },
-    },
-    User: {
-      screen: StackUser,
-      navigationOptions: {
-        tabBarIcon: ({tintColor}) => (
-          <Image
-            source={require('../assets/icons/icons8-user-32.png')}
-            style={{width: 35, height: 35}}
-          />
-        ),
-      },
-    },
+    Home: StackProductDetail,
+    Like: StackLike,
+    Camera: StackCreateProduct,
+    Chat: ChatScreen,
+    User: StackUser,
   },
 
   {
+    defaultNavigationOptions: ({navigation}) => ({
+      tabBarIcon: ({tintColor, size}) => {
+        const {routeName} = navigation.state;
+        if (routeName === 'Home') {
+          return <Entypo name="home" size={30} color={tintColor} />;
+        } else if (routeName === 'Like') {
+          return <Entypo name="heart" size={30} color={tintColor} />;
+        } else if (routeName === 'Camera') {
+          return <Entypo name="circle-with-plus" size={30} color={tintColor} />;
+        } else if (routeName === 'Chat') {
+          return <Ionicons name="chatbox" size={30} color={tintColor} />;
+        } else if (routeName === 'User') {
+          return <FontAwesome name="user-circle" size={30} color={tintColor} />;
+        }
+      },
+    }),
     tabBarOptions: {
-      showIcon: true,
-      activeTintColor: '#ff1a1a',
+      activeTintColor: 'tomato',
       inactiveTintColor: 'gray',
-      style: {
-        backgroundColor: 'white',
-      },
-      labelStyle: {
-        fontSize: 12,
-      },
       showLabel: false,
     },
   },
 );
+
 
 export default createAppContainer(TabHome);

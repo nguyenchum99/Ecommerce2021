@@ -1,3 +1,4 @@
+import {initial} from 'lodash-es';
 import {AUTHENTICATE, LOGOUT} from '../actions/auth';
 
 const initialState = {
@@ -21,7 +22,6 @@ const authReducer = (state = initialState, action) => {
         userPhoto: action.userPhoto,
       };
     case LOGOUT:
-      console.log('Log out');
       return initialState;
     default:
       return state;

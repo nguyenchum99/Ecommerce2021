@@ -6,17 +6,14 @@ import AppNavigator from './AppNavigator';
 
 const NavigationContainer = (props) => {
   const navRef = useRef();
-  const state = useSelector((state) => state);
-  const isAuth = useSelector((state) => !!state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   useEffect(() => {
-    console.log(state);
-    console.log(`isAuthenticated ${isAuth}`);
-    if (!isAuth) {
+    if (token === null) {
       navRef.current.dispatch(
         NavigationActions.navigate({routeName: 'Startup'}),
       );
     }
-  }, [isAuth]);
+  }, [token]);
 
   return <AppNavigator ref={navRef} />;
 };

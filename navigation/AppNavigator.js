@@ -15,9 +15,6 @@ const AppNavigator = createSwitchNavigator(
     Home: {
       screen: TabHome,
     },
-    UserScreen: {
-      screen: UserScreen,
-    },
   },
   {
     headerMode: 'Auth',

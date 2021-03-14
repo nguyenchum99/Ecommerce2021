@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import Input from '../Components/UI/Input';
@@ -141,6 +142,7 @@ const LoginScreen = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.inputView}>
+     
         {/* <TextInput
           style={styles.inputText}
           placeholder="Email..."
