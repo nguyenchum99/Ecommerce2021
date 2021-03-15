@@ -13,6 +13,7 @@ import NavigationContainer from './navigation/NavigationContainer';
 import authReducer from './store/reducers/auth';
 import FindFriendScreen from './screens/FindFriendScreen';
 import Comments from './Components/Comments';
+import CommentList from './Components/CommentList';
 const rootReducer = combineReducers({
   auth: authReducer,
 });
@@ -23,9 +24,8 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer />
-      {/* <Comments/> */}
-      {/* <FindFriendScreen></FindFriendScreen> */}
     </Provider>
+   // <CommentList/>
   );
 };
 

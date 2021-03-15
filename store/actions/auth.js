@@ -33,7 +33,7 @@ export const sendEmailVerification = () => {
       if (!respone.ok) {
         throw new Error(resData.error.message);
       }
-      console.log('ResDAta ' + resData);
+     // console.log('ResDAta ' + resData);
     } catch (err) {
       throw err;
     }

@@ -100,6 +100,7 @@ class ListingScreen extends React.Component {
     console.log('info' + this.props);
     return (
       <View style={styles.container}>
+     
         <FlatList
           data={this.state.data}
           renderItem={({item}) => {
