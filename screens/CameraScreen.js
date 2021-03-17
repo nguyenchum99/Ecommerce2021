@@ -8,12 +8,16 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Picker
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import RNPickerSelect from 'react-native-picker-select';
-import {connect} from 'react-redux';
-import {firebaseApp} from '../Components/FirebaseConfig';
-import {CITIES} from '../constants/Cities';
+import { connect } from 'react-redux';
+import { firebaseApp } from '../Components/FirebaseConfig';
+import { CITIES } from '../constants/Cities';
+import { Hoshi } from 'react-native-textinput-effects';
+
+
 const options = {
   title: 'Select Avatar',
   storageOptions: {
@@ -21,6 +25,17 @@ const options = {
     path: 'images',
   },
 };
+
+
+const category = [
+  { label: 'Thời trang', value: 'Thời trang' },
+  { label: 'Điện thoại', value: 'Điện thoại' },
+  { label: 'Đồ gia dụng', value: 'Đồ gia dụng' }];
+
+const status = [
+  { label: 'Mới', value: 'Mới' },
+  { label: 'Cũ', value: 'Cũ' },
+];
 
 const productRef = firebaseApp.database();
 
@@ -33,10 +48,11 @@ class CameraScreen extends React.Component {
       productPrice: '',
       productImage1: '',
       productCreateAt: '',
-      productCategory: '',
+      productCategory: 'Thời trang',
       idUser: '',
-      location: '',
+      location: 'Hà Nội',
       userName: '',
+      productStatus: 'Mới'
     };
   }
 
@@ -44,13 +60,10 @@ class CameraScreen extends React.Component {
     const category = this.props.navigation.getParam('category');
     console.log('get param' + category);
   }
-  // componentWillReceiveProps(){
-  //   const category = this.props.navigation.getParam('category');
-  //   console.log('get param' + category)
-  // }
+
 
   uploadImage = async () => {
-    const reference = storage().ref(`${productImage1}`);
+    const reference = firebaseApp.storage().ref(`${productImage1}`);
     const pathToFile = `${productImage1}`;
     //console.log(pathToFile)
     // uploads file
@@ -81,8 +94,8 @@ class CameraScreen extends React.Component {
               if (
                 this.state.productName == null ||
                 this.state.productPrice == null ||
-                this.state.productDescription == null ||
-                this.state.location == null
+                this.state.productDescription == null 
+              
               ) {
                 alert('Bạn phải nhập đầy đủ thông tin');
               } else {
@@ -97,6 +110,8 @@ class CameraScreen extends React.Component {
                   location: this.state.location,
                   idUser: this.props.userId,
                   userName: this.props.userName,
+                  category: this.state.productCategory,
+                  status: this.state.productStatus,
                 });
 
                 this.setState({
@@ -106,16 +121,13 @@ class CameraScreen extends React.Component {
                   productImage1: null,
                   productCreateAt: null,
                   productDescription: null,
-                  idUser: null,
-                  location: null,
-                  userName: null,
                 });
                 this.props.navigation.navigate('Home');
               }
             },
           },
         ],
-        {cancelable: false},
+        { cancelable: false },
       );
     }
   };
@@ -125,7 +137,7 @@ class CameraScreen extends React.Component {
       // Same code as in above section!
       console.log('take phpto' + response.uri);
 
-      this.setState({productImage1: response.uri});
+      this.setState({ productImage1: response.uri });
     });
   };
 
@@ -138,73 +150,137 @@ class CameraScreen extends React.Component {
       // Same code as in above section!
       console.log(response.uri);
       //setProductImage1(response.uri);
-      this.setState({productImage1: response.uri});
+      this.setState({ productImage1: response.uri });
     });
   };
+
+  takeImage = () => {
+    ImagePicker.showImagePicker(options, (response) => {
+      this.setState({ productImage1: '' })
+      if (response.didCancel) {
+
+      } else if (response.error) {
+
+      } else if (response.customButton) {
+      } else {
+        const source = { uri: response.uri };
+        this.setState({
+          productImage1: response.uri,
+        });
+
+        this.uploadImage();
+
+      }
+    });
+  }
+
 
   render() {
     return (
       <View style={styles.screen}>
-        <Text style={styles.title}>Sell your product</Text>
+        <Text style={styles.title}>Tạo sản phẩm của bạn</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ flex: 3, marginLeft: 20 }}>
+            <Text >Tên sản phẩm</Text>
+            <TextInput
+              placeholder="..."
+              style={styles.input}
+              onChangeText={(productName) => this.setState({ productName })}
+              value={this.state.productName}></TextInput>
+          </View>
+          <View style={{ flex: 2, marginRight: 20, marginLeft: 10 }}>
+            <Text>Đơn giá (VNĐ)</Text>
+            <TextInput
+              keyboardType="numeric"
+              placeholder="..."
+              style={styles.input}
 
-        <TextInput
-          placeholder="Name..."
-          style={styles.input}
-          onChangeText={(productName) => this.setState({productName})}
-          value={this.state.productName}></TextInput>
-        <TextInput
-          keyboardType="numeric"
-          placeholder="Price..."
-          style={styles.input}
-          onChangeText={(productPrice) => this.setState({productPrice})}
-          value={this.state.productPrice}></TextInput>
-        <TextInput
-          placeholder="Description..."
-          style={styles.input}
-          onChangeText={(productDescription) =>
-            this.setState({productDescription})
-          }
-          value={this.state.productDescription}></TextInput>
-        <View style={{marginLeft: 20, marginRight: 20, marginTop: 20}}>
+              onChangeText={(productPrice) => this.setState({ productPrice })}
+              value={this.state.productPrice}></TextInput>
+          </View>
+
+        </View>
+        <View style={{ marginRight: 20, marginLeft: 20, marginTop: 10 }}>
+          <Text>Mô tả sản phẩm:</Text>
+          <TextInput
+            placeholder="..."
+            style={{
+              textAlignVertical: "top", borderWidth: 1,
+              borderColor: '#3399ff',
+              borderRadius: 10,
+              marginTop: 10
+            }}
+            numberOfLines={3}
+            onChangeText={(productDescription) =>
+              this.setState({ productDescription })
+            }
+            value={this.state.productDescription}></TextInput>
+        </View>
+        <View style={{ marginTop: 10, marginLeft: 20, marginRight: 20 }}>
+          <Text>Chọn địa điểm</Text>
           <RNPickerSelect
-            onValueChange={(location) => this.setState({location})}
+            onValueChange={(location) => this.setState({ location })}
             items={CITIES}
+            useNativeAndroidPickerStyle={true}
             placeholder={{
-              label: 'Select a city...',
+              label: this.state.location,
               value: this.state.location,
             }}
             value={this.state.location}
           />
         </View>
-        <View style={{flexDirection: 'column'}}>
-          <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity onPress={() => this.takeCamera()}>
-              <Image
-                source={require('../assets/icons/icons8-camera-40.png')}
-                style={styles.icon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.takePhotoLibrary()}>
+        <View style={{ marginTop: 10, flexDirection: 'row' }}>
+          <View style={{ flex: 3, marginLeft: 20 }}>
+            <Text>Danh mục</Text>
+            <RNPickerSelect
+              onValueChange={(productCategory) => this.setState({ productCategory })}
+              items={category}
+              useNativeAndroidPickerStyle={true}
+              placeholder={{
+                label: this.state.productCategory,
+                value: this.state.productCategory,
+              }}
+              value={this.state.productCategory}
+            />
+          </View>
+          <View style={{ flex: 3, marginRight: 20 }}>
+            <Text>Tình trạng</Text>
+            <RNPickerSelect
+              onValueChange={(productStatus) => this.setState({ productStatus })}
+              items={status}
+              useNativeAndroidPickerStyle={true}
+              placeholder={{
+                label: this.state.productCategory,
+                value: this.state.productStatus,
+              }}
+              value={this.state.productStatus}
+            />
+          </View>
+        </View>
+        <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity onPress={() => this.takeImage()}>
+            <Image
+              source={require('../assets/icons/add.png')}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+          <Image
+            style={styles.imageUrl}
+            source={{ uri: this.state.productImage1 }}></Image>
+          {/* <TouchableOpacity onPress={() => this.takePhotoLibrary()}>
               <Image
                 source={require('../assets/icons/icons8-photo-gallery-40.png')}
                 style={styles.icon}
               />
-            </TouchableOpacity>
-          </View>
-          <View style={{flexDirection: 'row', marginLeft: 20}}>
-            <Image
-              style={styles.imageUrl}
-              source={{uri: this.state.productImage1}}></Image>
-            {/* <Image style={styles.imageUrl} source={{uri: productImage2}}></Image>
-          <Image style={styles.imageUrl} source={{uri: productImage3}}></Image> */}
-          </View>
+            </TouchableOpacity> */}
         </View>
 
-        <TouchableOpacity
+
+        {/* <TouchableOpacity
           style={styles.choose}
           onPress={() => this.props.navigation.navigate('Category')}>
           <Text style={styles.textBtn}>Choose category</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.button}
           onPress={() => this.addNewproduct()}>
@@ -225,6 +301,7 @@ export default connect(mapStateToProps, null)(CameraScreen);
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
   title: {
     color: '#000000',
@@ -266,6 +343,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginLeft: 20,
     marginRight: 20,
+    justifyContent: 'flex-end',
+    
+    
   },
   textbutton: {
     color: '#ffffff',
@@ -275,10 +355,9 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#3399ff',
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
     borderRadius: 10,
+    marginTop: 10
+
   },
   buttonStyle: {
     alignItems: 'center',

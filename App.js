@@ -14,6 +14,7 @@ import authReducer from './store/reducers/auth';
 import FindFriendScreen from './screens/FindFriendScreen';
 import Comments from './Components/Comments';
 import CommentList from './Components/CommentList';
+import TestScreen from './screens/TestScreen';
 const rootReducer = combineReducers({
   auth: authReducer,
 });
@@ -26,6 +27,7 @@ const App = () => {
       <NavigationContainer />
     </Provider>
    // <CommentList/>
+   // <TestScreen/>
   );
 };
 

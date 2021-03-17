@@ -9,9 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {AirbnbRating} from 'react-native-ratings';
-import {connect} from 'react-redux';
-import {firebaseApp} from '../Components/FirebaseConfig';
+import { AirbnbRating } from 'react-native-ratings';
+import { connect } from 'react-redux';
+import { firebaseApp } from '../Components/FirebaseConfig';
 
 class LocalScreen extends React.Component {
   constructor(props) {
@@ -52,7 +52,7 @@ class LocalScreen extends React.Component {
 
   render() {
     console.log(this.state.isLoading);
-    const {data} = this.state;
+    const { data } = this.state;
     return (
       <>
         <>
@@ -60,7 +60,60 @@ class LocalScreen extends React.Component {
             <ActivityIndicator size="large" color="#000" />
           )}
         </>
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
+          <FlatList style={styles.list}
+            contentContainerStyle={styles.listContainer}
+            data={this.state.data}
+            horizontal={false}
+            numColumns={2}
+            keyExtractor={(item) => {
+              return item.id;
+            }}
+            ItemSeparatorComponent={() => {
+              return (
+                <View style={styles.separator} />
+              )
+            }}
+            renderItem={(post) => {
+              const item = post.item;
+              return (
+                <View style={styles.card}>
+                  <TouchableOpacity onPress={() =>
+                    this.props.navigation.navigate('Detail', {
+                      idProduct: item.key,
+                    })
+                  }>
+                    <View style={styles.cardHeader}>
+                      <View>
+                        <Text style={styles.title}>{item.name}</Text>
+                        <Text style={styles.price}>{item.price} VND</Text>
+                      </View>
+                    </View>
+                    <Image style={styles.cardImage} source={{ uri: item.imageUrl }} />
+                  </TouchableOpacity>
+
+
+                  <View style={styles.cardFooter}>
+                    <View style={styles.socialBarContainer}>
+                      <View style={styles.socialBarSection}>
+                        <TouchableOpacity style={styles.socialBarButton} onPress={() => this.addProductToCart()}>
+                          <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/nolan/96/3498db/add-shopping-cart.png' }} />
+                          <Text style={[styles.socialBarLabel, styles.buyNow]}>Buy Now</Text>
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.socialBarSection}>
+                        <TouchableOpacity style={styles.socialBarButton}>
+                          <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/color/50/000000/hearts.png' }} />
+                          <Text style={styles.socialBarLabel}>25</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              )
+            }} />
+        </View>
+        {/* <ScrollView style={styles.container}>
           <FlatList
             data={data}
             renderItem={({item, index}) => {
@@ -112,7 +165,7 @@ class LocalScreen extends React.Component {
             keyExtractor={(item) => item.key}
             numColumns={2}
           />
-        </ScrollView>
+        </ScrollView> */}
       </>
     );
   }
@@ -128,27 +181,95 @@ export default connect(mapStateToProps, null)(LocalScreen);
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#e6e6e6',
-  },
-  card: {
     flex: 1,
-    width: 200,
-    backgroundColor: '#ffffff',
-    borderWidth: 0.5,
-    borderColor: '#d9d9d9',
+    marginTop: 20,
   },
-  image: {
-    marginLeft: 50,
-    width: 100,
+  list: {
+    paddingHorizontal: 5,
+    backgroundColor: "#E6E6E6",
+  },
+  listContainer: {
+    alignItems: 'center'
+  },
+  separator: {
+    marginTop: 10,
+  },
+  /******** card **************/
+  card: {
+    shadowColor: '#00000021',
+    shadowOffset: {
+      width: 2
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    marginVertical: 8,
+    backgroundColor: "white",
+    flexBasis: '47%',
+    marginHorizontal: 5,
+  },
+  cardHeader: {
+    paddingVertical: 17,
+    paddingHorizontal: 16,
+    borderTopLeftRadius: 1,
+    borderTopRightRadius: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  cardContent: {
+    paddingVertical: 12.5,
+    paddingHorizontal: 16,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 12.5,
+    paddingBottom: 25,
+    paddingHorizontal: 16,
+    borderBottomLeftRadius: 1,
+    borderBottomRightRadius: 1,
+  },
+  cardImage: {
+    flex: 1,
     height: 150,
-    justifyContent: 'center',
+    width: null,
   },
+  /******** card components **************/
   title: {
-    color: '#000000',
-    fontWeight: 'bold',
+    fontSize: 18,
+    flex: 1,
   },
   price: {
-    marginLeft: 20,
-    color: 'red',
+    fontSize: 16,
+    color: "green",
+    marginTop: 5
   },
+  buyNow: {
+    color: "purple",
+  },
+  icon: {
+    width: 25,
+    height: 25,
+  },
+  /******** social bar ******************/
+  socialBarContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    flex: 1
+  },
+  socialBarSection: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    flex: 1,
+  },
+  socialBarlabel: {
+    marginLeft: 8,
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+  },
+  socialBarButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });
