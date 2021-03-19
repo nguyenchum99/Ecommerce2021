@@ -2,6 +2,7 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import HomeScreen from '../screens/HomeScreen';
 import ProductDetail from '../screens/ProductDetail';
+import ProfileUser from '../screens/ProfileUser';
 
 const StackProductDetail = createStackNavigator(
   {
@@ -10,6 +11,9 @@ const StackProductDetail = createStackNavigator(
     },
     Detail: {
       screen: ProductDetail,
+    },
+    UserProfile: {
+      screen: ProfileUser,
     },
   },
   {

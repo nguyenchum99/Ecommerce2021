@@ -112,6 +112,7 @@ class CameraScreen extends React.Component {
                   userName: this.props.userName,
                   category: this.state.productCategory,
                   status: this.state.productStatus,
+                  userAvatar: this.props.userPhoto,
                 });
 
                 this.setState({

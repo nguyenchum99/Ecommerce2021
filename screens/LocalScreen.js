@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  TextInput
 } from 'react-native';
 import { AirbnbRating } from 'react-native-ratings';
 import { connect } from 'react-redux';
@@ -41,9 +42,11 @@ class LocalScreen extends React.Component {
         });
         this.setState({
           data: li,
-          isLoading: false,
+          isLoading: false,  
         });
       });
+
+
   }
 
   selectLikeProduct = (idProduct, isLike) => {
@@ -61,6 +64,16 @@ class LocalScreen extends React.Component {
           )}
         </>
         <View style={styles.container}>
+          <View style={styles.formContent}>
+            <View style={styles.inputContainer}>
+              <Image style={[styles.icon, styles.inputIcon]} source={{ uri: 'https://png.icons8.com/search/androidL/100/000000' }} />
+              <TextInput style={styles.inputs}
+                
+                placeholder="Search"
+                underlineColorAndroid='transparent'
+                />
+            </View>
+          </View>
           <FlatList style={styles.list}
             contentContainerStyle={styles.listContainer}
             data={this.state.data}
@@ -182,11 +195,41 @@ export default connect(mapStateToProps, null)(LocalScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+
+  },
+  formContent: {
+    flexDirection: 'row',
+  },
+   inputContainer: {
+    borderBottomColor: '#F5FCFF',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 30,
+    borderBottomWidth: 1,
+    height: 45,
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    margin: 10,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+  },
+  iconBtnSearch: {
+    alignSelf: 'center'
+  },
+  inputs: {
+    height: 45,
+    marginLeft: 16,
+    borderBottomColor: '#FFFFFF',
+    flex: 1,
+  },
+  inputIcon: {
+    marginLeft: 15,
+    justifyContent: 'center'
   },
   list: {
     paddingHorizontal: 5,
-    backgroundColor: "#E6E6E6",
   },
   listContainer: {
     alignItems: 'center'

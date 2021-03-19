@@ -23,19 +23,6 @@ export default class HomeScreen extends React.Component {
           flexDirection: 'column',
           justifyContent: 'flex-start',
         }}>
-        <SearchBar
-          placeholder="Search item..."
-          onChangeText={this.updateSearch}
-          value={this.state.search}
-          lightTheme
-          round
-          containerStyle={
-            Platform.OS === 'android'
-              ? {backgroundColor: '#ffffff'}
-              : {backgroundColor: '#ffffff'}
-          }
-          inputStyle={{color: '#000000'}}
-        />
         <LocalScreen {...this.props} />
       </View>
     );

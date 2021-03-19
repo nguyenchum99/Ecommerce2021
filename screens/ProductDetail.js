@@ -31,9 +31,12 @@ class ProductDetail extends React.Component {
       idUser: '',
       location: '',
       userName: '',
+      userAvatar: '',
       idProduct: '',
       comment: '',
       listComment: [],
+      isLike: false,
+      valueLike: 0,
       // key:''
     };
   }
@@ -62,6 +65,9 @@ class ProductDetail extends React.Component {
       .ref('Comments/')
       .orderByChild('idProduct')
       .equalTo(idProduct)
+
+
+
       .on('value', (snapshot) => {
         const temp = [];
         snapshot.forEach((child) => {
@@ -79,6 +85,9 @@ class ProductDetail extends React.Component {
         // this.setState({listComment: temp});
         // console.log('comment' + this.state.listComment)  
       });
+
+
+
   }
 
   // __setImageSelected = (image) => {
@@ -102,7 +111,31 @@ class ProductDetail extends React.Component {
   //   )
   // }
 
+  clickLikeProduct() {
+    console.log(" firesr" + this.state.isLike)
+    this.setState({ isLike: !this.state.isLike });
+    console.log(this.state.isLike)
+    if (this.state.isLike) {
+      firebaseApp.database().ref('Likes').push({
+        name: this.state.productName,
+        description: this.state.productDescription,
+        price: this.state.productPrice,
+        imageUrl1: this.state.productImage1,
+        createAt: this.state.productCreateAt,
+        location: this.state.location,
+        idUserCreate: this.state.idUser,
+        userNameCreate: this.state.userName,
+        category: this.state.productCategory,
+        status: this.state.productStatus,
+
+      });
+
+    }
+
+  }
+
   render() {
+
     firebaseApp
       .database()
       .ref(`Products/${this.state.idProduct}`)
@@ -118,79 +151,115 @@ class ProductDetail extends React.Component {
         this.state.location = snapshot.child('location').val();
         this.state.productStatus = snapshot.child('status').val();
         this.state.productCategory = snapshot.child('category').val();
+        this.state.userAvatar = snapshot.child('userAvatar').val();
         // console.log(this.state.productName);
       });
     return (
 
-        <ScrollView style={styles.content}>
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Text>
-                <Text style={styles.name}>{this.state.productName}   </Text>
-                <Text style={styles.name}>{this.state.productPrice} VND</Text>
-              </Text>
-            </View>
-            <View style={styles.cardContent}>
-              <View style={styles.header}>
-                <View style={styles.mainImageContainer}>
-                  <Image style={styles.mainImage} source={{ uri: this.state.productImage1 }} />
-                </View>
-                {/* {this.__renderImages()} */}
-              </View>
-            </View>
-          </View>
-          <TouchableOpacity style={styles.card}>
-            <View style={{ flexDirection: 'row' }}>
-              <Image
-                source={require('../assets/icons/avatar.png')}
-                style={styles.image}
-              />
-              <Text style={styles.username}>{this.state.userName}</Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                marginTop: 10,
-              }}>
-              <Text>List</Text>
-              <Text>Sold</Text>
-              <Text>Rating</Text>
-            </View>
-          </TouchableOpacity>
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>#{this.state.productCategory}  #{this.state.productStatus}  Mô tả</Text>
-            </View>
-            <View style={styles.cardContent}>
-              <Text style={styles.description}>{this.state.productDescription}</Text>
-            </View>
-          </View>
+      <ScrollView style={styles.content}>
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text>
+              <Text style={styles.name}>{this.state.productName}   </Text>
+              <Text style={styles.namePrice}>{this.state.productPrice} VND</Text>
+            </Text>
+            {/* {this.clickLikeProduct} */}
+            <TouchableOpacity onPress={() => this.clickLikeProduct()}>
+              {
+                this.state.isLike ? <Image
+                  style={styles.icon}
+                  source={require('../assets/icons/heart(1).png')}
+                /> : <Image
+                  style={styles.icon}
+                  source={require('../assets/icons/icons8-heart.png')}
+                />
+              }
+            </TouchableOpacity>
 
-          <View style={styles.card}>
-            <View style={styles.cardContent}>
-              <TouchableOpacity style={styles.shareButton} onPress={() => alert('add to card')}>
-                <Text style={styles.shareButtonText}>Add To Cart</Text>
-              </TouchableOpacity>
+          </View>
+          <View style={styles.cardContent}>
+            <View style={styles.header}>
+              <View style={styles.mainImageContainer}>
+                <Image style={styles.mainImage} source={{ uri: this.state.productImage1 }} />
+              </View>
+              {/* {this.__renderImages()} */}
             </View>
           </View>
-          <TextInput
+        </View>
+        <TouchableOpacity style={styles.card} onPress={() => this.props.navigation.navigate('UserProfile', {
+          userName: this.state.username,
+          userAvatar: this.state.userAvatar,
+          userId: this.state.idUser
+        })}>
+          <View style={{ flexDirection: 'row' }}>
+            <Image
+              source={{ uri: this.state.userAvatar }}
+              style={styles.image}
+            />
+            <Text style={styles.username}>{this.state.userName}</Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              marginLeft: 60
+            }}>
+            <Text>Danh sách</Text>
+            <Text>Bán</Text>
+            <Text>Đánh giá</Text>
+          </View>
+        </TouchableOpacity>
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle}>Danh mục: {this.state.productCategory} </Text>
+            <Text style={styles.cardTitle}>Tình trạng: {this.state.productStatus} </Text>
+            <Text style={styles.cardTitle}>Vị trí: {this.state.location} </Text>
+            <Text style={styles.cardTitle}>Mô tả:  </Text>
+          </View>
+          <View style={styles.cardContent}>
+            <Text style={styles.description}>{this.state.productDescription}</Text>
+          </View>
+        </View>
+
+        {/* <View style={styles.card}>
+          <View style={styles.cardContent}>
+            <TouchableOpacity style={styles.shareButton} onPress={() => alert('add to card')}>
+              <Text style={styles.shareButtonText}>Add To Cart</Text>
+            </TouchableOpacity>
+          </View>
+        </View> */}
+
+        <View style={styles.card}>
+          <View style={styles.footer}>
+            <View style={styles.inputContainercmt}>
+              <TextInput style={styles.inputscmt}
+                placeholder="Write a message..."
+                underlineColorAndroid='transparent'
+                value={this.state.comment}
+                onChangeText={(text) => this.setState({ comment: text })}/>
+            </View>
+
+            <TouchableOpacity style={styles.btnSend} onPress={() => this.postComment()}>
+              <Image source={{ uri: "https://img.icons8.com/small/75/ffffff/filled-sent.png" }} style={styles.iconSend} />
+            </TouchableOpacity>
+          </View>
+          {/* <TextInput
             placeholder="Add a comment..."
             //keyboardType="twitter" // keyboard with no return button
             //autoFocus={true} // focus and show the keyboard
             style={styles.input}
             value={this.state.comment}
             onChangeText={(text) => this.setState({ comment: text })} // handle input changes
-          // onSubmitEditing={this.onSubmitEditing} // handle submit event
+
           />
-          {/* Post button */}
+      
           <TouchableOpacity
             style={styles.button}
             onPress={() => this.postComment()}
           >
-            {/* Apply inactive style if no input */}
+         
             <Text >Post</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <FlatList
             style={styles.root}
             data={this.state.listComment}
@@ -215,133 +284,16 @@ class ProductDetail extends React.Component {
                       <Text style={styles.nameusercmt}>{item.nameUser}</Text>
                       <Text style={styles.timecmt}>
                         {item.createAt}
-                  </Text>
+                      </Text>
                     </View>
                     <Text rkType='primary3 mediumLine'>{item.content}</Text>
                   </View>
                 </View>
               );
             }} />
-        </ScrollView>
+        </View>
 
-      // <SafeAreaView style={styles.container}>
-      //   <ScrollView>
-      //     <View style={styles.containerCmt} >
-      //       <KeyboardAvoidingView
-      //         behavior={Platform.OS === "ios" ? "padding" : "height"}
-      //       >
-      //         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      //           <View style={styles.containerInput}>
-
-      //             <TextInput
-      //               placeholder="Add a comment..."
-      //               //keyboardType="twitter" // keyboard with no return button
-      //               //autoFocus={true} // focus and show the keyboard
-      //               style={styles.input}
-      //               value={this.state.comment}
-      //               onChangeText={(text) => this.setState({ comment: text })} // handle input changes
-      //             // onSubmitEditing={this.onSubmitEditing} // handle submit event
-      //             />
-      //             {/* Post button */}
-      //             <TouchableOpacity
-      //               style={styles.button}
-      //               onPress={() => this.postComment()}
-      //             >
-      //               {/* Apply inactive style if no input */}
-      //               <Text style={[styles.text, !this.state.text ? styles.inactive : []]}>Post</Text>
-      //             </TouchableOpacity>
-      //           </View>
-      //         </TouchableWithoutFeedback>
-      //       </KeyboardAvoidingView>
-      //       <FlatList
-      //         data={this.state.listComment}
-      //         renderItem={({ item }) => {
-      //           return (
-      //             //  <Comments userAvatar= {item.avatarUser} userName={item.nameUser} comment={item.content} createAt={item.createAt} />
-      //             <View style={styles.cmtBox}>
-      //               <View style={styles.avatarContainer}>
-      //                 <Image
-      //                   resizeMode='contain'
-      //                   style={styles.avatar}
-      //                   source={{ uri: item.avatarUser }}
-      //                 />
-      //               </View>
-      //               <View style={styles.contentContainer}>
-      //                 <Text style={[styles.text, styles.name]}>{item.nameUser} </Text>
-      //                 <Text style={styles.text}>{item.content}</Text>
-      //                 <View style={{ flexDirection: 'row' }}>
-      //                   <Text>{item.createAt}</Text>
-      //                   <TouchableOpacity   style={{marginLeft: 10}}            
-      //                     onPress={() => this.likeComment()}
-      //                   >
-      //                     <Text>Like</Text>
-      //                   </TouchableOpacity>
-      //                   <TouchableOpacity style={{ marginLeft: 10 }}
-      //                     onPress={() => this.commentChildren()}
-      //                   >
-      //                     <Text>Comment</Text>
-      //                   </TouchableOpacity>
-      //                 </View>
-
-      //               </View>
-      //             </View>
-      //           );
-      //         }}
-      //         keyExtractor={(item) => item.key}
-      //       />
-
-      //     </View>
-      //     <Image
-      //       style={{ height: 200, width: 200, marginLeft: 20 }}
-      //       source={{ uri: this.state.productImage1 }}></Image>
-      //     <Text
-      //       style={{
-      //         fontSize: 20,
-      //         fontWeight: 'bold',
-      //         marginLeft: 20,
-      //         marginTop: 20,
-      //         marginBottom: 20,
-      //       }}>
-      //       {this.state.productName} - {this.state.productPrice} $
-      //     </Text>
-      //     <View
-      //       style={{
-      //         flexDirection: 'row',
-      //         justifyContent: 'space-between',
-      //       }}>
-      //     </View>
-      //     <View
-      //       style={{
-      //         marginTop: 10,
-      //         marginLeft: 20,
-      //         marginRight: 20,
-      //         padding: 5,
-      //         borderRadius: 10,
-      //         backgroundColor: '#ffffff',
-      //       }}>
-      //       <Text>{this.state.productDescription}</Text>
-      //     </View>
-      //     <TouchableOpacity style={styles.card}>
-      //       <View style={{ flexDirection: 'row' }}>
-      //         <Image
-      //           source={require('../assets/icons/avatar.png')}
-      //           style={styles.image}
-      //         />
-      //         <Text style={styles.title}>{this.state.userName}</Text>
-      //       </View>
-      //       <View
-      //         style={{
-      //           flexDirection: 'row',
-      //           justifyContent: 'space-around',
-      //           marginTop: 10,
-      //         }}>
-      //         <Text>List</Text>
-      //         <Text>Sold</Text>
-      //         <Text>Rating</Text>
-      //       </View>
-      //     </TouchableOpacity>
-      //   </ScrollView>
-      // </SafeAreaView>
+      </ScrollView>
     );
   }
 }
@@ -360,11 +312,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
-    backgroundColor: "#ebf0f7",
+
+  },
+  footer: {
+    flexDirection: 'row',
+    height: 60,
+    backgroundColor: '#eeeeee',
+    paddingHorizontal: 10,
+    padding: 5,
+  },
+  btnSend: {
+    backgroundColor: "#00BFFF",
+    width: 40,
+    height: 40,
+    borderRadius: 360,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconSend: {
+    width: 30,
+    height: 30,
+    alignSelf: 'center',
+  },
+  inputContainercmt: {
+    borderBottomColor: '#F5FCFF',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 30,
+    borderBottomWidth: 1,
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    marginRight: 10,
+  },
+  inputscmt: {
+    height: 40,
+    marginLeft: 16,
+    borderBottomColor: '#FFFFFF',
+    flex: 1,
+  },
+  icon: {
+    width: 30,
+    height: 30,
   },
   content: {
-    marginLeft: 10,
-    marginRight: 10,
     marginTop: 20,
   },
   header: {
@@ -393,7 +384,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   name: {
-    fontSize: 22,
+    fontSize: 20,
+    color: "#696969",
+    fontWeight: 'bold',
+  },
+  namePrice: {
+    fontSize: 20,
     color: "#696969",
     fontWeight: 'bold',
   },
@@ -423,14 +419,6 @@ const styles = StyleSheet.create({
 
   /******** card **************/
   card: {
-    shadowColor: '#00000021',
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.37,
-    shadowRadius: 7.49,
-    elevation: 12,
 
     marginVertical: 5,
     backgroundColor: "white",
@@ -441,10 +429,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   cardHeader: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     paddingTop: 12.5,
-
     paddingHorizontal: 16,
     borderBottomLeftRadius: 1,
     borderBottomRightRadius: 1,
@@ -455,12 +442,12 @@ const styles = StyleSheet.create({
   image: {
     marginTop: 10,
     marginLeft: 20,
-    width: 50,
-    height: 50,
+    width: 45,
+    height: 45,
     borderRadius: 50,
   },
   username: {
-    marginTop: 20,
+    marginTop: 10,
     marginLeft: 20,
     color: '#000000',
     fontWeight: 'bold',
@@ -471,20 +458,20 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   containerItem: {
-    paddingLeft: 19,
-    paddingRight: 16,
+    paddingLeft: 10,
+    paddingRight: 10,
     paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'flex-start'
   },
   contentCmt: {
-    marginLeft: 16,
+    marginLeft: 10,
     flex: 1,
   },
   contentHeadercmt: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 6
+    marginBottom: 6, marginTop: 5
   },
   separatorcmt: {
     height: 1,
@@ -494,7 +481,7 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     borderRadius: 20,
-    marginLeft: 20
+
   },
   timecmt: {
     fontSize: 11,

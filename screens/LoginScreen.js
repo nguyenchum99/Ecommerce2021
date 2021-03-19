@@ -8,7 +8,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Image
+  Image,
+  TextInput
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import Input from '../Components/UI/Input';
@@ -140,77 +141,100 @@ const LoginScreen = (props) => {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputView}>
+    // <View style={styles.container}>
+    //   <View style={styles.inputView}>
      
-        {/* <TextInput
-          style={styles.inputText}
-          placeholder="Email..."
-          placeholderTextColor="#003f5c"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-      </View>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.inputText}
-          placeholder="Password..."
-          placeholderTextColor="#003f5c"
-          value={password}
-          secureTextEntry={true}
-          onChangeText={(text) => setPassword(text)}
-        /> */}
-        <Input
-          id="email"
-          label="Email"
+    //     <Input
+    //       id="email"
+    //       label="Email"
+    //       keyboardType="email-address"
+    //       email
+    //       returnKeyType="next"
+    //       initialValue={initialEmail}
+    //       initiallyValid={!!initialEmail}
+    //       required
+    //       onInputChange={inputChangeHandler}
+    //       errorText="*Please enter a valid email!"
+    //     />
+    //     <Input
+    //       id="password"
+    //       label="Password"
+    //       required
+    //       initialValue={initialPassword}
+    //       initiallyValid={!!initialPassword}
+    //       keyboardType="number-pad"
+    //       onInputChange={inputChangeHandler}
+    //       secureTextEntry={true}
+    //       minLen={6}
+    //       maxLength={6}
+    //       returnKeyType="go"
+    //       errorText="*Please enter password with 6 numbers"
+    //     />
+    //   </View>
+    //   {isWaiting ? (
+    //     <ActivityIndicator size="large" corlor="white" />
+    //   ) : (
+    //     <TouchableOpacity
+    //       style={styles.buttonContainer}
+    //       onPress={authenticationHandler}>
+    //       <Text style={styles.buttonText}>{isSignup ? 'Signup' : 'Login'}</Text>
+    //     </TouchableOpacity>
+    //   )}
+    //   <TouchableOpacity
+    //     style={styles.buttonContainer}
+    //     onPress={() => {
+    //       setIsSignup((isSignup) => !isSignup);
+    //     }}>
+    //     <Text style={styles.buttonText}>
+    //       Switch to {isSignup ? 'Login' : 'Signup'}
+    //     </Text>
+    //   </TouchableOpacity>
+    //   <GoogleSigninButton
+    //     onPress={googleLoginHandler}
+    //     size={GoogleSigninButton.Size.Wide}
+    //     style={{width: '50%', height: 50}}
+    //     color={GoogleSigninButton.Color.Dark}
+    //   />
+    // </View>
+    <View style={styles.container}>
+      <View style={styles.inputContainer}>
+        <Image style={[styles.icon, styles.inputIcon]} source={{ uri: 'https://png.icons8.com/password/androidL/40/3498db' }} />
+        <TextInput style={styles.inputs}
+          placeholder="Email"
           keyboardType="email-address"
-          email
-          returnKeyType="next"
-          initialValue={initialEmail}
-          initiallyValid={!!initialEmail}
-          required
-          onInputChange={inputChangeHandler}
-          errorText="*Please enter a valid email!"
-        />
-        <Input
-          id="password"
-          label="Password"
-          required
-          initialValue={initialPassword}
-          initiallyValid={!!initialPassword}
-          keyboardType="number-pad"
-          onInputChange={inputChangeHandler}
-          secureTextEntry={true}
-          minLen={6}
-          maxLength={6}
-          returnKeyType="go"
-          errorText="*Please enter password with 6 numbers"
-        />
+          underlineColorAndroid='transparent' />
       </View>
-      {isWaiting ? (
-        <ActivityIndicator size="large" corlor="white" />
-      ) : (
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={authenticationHandler}>
-          <Text style={styles.buttonText}>{isSignup ? 'Signup' : 'Login'}</Text>
-        </TouchableOpacity>
-      )}
-      <TouchableOpacity
-        style={styles.buttonContainer}
-        onPress={() => {
-          setIsSignup((isSignup) => !isSignup);
-        }}>
-        <Text style={styles.buttonText}>
-          Switch to {isSignup ? 'Login' : 'Signup'}
-        </Text>
+
+      <View style={styles.inputContainer}>
+        <Image style={[styles.icon, styles.inputIcon]} source={{ uri: 'https://png.icons8.com/envelope/androidL/40/3498db' }} />
+        <TextInput style={styles.inputs}
+          placeholder="Password"
+          secureTextEntry={true}
+          underlineColorAndroid='transparent' />
+      </View>
+
+      <TouchableOpacity style={styles.restoreButtonContainer}>
+        <Text>Forgot?</Text>
       </TouchableOpacity>
-      <GoogleSigninButton
-        onPress={googleLoginHandler}
-        size={GoogleSigninButton.Size.Wide}
-        style={{width: '50%', height: 50}}
-        color={GoogleSigninButton.Color.Dark}
-      />
+
+      <TouchableOpacity style={[styles.buttonContainer, styles.loginButton]}>
+        <Text style={styles.loginText}>Login</Text>
+      </TouchableOpacity>
+
+
+      {/* <TouchableOpacity style={[styles.buttonContainer, styles.fabookButton]}>
+        <View style={styles.socialButtonContent}>
+          <Image style={styles.icon} source={{ uri: 'https://png.icons8.com/facebook/androidL/40/FFFFFF' }} />
+          <Text style={styles.loginText}>Continue with facebook</Text>
+        </View>
+      </TouchableOpacity> */}
+
+      <TouchableOpacity style={[styles.buttonContainer, styles.googleButton]} onPress={googleLoginHandler}>
+        <View style={styles.socialButtonContent}>
+          <Image style={styles.icon} source={{ uri: 'https://png.icons8.com/google/androidL/40/FFFFFF' }} />
+          <Text style={styles.loginText}>Sign in with google</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -218,39 +242,70 @@ const LoginScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#003f5c',
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#B0E0E6',
   },
-  inputView: {
-    width: '80%',
-    backgroundColor: '#465881',
-    borderRadius: 25,
-    marginBottom: 20,
-    justifyContent: 'center',
-    padding: 20,
+  inputContainer: {
+    borderBottomColor: '#F5FCFF',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 30,
+    borderBottomWidth: 1,
+    width: 250,
+    height: 45,
+    marginBottom: 15,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
-  inputText: {
-    height: 50,
-    color: 'white',
+  inputs: {
+    height: 45,
+    marginLeft: 16,
+    borderBottomColor: '#FFFFFF',
+    flex: 1,
   },
-  forgot: {
-    color: 'white',
-    fontSize: 11,
+  icon: {
+    width: 30,
+    height: 30,
+  },
+  inputIcon: {
+    marginLeft: 15,
+    justifyContent: 'center'
   },
   buttonContainer: {
-    width: '80%',
-    backgroundColor: '#fb5b5a',
-    borderRadius: 25,
-    height: 50,
-    alignItems: 'center',
+    height: 45,
+    flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
-    marginBottom: 10,
+    alignItems: 'center',
+    marginBottom: 20,
+    width: 250,
+    borderRadius: 30,
   },
-  buttonText: {
-    fontSize: 20,
+  loginButton: {
+    backgroundColor: '#3498db',
   },
+  fabookButton: {
+    backgroundColor: "#3b5998",
+  },
+  googleButton: {
+    backgroundColor: "#ff0000",
+  },
+  loginText: {
+    color: 'white',
+  },
+  restoreButtonContainer: {
+    width: 250,
+    marginBottom: 15,
+    alignItems: 'flex-end'
+  },
+  socialButtonContent: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  socialIcon: {
+    color: "#FFFFFF",
+    marginRight: 5
+  }
 });
 
 export default LoginScreen;

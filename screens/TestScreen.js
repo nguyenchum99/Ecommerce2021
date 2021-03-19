@@ -5,101 +5,149 @@ import {
     View,
     TouchableOpacity,
     Image,
+    Alert,
     ScrollView,
-    FlatList
+    TextInput,
+    FlatList,
+    Button
 } from 'react-native';
 
-export default class TestScreen extends Component {
+export default class Chat extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             data: [
-                { id: 1, image: "https://bootdey.com/img/Content/avatar/avatar1.png", name: "Frank Odalthh", comment: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor." },
-                { id: 2, image: "https://bootdey.com/img/Content/avatar/avatar6.png", name: "John DoeLink", comment: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor." },
-                { id: 3, image: "https://bootdey.com/img/Content/avatar/avatar7.png", name: "March SoulLaComa", comment: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor." },
-                { id: 4, image: "https://bootdey.com/img/Content/avatar/avatar2.png", name: "Finn DoRemiFaso", comment: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor." },
-                { id: 5, image: "https://bootdey.com/img/Content/avatar/avatar3.png", name: "Maria More More", comment: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor." },
-                { id: 6, image: "https://bootdey.com/img/Content/avatar/avatar4.png", name: "Clark June Boom!", comment: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor." },
-                { id: 7, image: "https://bootdey.com/img/Content/avatar/avatar5.png", name: "The googler", comment: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor." },
+                { id: 1, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit amet" },
+                { id: 2, date: "9:50 am", type: 'out', message: "Lorem ipsum dolor sit amet" },
+                { id: 3, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit a met" },
+                { id: 4, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit a met" },
+                { id: 5, date: "9:50 am", type: 'out', message: "Lorem ipsum dolor sit a met" },
+                { id: 6, date: "9:50 am", type: 'out', message: "Lorem ipsum dolor sit a met" },
+                { id: 7, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit a met" },
+                { id: 8, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit a met" },
+                { id: 9, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit a met" },
             ]
-        }
+        };
+    }
+
+    renderDate = (date) => {
+        return (
+            <Text style={styles.time}>
+                {date}
+            </Text>
+        );
     }
 
     render() {
+
         return (
-            <FlatList
-                style={styles.root}
-                data={this.state.data}
-                extraData={this.state}
-                ItemSeparatorComponent={() => {
-                    return (
-                        <View style={styles.separatorcmt} />
-                    )
-                }}
-                keyExtractor={(item) => {
-                    return item.id;
-                }}
-                renderItem={({item}) => {
-                   
-                    return (
-                        <View style={styles.containerItem}>
-                            <TouchableOpacity onPress={() => { }}>
-                                <Image style={styles.image} source={{ uri: item.image }} />
-                            </TouchableOpacity>
-                            <View style={styles.contentCmt}>
-                                <View style={styles.contentHeadercmt}>
-                                    <Text style={styles.nameusercmt}>{item.name}</Text>
-                                    <Text style={styles.timecmt}>
-                                        9:58 am
-                  </Text>
+            <View style={styles.container}>
+                <FlatList style={styles.list}
+                    data={this.state.data}
+                    keyExtractor={(item) => {
+                        return item.id;
+                    }}
+                    renderItem={(message) => {
+                        console.log(item);
+                        const item = message.item;
+                        let inMessage = item.type === 'in';
+                        let itemStyle = inMessage ? styles.itemIn : styles.itemOut;
+                        return (
+                            <View style={[styles.item, itemStyle]}>
+                                {!inMessage && this.renderDate(item.date)}
+                                <View style={[styles.balloon]}>
+                                    <Text>{item.message}</Text>
                                 </View>
-                                <Text rkType='primary3 mediumLine'>{item.comment}</Text>
+                                {inMessage && this.renderDate(item.date)}
                             </View>
-                        </View>
-                    );
-                }} />
+                        )
+                    }} />
+                <View style={styles.footer}>
+                    <View style={styles.inputContainer}>
+                        <TextInput style={styles.inputs}
+                            placeholder="Write a message..."
+                            underlineColorAndroid='transparent'
+                            onChangeText={(name_address) => this.setState({ name_address })} />
+                    </View>
+
+                    <TouchableOpacity style={styles.btnSend}>
+                        <Image source={{ uri: "https://img.icons8.com/small/75/ffffff/filled-sent.png" }} style={styles.iconSend} />
+                    </TouchableOpacity>
+                </View>
+            </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    root: {
-        backgroundColor: "#ffffff",
-        marginTop: 10,
+    container: {
+        flex: 1
     },
-    containerItem: {
-        paddingLeft: 19,
-        paddingRight: 16,
-        paddingVertical: 12,
+    list: {
+        paddingHorizontal: 17,
+    },
+    footer: {
         flexDirection: 'row',
-        alignItems: 'flex-start'
+        height: 60,
+        backgroundColor: '#eeeeee',
+        paddingHorizontal: 10,
+        padding: 5,
     },
-    contentCmt: {
+    btnSend: {
+        backgroundColor: "#00BFFF",
+        width: 40,
+        height: 40,
+        borderRadius: 360,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    iconSend: {
+        width: 30,
+        height: 30,
+        alignSelf: 'center',
+    },
+    inputContainercmt: {
+        borderBottomColor: '#F5FCFF',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 30,
+        borderBottomWidth: 1,
+        height: 40,
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        marginRight: 10,
+    },
+    inputscmt: {
+        height: 40,
         marginLeft: 16,
+        borderBottomColor: '#FFFFFF',
         flex: 1,
     },
-    contentHeadercmt: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 6
-    },
-    separatorcmt: {
-        height: 1,
-        backgroundColor: "#CCCCCC"
-    },
-    imagecmt: {
-        width: 45,
-        height: 45,
+    balloon: {
+        maxWidth: 250,
+        padding: 15,
         borderRadius: 20,
-        marginLeft: 20
     },
-    timecmt: {
-        fontSize: 11,
+    itemIn: {
+        alignSelf: 'flex-start'
+    },
+    itemOut: {
+        alignSelf: 'flex-end'
+    },
+    time: {
+        alignSelf: 'flex-end',
+        margin: 15,
+        fontSize: 12,
         color: "#808080",
     },
-    nameusercmt: {
-        fontSize: 16,
-        fontWeight: "bold",
+    item: {
+        marginVertical: 14,
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: "#eeeeee",
+        borderRadius: 300,
+        padding: 5,
     },
 });
+
