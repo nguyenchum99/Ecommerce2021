@@ -1,4 +1,5 @@
 import database from '@react-native-firebase/database';
+import {m} from 'framer-motion';
 import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';

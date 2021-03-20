@@ -1,30 +1,54 @@
+import database from '@react-native-firebase/database';
+import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {
-  View,
-  Text,
   Image,
-  TouchableWithoutFeedback,
   StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
-import moment from 'moment';
+import {useSelector} from 'react-redux';
+import {CHATTING_CHATS, CHATTING_MESSAGES} from '../database/database-helper';
 
 const ChatListItem = (props) => {
   const {chatRoom} = props;
-  const [otherUser, setOtherUser] = useState(null);
+  const [lastMessage, setLastMessage] = useState(null);
+  const [isNew, setIsNew] = useState(false);
 
-  useEffect(() => {
-    setOtherUser(chatRoom.users[1]);
-  }, []);
-
-  const onClick = () => {
-    // navigation.navigate('ChatRoom', {
-    //   id: chatRoom.id,
-    //   name: otherUser.name,
-    // });
-    alert('Navigate to chat screen');
+  const myId = useSelector((state) => state.auth.userId);
+  const getLastMessage = async (chatRoomId, messageId) => {
+    if (!chatRoomId || !messageId) {
+      return;
+    }
+    database()
+      .ref(CHATTING_MESSAGES + `/${chatRoomId}/${messageId}`)
+      .on('value', (snapshot) => {
+        setLastMessage(snapshot.val());
+        if (lastMessage) {
+          const res =
+            lastMessage.user._id !== myId && chatRoom.chatRoom.unread > 0;
+          setIsNew(res);
+        }
+      });
   };
 
-  if (!otherUser) {
+  useEffect(() => {
+    getLastMessage(chatRoom.key, chatRoom.chatRoom.lastMessageId);
+  }, [chatRoom]);
+
+  const onClick = () => {
+    if (isNew) {
+      console.log('Mark as read');
+      database()
+        .ref(CHATTING_CHATS + `/${chatRoom.key}/`)
+        .update({unread: 0});
+      setIsNew(false);
+    }
+    props.onClickItemHandler();
+  };
+
+  if (!chatRoom.otherUser) {
     return null;
   }
 
@@ -32,21 +56,30 @@ const ChatListItem = (props) => {
     <TouchableWithoutFeedback onPress={onClick}>
       <View style={styles.container}>
         <View style={styles.lefContainer}>
-          <Image source={{uri: otherUser.imageUri}} style={styles.avatar} />
+          <Image
+            source={{uri: chatRoom.otherUser.photoUrl}}
+            style={styles.avatar}
+          />
 
           <View style={styles.midContainer}>
-            <Text style={styles.username}>{otherUser.name}</Text>
-            <Text numberOfLines={2} style={styles.lastMessage}>
-              {chatRoom.lastMessage
-                ? `${chatRoom.lastMessage.id}: ${chatRoom.lastMessage.content}`
+            <Text style={styles.username}>
+              {chatRoom.chatRoom.title
+                ? chatRoom.chatRoom.title
+                : chatRoom.otherUser.name}
+            </Text>
+            <Text
+              numberOfLines={2}
+              style={isNew ? styles.lastMessageNew : styles.lastMessage}>
+              {lastMessage
+                ? (lastMessage.user._id === myId ? 'You: ' : '') +
+                  `${lastMessage.text}`
                 : ''}
             </Text>
           </View>
         </View>
 
-        <Text style={styles.time}>
-          {chatRoom.lastMessage &&
-            moment(chatRoom.lastMessage.createdAt).format('DD/MM/YYYY')}
+        <Text style={isNew ? styles.timeNew : styles.time}>
+          {lastMessage && moment(new Date(lastMessage.createdAt)).fromNow()}
         </Text>
       </View>
     </TouchableWithoutFeedback>
@@ -59,6 +92,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'space-between',
     padding: 10,
+    // backgroundColor: 'red',
   },
   lefContainer: {
     flexDirection: 'row',
@@ -77,14 +111,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   lastMessage: {
-    fontSize: 16,
+    fontSize: 14,
     color: 'grey',
   },
-  time: {
+  lastMessageNew: {
     fontSize: 14,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  time: {
+    fontSize: 12,
     color: 'grey',
     position: 'absolute',
     right: 10,
+    top: 5,
+  },
+  timeNew: {
+    fontSize: 12,
+    color: 'black',
+    position: 'absolute',
+    fontWeight: 'bold',
+    right: 10,
+    top: 5,
   },
 });
 

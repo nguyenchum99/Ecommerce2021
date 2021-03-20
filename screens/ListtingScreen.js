@@ -116,7 +116,7 @@ class ListingScreen extends React.Component {
               </TouchableOpacity>
             );
           }}
-          keyExtractor={(item) => item.key}
+          keyExtractor={(item) => item.key.toString()}
           numColumns={3}
         />
         <EditInfoProduct ref={'editModal'} parentFlatList={this} />

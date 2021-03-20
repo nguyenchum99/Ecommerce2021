@@ -52,7 +52,7 @@ export default class FlatListItem extends React.Component {
       price: '12$',
     },
   ];
-  _keyExtractor = (item, index) => item.id;
+  _keyExtractor = (item, index) => item.id.toString();
 
   //   renderItem = ({ item }) => {
   //     return <CardItem id={item.id} nameItem={item.label} />;
@@ -60,7 +60,7 @@ export default class FlatListItem extends React.Component {
 
   render() {
     return (
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         <FlatList
           data={this.data}
           renderItem={({item}) => {
@@ -82,7 +82,7 @@ export default class FlatListItem extends React.Component {
           keyExtractor={this._keyExtractor}
           numColumns={2}
         />
-      </ScrollView>
+      </View>
     );
   }
 }

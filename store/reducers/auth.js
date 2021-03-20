@@ -1,4 +1,3 @@
-import {initial} from 'lodash-es';
 import {AUTHENTICATE, LOGOUT} from '../actions/auth';
 
 const initialState = {

@@ -8,11 +8,11 @@ import {
   Text,
   TouchableOpacity,
   View,
-  TextInput
+  TextInput,
 } from 'react-native';
-import { AirbnbRating } from 'react-native-ratings';
-import { connect } from 'react-redux';
-import { firebaseApp } from '../Components/FirebaseConfig';
+import {AirbnbRating} from 'react-native-ratings';
+import {connect} from 'react-redux';
+import {firebaseApp} from '../Components/FirebaseConfig';
 
 class LocalScreen extends React.Component {
   constructor(props) {
@@ -42,11 +42,9 @@ class LocalScreen extends React.Component {
         });
         this.setState({
           data: li,
-          isLoading: false,  
+          isLoading: false,
         });
       });
-
-
   }
 
   selectLikeProduct = (idProduct, isLike) => {
@@ -55,7 +53,7 @@ class LocalScreen extends React.Component {
 
   render() {
     console.log(this.state.isLoading);
-    const { data } = this.state;
+    const {data} = this.state;
     return (
       <>
         <>
@@ -66,65 +64,89 @@ class LocalScreen extends React.Component {
         <View style={styles.container}>
           <View style={styles.formContent}>
             <View style={styles.inputContainer}>
-              <Image style={[styles.icon, styles.inputIcon]} source={{ uri: 'https://png.icons8.com/search/androidL/100/000000' }} />
-              <TextInput style={styles.inputs}
-                
+              <Image
+                style={[styles.icon, styles.inputIcon]}
+                source={{
+                  uri: 'https://png.icons8.com/search/androidL/100/000000',
+                }}
+              />
+              <TextInput
+                style={styles.inputs}
                 placeholder="Search"
-                underlineColorAndroid='transparent'
-                />
+                underlineColorAndroid="transparent"
+              />
             </View>
           </View>
-          <FlatList style={styles.list}
+          <FlatList
+            style={styles.list}
             contentContainerStyle={styles.listContainer}
             data={this.state.data}
             horizontal={false}
             numColumns={2}
             keyExtractor={(item) => {
-              return item.id;
+              return item.key;
             }}
             ItemSeparatorComponent={() => {
-              return (
-                <View style={styles.separator} />
-              )
+              return <View style={styles.separator} />;
             }}
             renderItem={(post) => {
               const item = post.item;
               return (
                 <View style={styles.card}>
-                  <TouchableOpacity onPress={() =>
-                    this.props.navigation.navigate('Detail', {
-                      idProduct: item.key,
-                    })
-                  }>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate('Detail', {
+                        idProduct: item.key,
+                      })
+                    }>
                     <View style={styles.cardHeader}>
                       <View>
                         <Text style={styles.title}>{item.name}</Text>
                         <Text style={styles.price}>{item.price} VND</Text>
                       </View>
                     </View>
-                    <Image style={styles.cardImage} source={{ uri: item.imageUrl }} />
+                    <Image
+                      style={styles.cardImage}
+                      source={{uri: item.imageUrl}}
+                    />
                   </TouchableOpacity>
-
 
                   <View style={styles.cardFooter}>
                     <View style={styles.socialBarContainer}>
                       <View style={styles.socialBarSection}>
-                        <TouchableOpacity style={styles.socialBarButton} onPress={() => this.addProductToCart()}>
-                          <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/nolan/96/3498db/add-shopping-cart.png' }} />
-                          <Text style={[styles.socialBarLabel, styles.buyNow]}>Buy Now</Text>
+                        <TouchableOpacity
+                          style={styles.socialBarButton}
+                          onPress={() => this.addProductToCart()}>
+                          <Image
+                            style={styles.icon}
+                            source={{
+                              uri:
+                                'https://img.icons8.com/nolan/96/3498db/add-shopping-cart.png',
+                            }}
+                          />
+                          <Text style={[styles.socialBarLabel, styles.buyNow]}>
+                            Buy Now
+                          </Text>
                         </TouchableOpacity>
                       </View>
                       <View style={styles.socialBarSection}>
                         <TouchableOpacity style={styles.socialBarButton}>
-                          <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/color/50/000000/hearts.png' }} />
+                          <Image
+                            style={styles.icon}
+                            source={{
+                              uri:
+                                'https://img.icons8.com/color/50/000000/hearts.png',
+                            }}
+                          />
                           <Text style={styles.socialBarLabel}>25</Text>
                         </TouchableOpacity>
                       </View>
                     </View>
                   </View>
                 </View>
-              )
-            }} />
+              );
+            }}
+          />
         </View>
         {/* <ScrollView style={styles.container}>
           <FlatList
@@ -195,12 +217,11 @@ export default connect(mapStateToProps, null)(LocalScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
   },
   formContent: {
     flexDirection: 'row',
   },
-   inputContainer: {
+  inputContainer: {
     borderBottomColor: '#F5FCFF',
     backgroundColor: '#FFFFFF',
     borderRadius: 30,
@@ -216,7 +237,7 @@ const styles = StyleSheet.create({
     height: 30,
   },
   iconBtnSearch: {
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
   inputs: {
     height: 45,
@@ -226,13 +247,13 @@ const styles = StyleSheet.create({
   },
   inputIcon: {
     marginLeft: 15,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   list: {
     paddingHorizontal: 5,
   },
   listContainer: {
-    alignItems: 'center'
+    alignItems: 'center',
   },
   separator: {
     marginTop: 10,
@@ -241,12 +262,12 @@ const styles = StyleSheet.create({
   card: {
     shadowColor: '#00000021',
     shadowOffset: {
-      width: 2
+      width: 2,
     },
     shadowOpacity: 0.5,
     shadowRadius: 4,
     marginVertical: 8,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     flexBasis: '47%',
     marginHorizontal: 5,
   },
@@ -283,11 +304,11 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 16,
-    color: "green",
-    marginTop: 5
+    color: 'green',
+    marginTop: 5,
   },
   buyNow: {
-    color: "purple",
+    color: 'purple',
   },
   icon: {
     width: 25,
@@ -298,7 +319,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    flex: 1
+    flex: 1,
   },
   socialBarSection: {
     justifyContent: 'center',
@@ -314,5 +335,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });

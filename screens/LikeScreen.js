@@ -34,7 +34,7 @@ export default class LikeScreen extends React.Component {
         enableEmptySections={true}
         data={this.state.data}
         keyExtractor={(item) => {
-          return item.id;
+          return item.id.toString();
         }}
         renderItem={({ item }) => {
           return (

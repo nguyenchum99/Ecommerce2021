@@ -12,6 +12,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import UserTopNavigator from '../navigation/UserTopNavigator';
 
 import * as authActions from '../store/actions/auth';
+import * as usersActions from '../store/actions/users';
 
 const UserScreen = (props) => {
   const dispatch = useDispatch();
@@ -20,6 +21,16 @@ const UserScreen = (props) => {
   };
   const userName = useSelector((state) => state.auth.userName);
   const userPhoto = useSelector((state) => state.auth.userPhoto);
+  const users = useSelector((state) => state.users.users);
+  const fetchUserData = async () => {
+    await dispatch(usersActions.fetchUsers());
+    console.log('Users: ', users);
+  };
+  useEffect(() => {
+    if (users.length === 0) {
+      fetchUserData();
+    }
+  }, [fetchUserData]);
 
   return (
     <View style={styles.container}>

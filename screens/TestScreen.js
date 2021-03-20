@@ -1,153 +1,167 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
-    StyleSheet,
-    Text,
-    View,
-    TouchableOpacity,
-    Image,
-    Alert,
-    ScrollView,
-    TextInput,
-    FlatList,
-    Button
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ScrollView,
+  FlatList,
 } from 'react-native';
 
-export default class Chat extends Component {
+export default class TestScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [
+        {id: 1, likes: 12, image: 'https://lorempixel.com/400/200/nature/6/'},
+        {id: 2, likes: 11, image: 'https://lorempixel.com/400/200/nature/5/'},
+        {id: 3, likes: 25, image: 'https://lorempixel.com/400/200/nature/4/'},
+        {id: 4, likes: 12, image: 'https://lorempixel.com/400/200/nature/6/'},
+        {id: 5, likes: 10, image: 'https://lorempixel.com/400/200/sports/1/'},
+        {id: 6, likes: 12, image: 'https://lorempixel.com/400/200/nature/8/'},
+        {id: 7, likes: 34, image: 'https://lorempixel.com/400/200/nature/1/'},
+        {id: 8, likes: 45, image: 'https://lorempixel.com/400/200/nature/3/'},
+        {id: 9, likes: 32, image: 'https://lorempixel.com/400/200/nature/4/'},
+        {id: 9, likes: 56, image: 'https://lorempixel.com/400/200/nature/5/'},
+      ],
+    };
+  }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: [
-                { id: 1, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit amet" },
-                { id: 2, date: "9:50 am", type: 'out', message: "Lorem ipsum dolor sit amet" },
-                { id: 3, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit a met" },
-                { id: 4, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit a met" },
-                { id: 5, date: "9:50 am", type: 'out', message: "Lorem ipsum dolor sit a met" },
-                { id: 6, date: "9:50 am", type: 'out', message: "Lorem ipsum dolor sit a met" },
-                { id: 7, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit a met" },
-                { id: 8, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit a met" },
-                { id: 9, date: "9:50 am", type: 'in', message: "Lorem ipsum dolor sit a met" },
-            ]
-        };
-    }
+  addProductToCart = () => {
+    Alert.alert('Success', 'The product has been added to your cart');
+  };
 
-    renderDate = (date) => {
-        return (
-            <Text style={styles.time}>
-                {date}
-            </Text>
-        );
-    }
-
-    render() {
-
-        return (
-            <View style={styles.container}>
-                <FlatList style={styles.list}
-                    data={this.state.data}
-                    keyExtractor={(item) => {
-                        return item.id;
-                    }}
-                    renderItem={(message) => {
-                        console.log(item);
-                        const item = message.item;
-                        let inMessage = item.type === 'in';
-                        let itemStyle = inMessage ? styles.itemIn : styles.itemOut;
-                        return (
-                            <View style={[styles.item, itemStyle]}>
-                                {!inMessage && this.renderDate(item.date)}
-                                <View style={[styles.balloon]}>
-                                    <Text>{item.message}</Text>
-                                </View>
-                                {inMessage && this.renderDate(item.date)}
-                            </View>
-                        )
-                    }} />
-                <View style={styles.footer}>
-                    <View style={styles.inputContainer}>
-                        <TextInput style={styles.inputs}
-                            placeholder="Write a message..."
-                            underlineColorAndroid='transparent'
-                            onChangeText={(name_address) => this.setState({ name_address })} />
+  render() {
+    return (
+      <View style={styles.container}>
+        <FlatList
+          style={styles.list}
+          contentContainerStyle={styles.listContainer}
+          data={this.state.data}
+          horizontal={false}
+          numColumns={2}
+          keyExtractor={(item) => {
+            return item.id;
+          }}
+          ItemSeparatorComponent={() => {
+            return <View style={styles.separator} />;
+          }}
+          renderItem={(post) => {
+            const item = post.item;
+            return (
+              <View style={styles.card}>
+                <Image style={styles.cardImage} source={{uri: item.image}} />
+                <View style={styles.cardFooter}>
+                  <View style={styles.socialBarContainer}>
+                    <View style={styles.socialBarSection}>
+                      <TouchableOpacity
+                        style={styles.socialBarButton}
+                        onPress={() => this.addProductToCart()}>
+                        <Image
+                          style={styles.icon}
+                          source={{
+                            uri:
+                              'https://png.icons8.com/flat_round/50/000000/share.png',
+                          }}
+                        />
+                        <Text style={[styles.socialBarLabel, styles.share]}>
+                          Share
+                        </Text>
+                      </TouchableOpacity>
                     </View>
-
-                    <TouchableOpacity style={styles.btnSend}>
-                        <Image source={{ uri: "https://img.icons8.com/small/75/ffffff/filled-sent.png" }} style={styles.iconSend} />
-                    </TouchableOpacity>
+                    <View style={styles.socialBarSection}>
+                      <TouchableOpacity style={styles.socialBarButton}>
+                        <Image
+                          style={styles.icon}
+                          source={{
+                            uri:
+                              'https://png.icons8.com/color/50/000000/hearts.png',
+                          }}
+                        />
+                        <Text style={styles.socialBarLabel}>{item.likes}</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
-            </View>
-        );
-    }
+              </View>
+            );
+          }}
+        />
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    list: {
-        paddingHorizontal: 17,
-    },
-    footer: {
-        flexDirection: 'row',
-        height: 60,
-        backgroundColor: '#eeeeee',
-        paddingHorizontal: 10,
-        padding: 5,
-    },
-    btnSend: {
-        backgroundColor: "#00BFFF",
-        width: 40,
-        height: 40,
-        borderRadius: 360,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    iconSend: {
-        width: 30,
-        height: 30,
-        alignSelf: 'center',
-    },
-    inputContainercmt: {
-        borderBottomColor: '#F5FCFF',
-        backgroundColor: '#FFFFFF',
-        borderRadius: 30,
-        borderBottomWidth: 1,
-        height: 40,
-        flexDirection: 'row',
-        alignItems: 'center',
-        flex: 1,
-        marginRight: 10,
-    },
-    inputscmt: {
-        height: 40,
-        marginLeft: 16,
-        borderBottomColor: '#FFFFFF',
-        flex: 1,
-    },
-    balloon: {
-        maxWidth: 250,
-        padding: 15,
-        borderRadius: 20,
-    },
-    itemIn: {
-        alignSelf: 'flex-start'
-    },
-    itemOut: {
-        alignSelf: 'flex-end'
-    },
-    time: {
-        alignSelf: 'flex-end',
-        margin: 15,
-        fontSize: 12,
-        color: "#808080",
-    },
-    item: {
-        marginVertical: 14,
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: "#eeeeee",
-        borderRadius: 300,
-        padding: 5,
-    },
+  container: {
+    flex: 1,
+    marginTop: 20,
+    backgroundColor: '#eee',
+  },
+  list: {
+    paddingHorizontal: 5,
+    backgroundColor: '#E6E6E6',
+  },
+  listContainer: {
+    alignItems: 'center',
+  },
+  separator: {
+    marginTop: 10,
+  },
+  /******** card **************/
+  card: {
+    marginVertical: 8,
+    flexBasis: '47%',
+    marginHorizontal: 5,
+  },
+  cardContent: {
+    paddingVertical: 12.5,
+    paddingHorizontal: 16,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 12.5,
+    paddingBottom: 25,
+    paddingHorizontal: 16,
+    borderBottomLeftRadius: 1,
+    borderBottomRightRadius: 1,
+  },
+  cardImage: {
+    flex: 1,
+    height: 150,
+    width: null,
+  },
+  /******** card components **************/
+  share: {
+    color: '#25b7d3',
+  },
+  icon: {
+    width: 25,
+    height: 25,
+  },
+  /******** social bar ******************/
+  socialBarContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    flex: 1,
+  },
+  socialBarSection: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    flex: 1,
+  },
+  socialBarlabel: {
+    marginLeft: 8,
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+  },
+  socialBarButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
-

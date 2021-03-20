@@ -2,20 +2,20 @@ import React from 'react';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createAppContainer } from 'react-navigation';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-import ChatScreen from '../screens/ChatScreen';
+import {createAppContainer} from 'react-navigation';
+import {createBottomTabNavigator} from 'react-navigation-tabs';
 import StackCreateProduct from './StackCreateProduct';
 import StackLike from './StackLike';
 import StackProductDetail from './StackProductDetail';
 import StackUser from './StackUser';
+import ChatsTopNavigation from '../navigation/ChatsTopNavigation';
 
 const TabHome = createBottomTabNavigator(
   {
     Home: StackProductDetail,
     Like: StackLike,
     Camera: StackCreateProduct,
-    Chat: ChatScreen,
+    Chat: ChatsTopNavigation,
     User: StackUser,
   },
 
@@ -43,6 +43,5 @@ const TabHome = createBottomTabNavigator(
     },
   },
 );
-
 
 export default createAppContainer(TabHome);

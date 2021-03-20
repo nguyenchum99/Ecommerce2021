@@ -1,16 +1,5 @@
-import {
-  SafeAreaView,
-  View,
-  FlatList,
-  StyleSheet,
-  Text,
-  Image,
-  StatusBar,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
-import React, {Component} from 'react';
-import DropDownItem from 'react-native-drop-down-item';
+import React from 'react';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 const data_category = [
   {
@@ -96,7 +85,7 @@ export default class CategoryScreen extends React.Component {
 
   render() {
     return (
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         <FlatList
           data={data_category}
           renderItem={({item, index}) => {
@@ -126,9 +115,9 @@ export default class CategoryScreen extends React.Component {
               </View>
             );
           }}
-          keyExtractor={(item) => item.key}
+          keyExtractor={(item) => item.key.toString()}
         />
-      </ScrollView>
+      </View>
     );
   }
 }

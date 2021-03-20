@@ -108,7 +108,7 @@ class CommentList extends React.Component {
             <Comments userAvatar= {item.avatarUser} userName={item.nameUser} comment={item.content} createAt={item.createAt} />
             );
           }}
-          keyExtractor={(item) => item.key}
+          keyExtractor={(item) => item.key.toString()}
         />       
         
       </View>

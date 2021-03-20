@@ -1,5 +1,6 @@
 import {GoogleSignin} from '@react-native-community/google-signin';
 import auth from '@react-native-firebase/auth';
+import * as helper from '../../database/database-helper';
 
 const WEB_API_KEY = 'AIzaSyB6AlBiawWCOgXpAdOYuqm8vNEJX4I1EVQ';
 
@@ -33,7 +34,7 @@ export const sendEmailVerification = () => {
       if (!respone.ok) {
         throw new Error(resData.error.message);
       }
-     // console.log('ResDAta ' + resData);
+      // console.log('ResDAta ' + resData);
     } catch (err) {
       throw err;
     }
@@ -43,50 +44,52 @@ export const sendEmailVerification = () => {
 export const authenticate = (isSignup, email, password) => {
   return async (dispatch) => {
     try {
-      const respone = await fetch(
-        `https://identitytoolkit.googleapis.com/v1/accounts:${
-          isSignup ? 'signUp' : 'signInWithPassword'
-        }?key=${WEB_API_KEY}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: email,
-            password: password,
-            returnSecureToken: true,
-          }),
-        },
-      );
-      const resData = await respone.json();
-      if (!respone.ok) {
-        throw new Error(resData.error.message);
+      let userInfo;
+      try {
+        if (isSignup)
+          userInfo = await auth().createUserWithEmailAndPassword(
+            email,
+            password,
+          );
+        else
+          userInfo = await auth().signInWithEmailAndPassword(email, password);
+        // console.log('Login with user');
+        // console.log(userInfo.user);
+      } catch (err) {
+        throw err;
       }
-      const expiryDate = new Date(
-        new Date().getTime() + parseInt(resData.expiryDate_) * 1000,
-      );
-      if (isSignup) {
-        alert('We send email verification to ' + resData.email);
-      }
-      console.log('Duc ' + resData.localId);
-      dispatch({
-        type: AUTHENTICATE,
-        token: resData.idToken,
-        userId: resData.localId,
-      });
+      if (!userInfo) return;
+      saveUserAndDispatchAuthenticate(dispatch, userInfo);
     } catch (err) {
       throw err;
     }
   };
 };
 
+const saveUserAndDispatchAuthenticate = (dispatch, userInfo) => {
+  const user = {
+    uid: userInfo.user.uid,
+    name: userInfo.user.displayName,
+    photoUrl: userInfo.user.photoURL,
+    email: userInfo.user.email,
+    phone: userInfo.user.phoneNumber,
+  };
+  helper.createUserIfNeccessary(user);
+  dispatch({
+    type: AUTHENTICATE,
+    token: userInfo.user.providerId,
+    userId: userInfo.user.uid,
+    userName: userInfo.user.displayName,
+    userEmail: userInfo.user.email,
+    userPhone: userInfo.user.phoneNumber,
+    userPhoto: userInfo.user.photoURL,
+  });
+};
+
 export const googleLogin = () => async (dispatch) => {
   let userInfo;
   try {
     await GoogleSignin.hasPlayServices();
-    // userInfo = await GoogleSignin.signIn();
-    // console.log(userInfo);
     // Get the users ID token
     const respone = await GoogleSignin.signIn();
 
@@ -97,15 +100,7 @@ export const googleLogin = () => async (dispatch) => {
 
     // Sign-in the user with the credential
     userInfo = await auth().signInWithCredential(googleCredential);
-    dispatch({
-      type: AUTHENTICATE,
-      token: userInfo.user.token,
-      userId: userInfo.user.uid,
-      userName: userInfo.user.displayName,
-      userEmail: userInfo.user.email,
-      userPhone: userInfo.user.phoneNumber,
-      userPhoto: userInfo.user.photoURL,
-    });
+    saveUserAndDispatchAuthenticate(dispatch, userInfo);
   } catch (err) {
     throw err;
   }
@@ -113,6 +108,8 @@ export const googleLogin = () => async (dispatch) => {
 
 const googleLogOut = async () => {
   try {
+    const isSignedIn = await GoogleSignin.isSignedIn();
+    if (!isSignedIn) return;
     await GoogleSignin.revokeAccess();
     await GoogleSignin.signOut();
   } catch (error) {
@@ -123,6 +120,7 @@ const googleLogOut = async () => {
 export const logout = () => {
   return async (dispatch) => {
     await googleLogOut();
+    await auth().signOut();
     dispatch({type: LOGOUT});
   };
 };
