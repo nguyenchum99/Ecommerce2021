@@ -4,8 +4,8 @@ import * as helper from '../../database/database-helper';
 
 export const SET_USERS = 'SET_USERS';
 
-export const fetchUsers = () => async (dispatch) => {
-  const myUserId = auth().currentUser.uid;
+export const fetchUsers = () => async (dispatch, getState) => {
+  const myUserId = getState().auth.userId;
   database()
     .ref(helper.USERS)
     .orderByChild('name')
@@ -13,7 +13,6 @@ export const fetchUsers = () => async (dispatch) => {
       const listUsers = [];
       snapshot.forEach((item) => {
         if (item.val().uid !== myUserId) {
-          console.log(item.val());
           listUsers.push(item.val());
         }
       });

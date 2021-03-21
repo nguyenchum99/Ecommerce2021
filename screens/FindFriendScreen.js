@@ -1,85 +1,69 @@
-import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  FlatList,
-  Image,
-} from 'react-native';
-import {TextInput} from 'react-native-gesture-handler';
-import {firebaseApp} from '../Components/FirebaseConfig';
+import React, {Component} from 'react';
+import {Dimensions, FlatList, StyleSheet, View} from 'react-native';
+import {connect} from 'react-redux';
+import UserListItem from '../Components/UserListItem';
 
-
-class FindFriendScreen extends React.Component {
+class FindFriendScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      modalVisible: false,
+      userSelected: [],
       data: [],
     };
   }
 
-  // componentDidMount() {
-  //   this.listAllUsers();
-  // }
-
-  // listAllUsers = (nextPageToken) => {
-  //   // List batch of users, 1000 at a time.
-  //   firebaseApp
-  //     .auth()
-  //     .listUsers(1000, nextPageToken)
-  //     .then((listUsersResult) => {
-  //       listUsersResult.users.forEach((userRecord) => {
-  //         console.log('user', userRecord.toJSON());
-  //       });
-  //       if (listUsersResult.pageToken) {
-  //         // List next batch of users.
-  //         listAllUsers(listUsersResult.pageToken);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log('Error listing users:', error);
-  //     });
-  // };
-
   render() {
     return (
       <View style={styles.container}>
-        <Text>test</Text>
-        {/* <FlatList
-          data={this.state.data}
+        <FlatList
+          style={styles.userList}
+          columnWrapperStyle={styles.listContainer}
+          data={this.props.users}
+          keyExtractor={(item) => item.uid}
           renderItem={({item}) => {
-            return (
-              <TouchableOpacity
-                style={styles.card}
-                onPress={() => this.selectProductEdit(item.key)}>
-                <Image source={{uri: item.productImage}} style={styles.image} />
-                <View style={{flexDirection: 'row', marginBottom: 10}}>
-                  <Text style={styles.title}>{item.productName}</Text>
-                  <Text style={styles.price}>{item.productPrice} đ</Text>
-                </View>
-              </TouchableOpacity>
-            );
+            return <UserListItem item={item} />;
           }}
-          keyExtractor={(item) => item.key}
-          numColumns={3}
-        /> */}
+        />
       </View>
     );
   }
 }
 
-// const mapStateToProps = (state) => {
-//   return {
-//     ...state.auth,
-//   };
-// };
+const mapStateToProps = (state) => {
+  return {
+    ...state.auth,
+    ...state.users,
+  };
+};
 
-export default FindFriendScreen;
-// export default connect(mapStateToProps, null)(FindFriendScreen);
+export default connect(mapStateToProps, null)(FindFriendScreen);
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    marginTop: 20,
+    backgroundColor: '#eeeeee',
+  },
+  header: {
+    backgroundColor: '#00CED1',
+    height: 200,
+  },
+  headerContent: {
+    padding: 30,
+    alignItems: 'center',
+    flex: 1,
+  },
+  detailContent: {
+    top: 80,
+    height: 500,
+    width: Dimensions.get('screen').width - 90,
+    marginHorizontal: 30,
+    flexDirection: 'row',
+    position: 'absolute',
+    backgroundColor: '#ffffff',
+  },
+  userList: {
     flex: 1,
   },
 });

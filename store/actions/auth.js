@@ -74,6 +74,7 @@ const saveUserAndDispatchAuthenticate = (dispatch, userInfo) => {
     email: userInfo.user.email,
     phone: userInfo.user.phoneNumber,
   };
+
   helper.createUserIfNeccessary(user);
   dispatch({
     type: AUTHENTICATE,
@@ -81,7 +82,7 @@ const saveUserAndDispatchAuthenticate = (dispatch, userInfo) => {
     userId: userInfo.user.uid,
     userName: userInfo.user.displayName,
     userEmail: userInfo.user.email,
-    userPhone: userInfo.user.phoneNumber,
+    userPhone: userInfo.user.phone,
     userPhoto: userInfo.user.photoURL,
   });
 };

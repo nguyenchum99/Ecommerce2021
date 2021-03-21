@@ -21,16 +21,15 @@ const UserScreen = (props) => {
   };
   const userName = useSelector((state) => state.auth.userName);
   const userPhoto = useSelector((state) => state.auth.userPhoto);
+  const userId = useSelector((state) => state.auth.userId);
   const users = useSelector((state) => state.users.users);
+
   const fetchUserData = async () => {
     await dispatch(usersActions.fetchUsers());
-    console.log('Users: ', users);
   };
   useEffect(() => {
-    if (users.length === 0) {
-      fetchUserData();
-    }
-  }, [fetchUserData]);
+    fetchUserData();
+  }, [userId]);
 
   return (
     <View style={styles.container}>

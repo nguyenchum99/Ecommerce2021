@@ -107,7 +107,7 @@ export const createUserIfNeccessary = async (user) => {
     await newReference.set({
       uid: user.uid,
       name: user.name,
-      photoUrl: user.photoUlr,
+      photoUrl: user.photoUrl,
       email: user.email,
       phone: user.phone,
     });
