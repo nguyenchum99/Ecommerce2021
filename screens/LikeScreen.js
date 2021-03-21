@@ -1,5 +1,5 @@
-
-import React, { Component } from 'react';
+import {firebaseApp} from '../Components/FirebaseConfig';
+import React, {Component} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,22 +10,52 @@ import {
   Alert,
   Image,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
+import {connect} from 'react-redux';
 
-export default class LikeScreen extends React.Component {
-
+class LikeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [
-        { id: 1, image: "https://bootdey.com/img/Content/avatar/avatar1.png" },
-        { id: 2, image: "https://bootdey.com/img/Content/avatar/avatar6.png" },
-        { id: 3, image: "https://bootdey.com/img/Content/avatar/avatar2.png" },
-        { id: 4, image: "https://bootdey.com/img/Content/avatar/avatar3.png" },
-        { id: 5, image: "https://bootdey.com/img/Content/avatar/avatar4.png" },
-      ],
+      data: [],
+      isLike: '',
+      key: '',
     };
+  }
+
+  componentDidMount() {
+    console.log("dskfdsssssfffffffffffff", this.props.userId)
+    firebaseApp
+      .database()
+      .ref('Likes')
+      .orderByChild('uid')
+      .equalTo(this.props.userId)
+      .on('value', (snapshot) => {
+        const li = [];
+        snapshot.forEach((child) => {
+          if (child.val().isLiked) {
+            li.push({
+              key: child.key,
+              productName: child.val().productName,
+              productDescription: child.val().productDescription,
+              productPrice: child.val().productDescription,
+              productImage1: child.val().productImage1,
+              isLike: child.val().isLiked,
+            });
+          }
+        });
+        this.setState({
+          data: li,
+        });
+      });
+  }
+
+  clickLike(key) {
+    //this.setState({isLike: !this.state.isLike});
+    firebaseApp.database().ref(`Likes/${key}`).update({
+      isLiked: false,
+    });
   }
 
   render() {
@@ -34,35 +64,41 @@ export default class LikeScreen extends React.Component {
         enableEmptySections={true}
         data={this.state.data}
         keyExtractor={(item) => {
-          return item.id.toString();
+          return item.key;
         }}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           return (
             <View style={styles.box}>
-              <Image style={styles.image} source={{ uri: item.image }} />
+              <Image style={styles.image} source={{uri: item.productImage1}} />
               <View style={styles.boxContent}>
-                <Text style={styles.title}>Title</Text>
-                <Text style={styles.description}>Lorem ipsum dolor sit amet, elit consectetur</Text>
+                <Text style={styles.title}>{item.productName}</Text>
+                <Text style={styles.description}>
+                  {item.productDescription}
+                </Text>
                 <View style={styles.buttons}>
-                  <TouchableHighlight style={[styles.button, styles.view]} onPress={() => this.clickListener('login')}>
-                    <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/color/70/000000/filled-like.png' }} />
-                  </TouchableHighlight>
-
-                  <TouchableHighlight style={[styles.button, styles.profile]} onPress={() => this.clickListener('login')}>
-                    <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/color/70/000000/cottage.png' }} />
-                  </TouchableHighlight>
-
-                  <TouchableHighlight style={[styles.button, styles.message]} onPress={() => this.clickListener('login')}>
-                    <Image style={styles.icon} source={{ uri: 'https://img.icons8.com/color/70/000000/filled-like.png' }} />
-                  </TouchableHighlight>
+                  <TouchableOpacity onPress={() => this.clickLike(item.key)}>
+                    <Image
+                      style={styles.icon}
+                      source={require('../assets/icons/heart(1).png')}
+                    />
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
-          )
-        }} />
+          );
+        }}
+      />
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    ...state.auth,
+  };
+};
+
+export default connect(mapStateToProps, null)(LikeScreen);
 
 const styles = StyleSheet.create({
   image: {
@@ -84,11 +120,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    color: "#151515",
+    color: '#151515',
   },
   description: {
     fontSize: 15,
-    color: "#646464",
+    color: '#646464',
   },
   buttons: {
     flexDirection: 'row',
@@ -108,12 +144,12 @@ const styles = StyleSheet.create({
     height: 20,
   },
   view: {
-    backgroundColor: "#eee",
+    backgroundColor: '#eee',
   },
   profile: {
-    backgroundColor: "#1E90FF",
+    backgroundColor: '#1E90FF',
   },
   message: {
-    backgroundColor: "#228B22",
+    backgroundColor: '#228B22',
   },
 });

@@ -14,8 +14,16 @@ import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
 import {SliderBox} from 'react-native-image-slider-box';
 
+const images = [
+  'https://source.unsplash.com/1024x768/?nature',
+  'https://source.unsplash.com/1024x768/?water',
+  'https://source.unsplash.com/1024x768/?girl',
+  'https://source.unsplash.com/1024x768/?tree', // Network image
+];
+
 class ProductDetail extends React.Component {
   constructor(props) {
+    console.log('Contructor');
     super(props);
     this.state = {
       productName: '',
@@ -34,10 +42,10 @@ class ProductDetail extends React.Component {
       idProduct: '',
       comment: '',
       listComment: [],
-      isLike: '',
+      isLike: false,
       valueLike: 0,
       selectedImage: '',
-      listImage: [],
+      listImage: '',
       // key:''
     };
   }
@@ -56,12 +64,14 @@ class ProductDetail extends React.Component {
     }
   }
   componentDidMount() {
+    console.log('Did mount');
     const idProduct = this.props.navigation.getParam('idProduct');
-    // console.log(idProduct);
+    console.log('djushfdsf', idProduct);
     this.setState({idProduct: idProduct});
+    //read info product
     firebaseApp
       .database()
-      .ref(`Products/idProduct`)
+      .ref(`Products/${idProduct}`)
       .once('value', (snapshot) => {
         this.state.productName = snapshot.child('name').val();
         this.state.productDescription = snapshot.child('description').val();
@@ -79,20 +89,22 @@ class ProductDetail extends React.Component {
         this.state.userAvatar = snapshot.child('userAvatar').val();
       });
 
+    this._checkLikeState(idProduct, this.props.userId);
     const temp = [];
-    temp.push([
-      this.state.productImage1,
-      this.state.productImage2,
-      this.state.productImage3,
-    ]);
+    temp.push(this.state.productImage1);
+    temp.push(this.state.productImage2);
+    temp.push(this.state.productImage3);
+
+    console.log('temp', temp);
 
     this.setState({listImage: temp});
+    //load comment
     firebaseApp
       .database()
       .ref('Comments/')
       .orderByChild('idProduct')
       .equalTo(idProduct)
-      .on('value', (snapshot) => {
+      .once('value', (snapshot) => {
         const temp = [];
         snapshot.forEach((child) => {
           temp.push({
@@ -122,6 +134,50 @@ class ProductDetail extends React.Component {
     //   });
   }
 
+  _checkLikeState = (idProduct, userId) => {
+    const key = idProduct + '_' + userId;
+    database()
+      .ref(`Likes/`)
+      .orderByChild('idProduct_uid')
+      .equalTo(key)
+      .on('value', (snapshot) => {
+        if (snapshot.val()) {
+          snapshot.forEach((item) => {
+            this.setState({isLike: item.val().isLiked});
+          });
+        }
+      });
+  };
+
+  _toggleLikeState = (idProduct, userId) => {
+    const key = idProduct + '_' + userId;
+    database()
+      .ref('Likes')
+      .orderByChild('idProduct_uid')
+      .equalTo(key)
+      .once('value', (snapshot) => {
+        if (snapshot.val()) {
+          snapshot.forEach((item) => {
+            //update isLiked state on realtime database
+            database()
+              .ref(`Likes/${item.key}/isLiked`)
+              .transaction((state) => !state);
+          });
+        } else {
+          database().ref('Likes').push().set({
+            idProduct_uid: key,
+            idProduct: idProduct,
+            uid: userId,
+            productName: this.state.productName,
+            productDescription: this.state.productDescription,
+            productPrice: this.state.productPrice,
+            productImage1: this.state.productImage1,
+            isLiked: true,
+          });
+        }
+      });
+  };
+
   __setImageSelected = (image) => {
     this.setState({selectedImage: image});
   };
@@ -144,77 +200,68 @@ class ProductDetail extends React.Component {
     );
   };
 
-  clickLikeProduct() {
-    this.setState({isLike: !this.state.isLike});
-
-    if (this.state.isLike) {
-      firebaseApp.database().ref('Likes').push({
-        name: this.state.productName,
-        description: this.state.productDescription,
-        price: this.state.productPrice,
-        imageUrl1: this.state.productImage1,
-        createAt: this.state.productCreateAt,
-        location: this.state.location,
-        idUserCreate: this.state.idUser,
-        userNameCreate: this.state.userName,
-        category: this.state.productCategory,
-        status: this.state.productStatus,
-      });
-    }
-  }
-
   render() {
     var mainImage = this.state.selectedImage
       ? this.state.selectedImage
       : this.state.listImage[0];
 
-      console.log("iumages", this.state.listImage)
+    console.log('Render');
+
+    // console.log('iumages', this.state.listImage);
     return (
       <View style={{flex: 1}}>
         <ScrollView style={styles.content}>
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Text>
-                <Text style={styles.name}>{this.state.productName} </Text>
+                <Text style={styles.name}>{this.state.productName} - </Text>
                 <Text style={styles.namePrice}>
                   {this.state.productPrice} VND
                 </Text>
               </Text>
-              {/* {this.clickLikeProduct} */}
-              <TouchableOpacity onPress={() => this.clickLikeProduct()}>
-                {this.state.isLike ? (
-                  <Image
-                    style={styles.icon}
-                    source={require('../assets/icons/heart(1).png')}
-                  />
-                ) : (
-                  <Image
-                    style={styles.icon}
-                    source={require('../assets/icons/icons8-heart.png')}
-                  />
-                )}
-              </TouchableOpacity>
+
+              {this.state.idUser !== this.props.userId ? (
+                <TouchableOpacity
+                  onPress={() =>
+                    this._toggleLikeState(
+                      this.state.idProduct,
+                      this.props.userId,
+                    )
+                  }>
+                  {this.state.isLike ? (
+                    <Image
+                      style={styles.icon}
+                      source={require('../assets/icons/heart(1).png')}
+                    />
+                  ) : (
+                    <Image
+                      style={styles.icon}
+                      source={require('../assets/icons/icons8-heart.png')}
+                    />
+                  )}
+                </TouchableOpacity>
+              ) : null}
             </View>
+
+            {/* <View style={styles.header}>
+                <View style={styles.mainImageContainer}>
+                  <Image style={styles.mainImage} source={{uri: mainImage}} />
+                </View>
+                {this.__renderImages()}
+              </View> */}
             <SliderBox
-              images={this.state.images}
-              sliderBoxHeight={200}
+              images={this.state.listImage}
+              sliderBoxHeight={300}
               onCurrentImagePressed={(index) =>
                 console.warn(`image ${index} pressed`)
               }
+              resizeMode="contain"
               dotColor="#FFEE58"
               inactiveDotColor="#90A4AE"
               paginationBoxVerticalPadding={20}
               autoplay
               circleLoop
             />
-            <View style={styles.cardContent}>
-              {/* <View style={styles.header}>
-                <View style={styles.mainImageContainer}>
-                  <Image style={styles.mainImage} source={{uri: mainImage}} />
-                </View>
-                {this.__renderImages()}
-              </View> */}
-            </View>
           </View>
           <TouchableOpacity
             style={styles.card}
@@ -244,7 +291,7 @@ class ProductDetail extends React.Component {
             </View>
           </TouchableOpacity>
           <View style={styles.card}>
-            <View style={styles.cardHeader}>
+            <View style={styles.cardHeader2}>
               <Text style={styles.cardTitle}>
                 Danh mục: {this.state.productCategory}{' '}
               </Text>
@@ -262,14 +309,6 @@ class ProductDetail extends React.Component {
               </Text>
             </View>
           </View>
-
-          {/* <View style={styles.card}>
-          <View style={styles.cardContent}>
-            <TouchableOpacity style={styles.shareButton} onPress={() => alert('add to card')}>
-              <Text style={styles.shareButtonText}>Add To Cart</Text>
-            </TouchableOpacity>
-          </View>
-        </View> */}
 
           <View style={styles.card}>
             <View style={styles.footer}>
@@ -473,6 +512,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 12.5,
+    paddingHorizontal: 16,
+    borderBottomLeftRadius: 1,
+    borderBottomRightRadius: 1,
+  },
+  cardHeader2: {
     flexDirection: 'column',
     justifyContent: 'space-between',
     paddingTop: 12.5,

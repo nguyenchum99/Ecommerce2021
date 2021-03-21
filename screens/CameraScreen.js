@@ -11,10 +11,10 @@ import {
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import RNPickerSelect from 'react-native-picker-select';
+import Feather from 'react-native-vector-icons/Feather';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
 import {CITIES} from '../constants/Cities';
-
 
 const options = {
   title: 'Select Avatar',
@@ -201,61 +201,51 @@ class CameraScreen extends React.Component {
     //   },
     // );
     ImagePicker.showImagePicker(options, (response) => {
-
       number++;
       if (number == 1) {
-        this.setState({ productImage1: '' })
+        this.setState({productImage1: ''});
         if (response.didCancel) {
-
         } else if (response.error) {
-
         } else if (response.customButton) {
         } else {
-          const source = { uri: response.uri };
+          const source = {uri: response.uri};
           this.setState({
             productImage1: response.uri,
           });
 
           this.uploadImage1();
         }
-      }else if(number == 2){
-        this.setState({ productImage2: '' })
+      } else if (number == 2) {
+        this.setState({productImage2: ''});
         if (response.didCancel) {
-
         } else if (response.error) {
-
         } else if (response.customButton) {
         } else {
-          const source = { uri: response.uri };
+          const source = {uri: response.uri};
           this.setState({
             productImage2: response.uri,
           });
           this.uploadImage2();
         }
-      } else if(number == 3){
-        this.setState({ productImage3: '' })
+      } else if (number == 3) {
+        this.setState({productImage3: ''});
         if (response.didCancel) {
-
         } else if (response.error) {
-
         } else if (response.customButton) {
         } else {
-          const source = { uri: response.uri };
+          const source = {uri: response.uri};
           this.setState({
             productImage3: response.uri,
           });
           this.uploadImage3();
         }
-      }
-      else if (number == 4) {
-        this.setState({ productImage4: '' })
+      } else if (number == 4) {
+        this.setState({productImage4: ''});
         if (response.didCancel) {
-
         } else if (response.error) {
-
         } else if (response.customButton) {
         } else {
-          const source = { uri: response.uri };
+          const source = {uri: response.uri};
           this.setState({
             productImage4: response.uri,
           });
@@ -349,11 +339,10 @@ class CameraScreen extends React.Component {
           </View>
         </View>
         <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity onPress={() => this.takeImage()}>
-            <Image
-              source={require('../assets/icons/add.png')}
-              style={styles.icon}
-            />
+          <TouchableOpacity
+            onPress={() => this.takeImage()}
+            style={styles.icon}>
+            <Feather name="plus-circle" color="#356" size={50} />
           </TouchableOpacity>
           <Image
             style={styles.imageUrl}
