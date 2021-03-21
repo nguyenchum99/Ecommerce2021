@@ -26,6 +26,8 @@ const UserScreen = (props) => {
 
   const fetchUserData = async () => {
     await dispatch(usersActions.fetchUsers());
+    await dispatch(usersActions.fetchFollowerUsers());
+    await dispatch(usersActions.fetchFollowingUsers());
   };
   useEffect(() => {
     fetchUserData();

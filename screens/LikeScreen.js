@@ -25,7 +25,7 @@ class LikeScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log("dskfdsssssfffffffffffff", this.props.userId)
+   //console.log("dskfdsssssfffffffffffff", this.props.userId)
     firebaseApp
       .database()
       .ref('Likes')

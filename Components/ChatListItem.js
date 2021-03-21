@@ -39,7 +39,7 @@ const ChatListItem = (props) => {
 
   const onClick = () => {
     if (isNew) {
-      console.log('Mark as read');
+      // console.log('Mark as read');
       database()
         .ref(CHATTING_CHATS + `/${chatRoom.key}/`)
         .update({unread: 0});

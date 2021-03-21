@@ -52,7 +52,7 @@ class LocalScreen extends React.Component {
   };
 
   render() {
-    console.log(this.state.isLoading);
+    // console.log(this.state.isLoading);
     const {data} = this.state;
     return (
       <>

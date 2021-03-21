@@ -53,8 +53,6 @@ export const authenticate = (isSignup, email, password) => {
           );
         else
           userInfo = await auth().signInWithEmailAndPassword(email, password);
-        // console.log('Login with user');
-        // console.log(userInfo.user);
       } catch (err) {
         throw err;
       }

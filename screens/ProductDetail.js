@@ -10,20 +10,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {SliderBox} from 'react-native-image-slider-box';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
-import {SliderBox} from 'react-native-image-slider-box';
-
-const images = [
-  'https://source.unsplash.com/1024x768/?nature',
-  'https://source.unsplash.com/1024x768/?water',
-  'https://source.unsplash.com/1024x768/?girl',
-  'https://source.unsplash.com/1024x768/?tree', // Network image
-];
 
 class ProductDetail extends React.Component {
   constructor(props) {
-    console.log('Contructor');
     super(props);
     this.state = {
       productName: '',
@@ -46,7 +38,6 @@ class ProductDetail extends React.Component {
       valueLike: 0,
       selectedImage: '',
       listImage: '',
-      // key:''
     };
   }
 
@@ -64,9 +55,7 @@ class ProductDetail extends React.Component {
     }
   }
   componentDidMount() {
-    console.log('Did mount');
     const idProduct = this.props.navigation.getParam('idProduct');
-    console.log('djushfdsf', idProduct);
     this.setState({idProduct: idProduct});
     //read info product
     firebaseApp
@@ -95,8 +84,6 @@ class ProductDetail extends React.Component {
     temp.push(this.state.productImage2);
     temp.push(this.state.productImage3);
 
-    console.log('temp', temp);
-
     this.setState({listImage: temp});
     //load comment
     firebaseApp
@@ -118,20 +105,7 @@ class ProductDetail extends React.Component {
           });
           this.setState({listComment: temp});
         });
-        // this.setState({listComment: temp});
-        // console.log('comment' + this.state.listComment)
       });
-
-    //check like product
-    // firebaseApp
-    //   .database()
-    //   .ref('Likes/')
-    //   .orderByChild('idProduct_uid')
-    //   .equalTo(idProduct + '_' + this.props.userId)
-    //   .on('value', (snapshot) => {
-    //     // this.setState({listComment: temp});
-    //     if (snapshot.val()) this.setState({isLike: true});
-    //   });
   }
 
   _checkLikeState = (idProduct, userId) => {
@@ -201,12 +175,6 @@ class ProductDetail extends React.Component {
   };
 
   render() {
-    var mainImage = this.state.selectedImage
-      ? this.state.selectedImage
-      : this.state.listImage[0];
-
-    console.log('Render');
-
     // console.log('iumages', this.state.listImage);
     return (
       <View style={{flex: 1}}>
@@ -243,12 +211,6 @@ class ProductDetail extends React.Component {
               ) : null}
             </View>
 
-            {/* <View style={styles.header}>
-                <View style={styles.mainImageContainer}>
-                  <Image style={styles.mainImage} source={{uri: mainImage}} />
-                </View>
-                {this.__renderImages()}
-              </View> */}
             <SliderBox
               images={this.state.listImage}
               sliderBoxHeight={300}

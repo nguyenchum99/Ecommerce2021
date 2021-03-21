@@ -10,95 +10,14 @@ import {
   Modal,
   ScrollView,
 } from 'react-native';
+import {connect} from 'react-redux';
 
-export default class FollowerScreen extends Component {
+class FollowerScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       modalVisible: false,
       userSelected: [],
-      data: [
-        {
-          id: 1,
-          name: 'Mark Doe',
-          position: 'CEO',
-          image: 'https://bootdey.com/img/Content/avatar/avatar7.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 2,
-          name: 'John Doe',
-          position: 'CTO',
-          image: 'https://bootdey.com/img/Content/avatar/avatar1.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 3,
-          name: 'Clark Man',
-          position: 'Creative designer',
-          image: 'https://bootdey.com/img/Content/avatar/avatar6.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 4,
-          name: 'Jaden Boor',
-          position: 'Front-end dev',
-          image: 'https://bootdey.com/img/Content/avatar/avatar5.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 5,
-          name: 'Srick Tree',
-          position: 'Backend-end dev',
-          image: 'https://bootdey.com/img/Content/avatar/avatar4.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 6,
-          name: 'John Doe',
-          position: 'Creative designer',
-          image: 'https://bootdey.com/img/Content/avatar/avatar3.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 7,
-          name: 'John Doe',
-          position: 'Manager',
-          image: 'https://bootdey.com/img/Content/avatar/avatar2.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 8,
-          name: 'John Doe',
-          position: 'IOS dev',
-          image: 'https://bootdey.com/img/Content/avatar/avatar1.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 9,
-          name: 'John Doe',
-          position: 'Web dev',
-          image: 'https://bootdey.com/img/Content/avatar/avatar4.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 10,
-          name: 'John Doe',
-          position: 'Analyst',
-          image: 'https://bootdey.com/img/Content/avatar/avatar7.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-      ],
     };
   }
 
@@ -112,16 +31,18 @@ export default class FollowerScreen extends Component {
     this.setState({modalVisible: visible});
   }
 
+  _deleteFollowerUser() {
+    alert('Are you sure to delete follower user?');
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <FlatList
           style={styles.userList}
           columnWrapperStyle={styles.listContainer}
-          data={this.state.data}
-          keyExtractor={(item) => {
-            return item.id.toString();
-          }}
+          data={this.props.followingUsers}
+          keyExtractor={(item) => item.uid}
           renderItem={({item}) => {
             return (
               <TouchableOpacity
@@ -129,21 +50,19 @@ export default class FollowerScreen extends Component {
                 onPress={() => {
                   this.clickEventListener(item);
                 }}>
-                <Image style={styles.image} source={{uri: item.image}} />
+                <Image style={styles.image} source={{uri: item.photoUrl}} />
                 <View style={styles.cardContent}>
                   <Text style={styles.name}>{item.name}</Text>
-                  <Text style={styles.position}>{item.position}</Text>
                   <TouchableOpacity
                     style={styles.followButton}
-                    onPress={() => this.clickEventListener(item)}>
-                    <Text style={styles.followButtonText}>Follow</Text>
+                    onPress={() => this._deleteFollowerUser()}>
+                    <Text style={styles.followButtonText}>Delete</Text>
                   </TouchableOpacity>
                 </View>
               </TouchableOpacity>
             );
           }}
         />
-
         <Modal
           animationType={'fade'}
           transparent={true}
@@ -184,6 +103,15 @@ export default class FollowerScreen extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    ...state.auth,
+    ...state.users,
+  };
+};
+
+export default connect(mapStateToProps, null)(FollowerScreen);
 
 const styles = StyleSheet.create({
   container: {

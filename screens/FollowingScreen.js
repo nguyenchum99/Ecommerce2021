@@ -10,106 +10,76 @@ import {
   Modal,
   ScrollView,
 } from 'react-native';
+import {connect} from 'react-redux';
+import {firebaseApp} from '../Components/FirebaseConfig';
 
-export default class FollowingScreen extends Component {
+
+
+class FollowingScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalVisible: false,
-      userSelected: [],
-      data: [
-        {
-          id: 1,
-          name: 'Mark Doe',
-          position: 'CEO',
-          image: 'https://bootdey.com/img/Content/avatar/avatar7.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 2,
-          name: 'John Doe',
-          position: 'CTO',
-          image: 'https://bootdey.com/img/Content/avatar/avatar1.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 3,
-          name: 'Clark Man',
-          position: 'Creative designer',
-          image: 'https://bootdey.com/img/Content/avatar/avatar6.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 4,
-          name: 'Jaden Boor',
-          position: 'Front-end dev',
-          image: 'https://bootdey.com/img/Content/avatar/avatar5.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 5,
-          name: 'Srick Tree',
-          position: 'Backend-end dev',
-          image: 'https://bootdey.com/img/Content/avatar/avatar4.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 6,
-          name: 'John Doe',
-          position: 'Creative designer',
-          image: 'https://bootdey.com/img/Content/avatar/avatar3.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 7,
-          name: 'John Doe',
-          position: 'Manager',
-          image: 'https://bootdey.com/img/Content/avatar/avatar2.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 8,
-          name: 'John Doe',
-          position: 'IOS dev',
-          image: 'https://bootdey.com/img/Content/avatar/avatar1.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 9,
-          name: 'John Doe',
-          position: 'Web dev',
-          image: 'https://bootdey.com/img/Content/avatar/avatar4.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-        {
-          id: 10,
-          name: 'John Doe',
-          position: 'Analyst',
-          image: 'https://bootdey.com/img/Content/avatar/avatar7.png',
-          about:
-            'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.',
-        },
-      ],
+      listUser: [],
+      users: [],
     };
   }
 
-  clickEventListener = (item) => {
-    this.setState({userSelected: item}, () => {
-      this.setModalVisible(true);
-    });
-  };
+  // clickEventListener = (item) => {
+  //   this.setState({userSelected: item}, () => {
+  //     this.setModalVisible(true);
+  //   });
+  // };
 
-  setModalVisible(visible) {
-    this.setState({modalVisible: visible});
+  // setModalVisible(visible) {
+  //   this.setState({modalVisible: visible});
+  // }
+
+  _unfollow(key) {
+    firebaseApp.database().ref(`Follows/${key}`).update({
+      isFollowing: false,
+    });
+  }
+
+  componentDidMount() {
+    firebaseApp
+      .database()
+      .ref('Follows')
+      .orderByChild('myUserid')
+      .equalTo(this.props.userId)
+      .on('value', (snapshot) => {
+        const user = [];
+        // console.log("snapshop", snapshot.val())
+        snapshot.forEach((child) => {
+          // console.log('following sjdkfhfs', child.val());
+          if (child.val().isFollowing == true) {
+            // console.log('following sjdkfhfs', child.key);
+            firebaseApp
+              .database()
+              .ref('Users/')
+              .orderByChild('uid')
+              .equalTo(child.val().userId)
+              .on('value', (snap) => {
+                // const info = [];
+                // console.log('nguyen snapnsajsoidj', snap.val());
+                snap.forEach((item) => {
+                  // console.log('nguyen nguyen nguyen', child.key);
+
+                  user.push({
+                    key: child.key,
+                    userId: item.val().uid,
+                    name: item.val().name,
+                    email: item.val().email,
+                    photoUrl: item.val().photoUrl,
+                    isFollowing: child.val().isFollowing,
+                  });
+                  this.setState({listUser: user});
+                });
+                //  this.setState({listUser: info});
+                //  console.log('following sjdkfhfs', this.state.listUser);
+              });
+          }
+        });
+      });
   }
 
   render() {
@@ -118,70 +88,37 @@ export default class FollowingScreen extends Component {
         <FlatList
           style={styles.userList}
           columnWrapperStyle={styles.listContainer}
-          data={this.state.data}
-          keyExtractor={(item) => item.id.toString()}
+          data={this.state.listUser}
+          keyExtractor={(item) => item.key}
           renderItem={({item}) => {
             return (
-              <TouchableOpacity
-                style={styles.card}
-                onPress={() => {
-                  this.clickEventListener(item);
-                }}>
-                <Image style={styles.image} source={{uri: item.image}} />
+              <View style={styles.card}>
+                <Image style={styles.image} source={{uri: item.photoUrl}} />
                 <View style={styles.cardContent}>
                   <Text style={styles.name}>{item.name}</Text>
-                  <Text style={styles.position}>{item.position}</Text>
                   <TouchableOpacity
                     style={styles.followButton}
-                    onPress={() => this.clickEventListener(item)}>
-                    <Text style={styles.followButtonText}>Follow</Text>
+                    onPress={() => this._unfollow(item.key)}>
+                    <Text style={styles.followButtonText}>Unfollow</Text>
                   </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
+              </View>
             );
           }}
         />
-
-        <Modal
-          animationType={'fade'}
-          transparent={true}
-          onRequestClose={() => this.setModalVisible(false)}
-          visible={this.state.modalVisible}>
-          <View style={styles.popupOverlay}>
-            <View style={styles.popup}>
-              <View style={styles.popupContent}>
-                <ScrollView contentContainerStyle={styles.modalInfo}>
-                  <Image
-                    style={styles.image}
-                    source={{uri: this.state.userSelected.image}}
-                  />
-                  <Text style={styles.name}>
-                    {this.state.userSelected.name}
-                  </Text>
-                  <Text style={styles.position}>
-                    {this.state.userSelected.position}
-                  </Text>
-                  <Text style={styles.about}>
-                    {this.state.userSelected.about}
-                  </Text>
-                </ScrollView>
-              </View>
-              <View style={styles.popupButtons}>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.setModalVisible(false);
-                  }}
-                  style={styles.btnClose}>
-                  <Text style={styles.txtClose}>Close</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
       </View>
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    ...state.auth,
+    ...state.users,
+  };
+};
+
+export default connect(mapStateToProps, null)(FollowingScreen);
 
 const styles = StyleSheet.create({
   container: {

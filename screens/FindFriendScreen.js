@@ -6,11 +6,6 @@ import UserListItem from '../Components/UserListItem';
 class FindFriendScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      modalVisible: false,
-      userSelected: [],
-      data: [],
-    };
   }
 
   render() {

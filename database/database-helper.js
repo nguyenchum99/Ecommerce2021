@@ -5,6 +5,7 @@ export const CHATTING_MESSAGES = 'Chatting/Messages';
 export const CHATTING_MEMBERS = 'Chatting/Members';
 
 export const USERS = 'Users';
+export const FOLLOWS = 'Follows';
 
 // Return member in chat room with id (Search in Members table)
 export const lookUpMembersInChatRoomWithId = async (id) => {

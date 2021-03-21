@@ -36,7 +36,7 @@ export default class ItemDetailHome extends React.Component {
           snapshot.child('imageUrl3').val(),
         ]);
         this.setState({images: images});
-        console.log('images' + this.state.images);
+        // console.log('images' + this.state.images);
       });
     return (
       <SafeAreaView style={styles.container}>
