@@ -44,9 +44,9 @@ class CameraScreen extends React.Component {
       productName: '',
       productDescription: '',
       productPrice: '',
-      productImage1: '',
-      productImage2: '',
-      productImage3: '',
+      productImage1: null,
+      productImage2: null,
+      productImage3: null,
       productImage4: '',
       productCreateAt: '',
       productCategory: 'Thời trang',
@@ -61,6 +61,12 @@ class CameraScreen extends React.Component {
   componentDidMount() {
     const category = this.props.navigation.getParam('category');
     console.log('get param' + category);
+
+    this.setState({
+      productImage1: null,
+      productImage2: null,
+      productImage3: null,
+    });
   }
 
   uploadImage1 = async () => {
@@ -84,16 +90,12 @@ class CameraScreen extends React.Component {
     const imageUrl = await reference.getDownloadURL();
     return imageUrl;
   };
-  uploadImage4 = async () => {
-    const reference = storage().ref(`${this.state.productImage4}`);
-    const pathToFile = `${this.state.productImage4}`;
-    await reference.putFile(pathToFile);
-    const imageUrl = await reference.getDownloadURL();
-    return imageUrl;
-  };
 
   //tạo sản phẩm
   addNewproduct = () => {
+    // console.log('image local', this.state.productImage1);
+    // console.log('imge upload', imageUrl1);
+
     if (
       this.state.productName.length == 0 ||
       this.state.productPrice.length == 0 ||
@@ -115,15 +117,14 @@ class CameraScreen extends React.Component {
             onPress: async () => {
               if (
                 this.state.productName == null ||
-                this.state.productPrice == null ||
-                this.state.productDescription == null
+                this.state.productPrice == null 
+             
               ) {
                 alert('Bạn phải nhập đầy đủ thông tin');
               } else {
                 const imageUrl1 = await this.uploadImage1();
                 const imageUrl2 = await this.uploadImage2();
                 const imageUrl3 = await this.uploadImage3();
-                const imageUrl4 = await this.uploadImage4();
 
                 productRef.ref('Products').push({
                   name: this.state.productName,
@@ -132,7 +133,7 @@ class CameraScreen extends React.Component {
                   imageUrl1: imageUrl1,
                   imageUrl2: imageUrl2,
                   imageUrl3: imageUrl3,
-                  imageUrl4: imageUrl4,
+
                   createAt: new Date().toISOString(),
                   timeUpdate: '',
                   location: this.state.location,
@@ -150,11 +151,12 @@ class CameraScreen extends React.Component {
                   productImage1: null,
                   productImage2: null,
                   productImage3: null,
-                  productImage4: null,
+
                   productCreateAt: null,
                   productDescription: null,
                 });
                 this.props.navigation.navigate('Home');
+                alert('Tạo sản phẩm thành công');
               }
             },
           },
@@ -213,7 +215,9 @@ class CameraScreen extends React.Component {
             productImage1: response.uri,
           });
 
-          this.uploadImage1();
+          console.log('image 1' + this.state.productImage1);
+
+          // this.uploadImage1();
         }
       } else if (number == 2) {
         this.setState({productImage2: ''});
@@ -225,7 +229,9 @@ class CameraScreen extends React.Component {
           this.setState({
             productImage2: response.uri,
           });
-          this.uploadImage2();
+
+          console.log('image 2' + this.state.productImage2);
+          // this.uploadImage2();
         }
       } else if (number == 3) {
         this.setState({productImage3: ''});
@@ -237,25 +243,17 @@ class CameraScreen extends React.Component {
           this.setState({
             productImage3: response.uri,
           });
-          this.uploadImage3();
-        }
-      } else if (number == 4) {
-        this.setState({productImage4: ''});
-        if (response.didCancel) {
-        } else if (response.error) {
-        } else if (response.customButton) {
-        } else {
-          const source = {uri: response.uri};
-          this.setState({
-            productImage4: response.uri,
-          });
-          this.uploadImage4();
+          console.log('image 3' + this.state.productImage3);
+          number = 0;
+
+          // this.uploadImage3();
         }
       }
     });
   };
 
   render() {
+    console.log('click camera' + number);
     return (
       <View style={styles.screen}>
         <Text style={styles.title}>Tạo sản phẩm của bạn</Text>
@@ -353,9 +351,7 @@ class CameraScreen extends React.Component {
           <Image
             style={styles.imageUrl}
             source={{uri: this.state.productImage3}}></Image>
-          <Image
-            style={styles.imageUrl}
-            source={{uri: this.state.productImage4}}></Image>
+
           {/* <TouchableOpacity onPress={() => this.takePhotoLibrary()}>
               <Image
                 source={require('../assets/icons/icons8-photo-gallery-40.png')}

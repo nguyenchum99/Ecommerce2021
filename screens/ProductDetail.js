@@ -43,7 +43,7 @@ class ProductDetail extends React.Component {
 
   postComment() {
     if (this.state.comment != null) {
-      database().ref('Comments').push({
+     firebaseApp.database().ref('Comments').push({
         idProduct: this.state.idProduct,
         idUser: this.props.userId,
         nameUser: this.props.userName,
@@ -91,7 +91,7 @@ class ProductDetail extends React.Component {
       .ref('Comments/')
       .orderByChild('idProduct')
       .equalTo(idProduct)
-      .once('value', (snapshot) => {
+      .on('value', (snapshot) => {
         const temp = [];
         snapshot.forEach((child) => {
           temp.push({
@@ -177,8 +177,8 @@ class ProductDetail extends React.Component {
   render() {
     // console.log('iumages', this.state.listImage);
     return (
-      <View style={{flex: 1}}>
-        <ScrollView style={styles.content}>
+      <View style={{flex: 1, backgroundColor: '#ffffff'}}>
+        <ScrollView>
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Text>
@@ -272,76 +272,61 @@ class ProductDetail extends React.Component {
             </View>
           </View>
 
-          <View style={styles.card}>
-            <View style={styles.footer}>
-              <View style={styles.inputContainercmt}>
-                <TextInput
-                  style={styles.inputscmt}
-                  placeholder="Write a comment..."
-                  underlineColorAndroid="transparent"
-                  value={this.state.comment}
-                  onChangeText={(text) => this.setState({comment: text})}
-                />
-              </View>
-
-              <TouchableOpacity
-                style={styles.btnSend}
-                onPress={() => this.postComment()}>
-                <Image
-                  source={{
-                    uri:
-                      'https://img.icons8.com/small/75/ffffff/filled-sent.png',
-                  }}
-                  style={styles.iconSend}
-                />
-              </TouchableOpacity>
+          <View style={styles.footer}>
+            <View style={styles.inputContainercmt}>
+              <TextInput
+                style={styles.inputscmt}
+                placeholder="Bình luận..."
+                underlineColorAndroid="transparent"
+                value={this.state.comment}
+                onChangeText={(text) => this.setState({comment: text})}
+              />
             </View>
-            {/* <TextInput
-            placeholder="Add a comment..."
-            //keyboardType="twitter" // keyboard with no return button
-            //autoFocus={true} // focus and show the keyboard
-            style={styles.input}
-            value={this.state.comment}
-            onChangeText={(text) => this.setState({ comment: text })} // handle input changes
 
-          />
-      
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.postComment()}
-          >
-         
-            <Text >Post</Text>
-          </TouchableOpacity> */}
+            <TouchableOpacity
+              style={styles.btnSend}
+              onPress={() => this.postComment()}>
+              <Image
+                source={{
+                  uri: 'https://img.icons8.com/small/75/ffffff/filled-sent.png',
+                }}
+                style={styles.iconSend}
+              />
+            </TouchableOpacity>
+          </View>
+          <View>
+            <FlatList
+              style={styles.root}
+              data={this.state.listComment}
+              extraData={this.state}
+              ItemSeparatorComponent={() => {
+                return <View style={styles.separatorcmt} />;
+              }}
+              keyExtractor={(item, index) => {
+                return index.toString();
+              }}
+              renderItem={({item}) => {
+                return (
+                  <View style={styles.containerItem}>
+                    <TouchableOpacity onPress={() => {}}>
+                      <Image
+                        style={styles.image}
+                        source={{uri: item.avatarUser}}
+                      />
+                    </TouchableOpacity>
+                    <View style={styles.contentCmt}>
+                      <View style={styles.contentHeadercmt}>
+                        <Text style={styles.nameusercmt}>{item.nameUser}</Text>
+                        <Text style={styles.timecmt}>{item.createAt}</Text>
+                      </View>
+                      <Text rkType="primary3 mediumLine">{item.content}</Text>
+                    </View>
+                  </View>
+                );
+              }}
+            />
           </View>
         </ScrollView>
-        <FlatList
-          style={styles.root}
-          data={this.state.listComment}
-          extraData={this.state}
-          ItemSeparatorComponent={() => {
-            return <View style={styles.separatorcmt} />;
-          }}
-          keyExtractor={(item, index) => {
-            return index.toString();
-          }}
-          renderItem={({item}) => {
-            return (
-              <View style={styles.containerItem}>
-                <TouchableOpacity onPress={() => {}}>
-                  <Image style={styles.image} source={{uri: item.avatarUser}} />
-                </TouchableOpacity>
-                <View style={styles.contentCmt}>
-                  <View style={styles.contentHeadercmt}>
-                    <Text style={styles.nameusercmt}>{item.nameUser}</Text>
-                    <Text style={styles.timecmt}>{item.createAt}</Text>
-                  </View>
-                  <Text rkType="primary3 mediumLine">{item.content}</Text>
-                </View>
-              </View>
-            );
-          }}
-        />
       </View>
     );
   }
@@ -381,7 +366,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   inputContainercmt: {
-    borderBottomColor: '#F5FCFF',
+    borderColor: '#F5FCFF',
     backgroundColor: '#FFFFFF',
     borderRadius: 30,
     borderBottomWidth: 1,
@@ -466,7 +451,6 @@ const styles = StyleSheet.create({
   /******** card **************/
   card: {
     marginVertical: 5,
-    backgroundColor: 'white',
     marginHorizontal: 5,
   },
   cardContent: {

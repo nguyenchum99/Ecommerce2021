@@ -58,11 +58,10 @@ export default class ProfileUser extends Component {
       });
   }
 
-  listProduct() {}
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={{backgroundColor: '#ffffff'}}>
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <Image
@@ -70,114 +69,123 @@ export default class ProfileUser extends Component {
               source={{uri: this.state.userAvatarProfile}}
             />
             <Text style={styles.name}>{this.state.userNameProfile}</Text>
+            <TouchableOpacity
+              style={styles.followButton}
+              onPress={() => this._unfollow(item.key)}>
+              <Text style={styles.followButtonText}>Unfollow</Text>
+            </TouchableOpacity>
           </View>
         </View>
-
-        <View style={styles.profileDetail}>
-          <TouchableOpacity
-            style={styles.detailContent}
-            onPress={() => this.listProduct()}>
-            <Text style={styles.title}>Sản phẩm</Text>
-            <Text style={styles.count}>{this.state.countProduct}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.detailContent}>
-            <Text style={styles.title}>Người theo dõi</Text>
-            <Text style={styles.count}>200</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.detailContent}>
-            <Text style={styles.title}>Đang theo dõi</Text>
-            <Text style={styles.count}>200</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.detailContent}>
-            <Text style={styles.title}>Bán</Text>
-            <Text style={styles.count}>200</Text>
-          </TouchableOpacity>
-        </View>
-          <FlatList
-            style={styles.list}
-            contentContainerStyle={styles.listContainer}
-            data={this.state.listProduct}
-            horizontal={false}
-            numColumns={2}
-            keyExtractor={({key}) => {
-              return key;
-            }}
-            ItemSeparatorComponent={() => {
-              return <View style={styles.separator} />;
-            }}
-            renderItem={({item}) => {
-            
-              return (
-                <View style={styles.card}>
+        <FlatList
+          style={styles.list}
+          contentContainerStyle={styles.listContainer}
+          data={this.state.listProduct}
+          horizontal={false}
+          numColumns={2}
+          keyExtractor={(item) => {
+            return item.key;
+          }}
+          ItemSeparatorComponent={() => {
+            return <View style={styles.separator} />;
+          }}
+          renderItem={(post) => {
+            const item = post.item;
+            return (
+              <View style={styles.card}>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.navigate('Detail', {
+                      idProduct: item.key,
+                    })
+                  }>
+                  <View style={styles.cardHeader}>
+                    <View>
+                      <Text style={styles.title}>{item.productName}</Text>
+                      <Text style={styles.price}>{item.productPrice} VND</Text>
+                    </View>
+                  </View>
                   <Image
                     style={styles.cardImage}
                     source={{uri: item.productImage}}
                   />
-                  <View style={styles.cardFooter}>
-                    <View style={styles.socialBarContainer}>
-                      <View style={styles.socialBarSection}>
-                        <TouchableOpacity
-                          style={styles.socialBarButton}
-                          onPress={() => this.addProductToCart()}>
-                          <Image
-                            style={styles.icon}
-                            source={{
-                              uri:
-                                'https://png.icons8.com/flat_round/50/000000/share.png',
-                            }}
-                          />
-                          <Text style={[styles.socialBarLabel, styles.share]}>
-                            {item.productName}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                      <View style={styles.socialBarSection}>
-                        <TouchableOpacity style={styles.socialBarButton}>
-                          <Image
-                            style={styles.icon}
-                            source={{
-                              uri:
-                                'https://png.icons8.com/color/50/000000/hearts.png',
-                            }}
-                          />
-                          <Text style={styles.socialBarLabel}>
-                            {item.productPrice}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
+                </TouchableOpacity>
+
+                <View style={styles.cardFooter}>
+                  <View style={styles.socialBarContainer}>
+                    <View style={styles.socialBarSection}>
+                      <TouchableOpacity
+                        style={styles.socialBarButton}
+                        onPress={() => this.addProductToCart()}>
+                        <Image
+                          style={styles.icon}
+                          source={{
+                            uri:
+                              'https://img.icons8.com/nolan/96/3498db/add-shopping-cart.png',
+                          }}
+                        />
+                        <Text style={[styles.socialBarLabel, styles.buyNow]}>
+                          Buy Now
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.socialBarSection}>
+                      <TouchableOpacity style={styles.socialBarButton}>
+                        <Image
+                          style={styles.icon}
+                          source={{
+                            uri:
+                              'https://img.icons8.com/color/50/000000/hearts.png',
+                          }}
+                        />
+                        <Text style={styles.socialBarLabel}>25</Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
-              );
-            }}
-          />
-        </View>
- 
+              </View>
+            );
+          }}
+        />
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#00CED1',
+    flexDirection: 'column',
   },
   headerContent: {
     marginTop: 10,
-    marginBottom: 30,
-    alignItems: 'center',
+    marginBottom: 20,
+    flexDirection: 'row',
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 4,
-    borderColor: 'white',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginLeft: 20,
     marginBottom: 10,
   },
+  followButton: {
+    marginTop: 10,
+    height: 35,
+    width: 100,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    backgroundColor: '#00BFFF',
+  },
+  followButtonText: {
+    color: '#ffffff',
+  },
   name: {
-    fontSize: 18,
-    color: '#FFFFFF',
-    fontWeight: '600',
+    fontSize: 15,
+    color: '#000000',
+    marginLeft: 20,
+    marginTop: 10,
+    fontWeight: 'bold',
   },
   profileDetail: {
     alignSelf: 'center',
@@ -191,13 +199,7 @@ const styles = StyleSheet.create({
     margin: 10,
     alignItems: 'center',
   },
-  title: {
-    fontSize: 13,
-    color: '#00CED1',
-  },
-  count: {
-    fontSize: 12,
-  },
+
   bodyContent: {
     flex: 1,
     alignItems: 'center',
@@ -228,7 +230,6 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: 5,
-    backgroundColor: '#E6E6E6',
   },
   listContainer: {
     alignItems: 'center',
@@ -238,9 +239,24 @@ const styles = StyleSheet.create({
   },
   /******** card **************/
   card: {
+    shadowColor: '#00000021',
+    shadowOffset: {
+      width: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
     marginVertical: 8,
+    backgroundColor: 'white',
     flexBasis: '47%',
     marginHorizontal: 5,
+  },
+  cardHeader: {
+    paddingVertical: 17,
+    paddingHorizontal: 16,
+    borderTopLeftRadius: 1,
+    borderTopRightRadius: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   cardContent: {
     paddingVertical: 12.5,
@@ -261,8 +277,17 @@ const styles = StyleSheet.create({
     width: null,
   },
   /******** card components **************/
-  share: {
-    color: '#25b7d3',
+  title: {
+    fontSize: 18,
+    flex: 1,
+  },
+  price: {
+    fontSize: 16,
+    color: 'green',
+    marginTop: 5,
+  },
+  buyNow: {
+    color: 'purple',
   },
   icon: {
     width: 25,

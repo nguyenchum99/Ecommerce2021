@@ -51,14 +51,16 @@ class FollowingScreen extends Component {
         // console.log("snapshop", snapshot.val())
         snapshot.forEach((child) => {
           // console.log('following sjdkfhfs', child.val());
-          if (child.val().isFollowing == true) {
+          if (child.val().isFollowing === true) {
             // console.log('following sjdkfhfs', child.key);
+           
             firebaseApp
               .database()
               .ref('Users/')
               .orderByChild('uid')
               .equalTo(child.val().userId)
               .on('value', (snap) => {
+               
                 // const info = [];
                 // console.log('nguyen snapnsajsoidj', snap.val());
                 snap.forEach((item) => {
@@ -72,17 +74,22 @@ class FollowingScreen extends Component {
                     photoUrl: item.val().photoUrl,
                     isFollowing: child.val().isFollowing,
                   });
+                  console.log('delete', user);
                   this.setState({listUser: user});
+                  console.log("list",this.state.listUser)
                 });
                 //  this.setState({listUser: info});
                 //  console.log('following sjdkfhfs', this.state.listUser);
               });
+            
           }
+          this.setState({listUser: user});
         });
       });
   }
 
   render() {
+    
     return (
       <View style={styles.container}>
         <FlatList

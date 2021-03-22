@@ -9,6 +9,7 @@ const StackUser = createStackNavigator(
   {
     User: {
       screen: StackExpand,
+      
     },
     Profile: {
       screen: EditProfileUser,

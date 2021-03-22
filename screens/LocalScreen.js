@@ -47,9 +47,6 @@ class LocalScreen extends React.Component {
       });
   }
 
-  selectLikeProduct = (idProduct, isLike) => {
-    isLike = true;
-  };
 
   render() {
     // console.log(this.state.isLoading);

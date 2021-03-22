@@ -3,10 +3,9 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   Image,
-  Alert,
   ScrollView,
+  TouchableOpacity,
   FlatList,
 } from 'react-native';
 
@@ -15,153 +14,132 @@ export default class TestScreen extends Component {
     super(props);
     this.state = {
       data: [
-        {id: 1, likes: 12, image: 'https://lorempixel.com/400/200/nature/6/'},
-        {id: 2, likes: 11, image: 'https://lorempixel.com/400/200/nature/5/'},
-        {id: 3, likes: 25, image: 'https://lorempixel.com/400/200/nature/4/'},
-        {id: 4, likes: 12, image: 'https://lorempixel.com/400/200/nature/6/'},
-        {id: 5, likes: 10, image: 'https://lorempixel.com/400/200/sports/1/'},
-        {id: 6, likes: 12, image: 'https://lorempixel.com/400/200/nature/8/'},
-        {id: 7, likes: 34, image: 'https://lorempixel.com/400/200/nature/1/'},
-        {id: 8, likes: 45, image: 'https://lorempixel.com/400/200/nature/3/'},
-        {id: 9, likes: 32, image: 'https://lorempixel.com/400/200/nature/4/'},
-        {id: 9, likes: 56, image: 'https://lorempixel.com/400/200/nature/5/'},
+        {
+          id: 1,
+          image: 'https://img.icons8.com/color/70/000000/cottage.png',
+          title: 'Order',
+        },
+        {
+          id: 2,
+          image:
+            'https://img.icons8.com/color/70/000000/administrator-male.png',
+          title: 'Like',
+        },
+        {
+          id: 3,
+          image: 'https://img.icons8.com/color/70/000000/filled-like.png',
+          title: 'Comment',
+        },
+        {
+          id: 4,
+          image: 'https://img.icons8.com/color/70/000000/facebook-like.png',
+          title: 'Download',
+        },
+        {
+          id: 5,
+          image: 'https://img.icons8.com/color/70/000000/shutdown.png',
+          title: 'Edit',
+        },
       ],
     };
   }
 
-  addProductToCart = () => {
-    Alert.alert('Success', 'The product has been added to your cart');
-  };
-
   render() {
     return (
       <View style={styles.container}>
-        <FlatList
-          style={styles.list}
-          contentContainerStyle={styles.listContainer}
-          data={this.state.data}
-          horizontal={false}
-          numColumns={2}
-          keyExtractor={(item) => {
-            return item.id;
-          }}
-          ItemSeparatorComponent={() => {
-            return <View style={styles.separator} />;
-          }}
-          renderItem={(post) => {
-            const item = post.item;
-            return (
-              <View style={styles.card}>
-                <Image style={styles.cardImage} source={{uri: item.image}} />
-                <View style={styles.cardFooter}>
-                  <View style={styles.socialBarContainer}>
-                    <View style={styles.socialBarSection}>
-                      <TouchableOpacity
-                        style={styles.socialBarButton}
-                        onPress={() => this.addProductToCart()}>
-                        <Image
-                          style={styles.icon}
-                          source={{
-                            uri:
-                              'https://png.icons8.com/flat_round/50/000000/share.png',
-                          }}
-                        />
-                        <Text style={[styles.socialBarLabel, styles.share]}>
-                          Share
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.socialBarSection}>
-                      <TouchableOpacity style={styles.socialBarButton}>
-                        <Image
-                          style={styles.icon}
-                          source={{
-                            uri:
-                              'https://png.icons8.com/color/50/000000/hearts.png',
-                          }}
-                        />
-                        <Text style={styles.socialBarLabel}>{item.likes}</Text>
-                      </TouchableOpacity>
-                    </View>
+        <View style={styles.header}>
+          <View style={styles.headerContent}>
+            <Image
+              style={styles.avatar}
+              source={{
+                uri: 'https://bootdey.com/img/Content/avatar/avatar3.png',
+              }}
+            />
+            <Text style={styles.name}>Jane Doe</Text>
+          </View>
+        </View>
+
+        <View style={styles.body}>
+          <FlatList
+            style={styles.container}
+            enableEmptySections={true}
+            data={this.state.data}
+            keyExtractor={(item) => {
+              return item.id;
+            }}
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity>
+                  <View style={styles.box}>
+                    <Image style={styles.icon} source={{uri: item.image}} />
+                    <Text style={styles.title}>{item.title}</Text>
+                    <Image
+                      style={styles.btn}
+                      source={{
+                        uri: 'https://img.icons8.com/customer/office/40',
+                      }}
+                    />
                   </View>
-                </View>
-              </View>
-            );
-          }}
-        />
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 20,
-    backgroundColor: '#eee',
+  header: {
+    backgroundColor: '#EE82EE',
   },
-  list: {
-    paddingHorizontal: 5,
-    backgroundColor: '#E6E6E6',
-  },
-  listContainer: {
+  headerContent: {
+    padding: 30,
     alignItems: 'center',
   },
-  separator: {
-    marginTop: 10,
-  },
-  /******** card **************/
-  card: {
-    marginVertical: 8,
-    flexBasis: '47%',
-    marginHorizontal: 5,
-  },
-  cardContent: {
-    paddingVertical: 12.5,
-    paddingHorizontal: 16,
-  },
-  cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 12.5,
-    paddingBottom: 25,
-    paddingHorizontal: 16,
-    borderBottomLeftRadius: 1,
-    borderBottomRightRadius: 1,
-  },
-  cardImage: {
-    flex: 1,
-    height: 150,
-    width: null,
-  },
-  /******** card components **************/
-  share: {
-    color: '#25b7d3',
+  avatar: {
+    width: 130,
+    height: 130,
+    borderRadius: 63,
+    borderWidth: 4,
+    borderColor: '#FF6347',
+    marginBottom: 10,
   },
   icon: {
-    width: 25,
-    height: 25,
+    width: 40,
+    height: 40,
   },
-  /******** social bar ******************/
-  socialBarContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+  title: {
+    fontSize: 18,
+    color: '#EE82EE',
+    marginLeft: 4,
+  },
+  btn: {
+    marginLeft: 'auto',
+    width: 40,
+    height: 40,
+  },
+  body: {
+    backgroundColor: '#E6E6FA',
+  },
+  box: {
+    padding: 5,
+    marginBottom: 2,
+    backgroundColor: '#FFFFFF',
     flexDirection: 'row',
-    flex: 1,
+    shadowColor: 'black',
+    shadowOpacity: 0.2,
+    shadowOffset: {
+      height: 1,
+      width: -2,
+    },
+    elevation: 2,
   },
-  socialBarSection: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    flex: 1,
-  },
-  socialBarlabel: {
-    marginLeft: 8,
-    alignSelf: 'flex-end',
-    justifyContent: 'center',
-  },
-  socialBarButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+  username: {
+    color: '#20B2AA',
+    fontSize: 22,
+    alignSelf: 'center',
+    marginLeft: 10,
   },
 });

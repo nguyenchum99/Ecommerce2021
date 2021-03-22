@@ -9,19 +9,19 @@ const UserTopNavigator = createMaterialTopTabNavigator(
     Listing: {
       screen: StackEditProduct,
       navigationOptions: {
-        tabBarLabel: 'Listing',
+        tabBarLabel: 'Danh mục',
       },
     },
     Following: {
       screen: FollowingScreen,
       navigationOptions: {
-        tabBarLabel: 'Following',
+        tabBarLabel: 'Đang theo dõi',
       },
     },
     Followers: {
       screen: FollowersScreen,
       navigationOptions: {
-        tabBarLabel: 'Followers',
+        tabBarLabel: 'Người theo dõi',
       },
     },
   },
