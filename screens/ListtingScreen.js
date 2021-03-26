@@ -82,8 +82,7 @@ class ListingScreen extends React.Component {
         {
           text: 'Sửa thông tin',
           onPress: () => {
-            this.refs.editModal.showEditModal(key)
-             
+            this.refs.editModal.showEditModal(key);
           },
         },
       ],
@@ -97,10 +96,8 @@ class ListingScreen extends React.Component {
   };
 
   render() {
-    console.log('info' + this.props);
     return (
       <View style={styles.container}>
-     
         <FlatList
           data={this.state.data}
           renderItem={({item}) => {

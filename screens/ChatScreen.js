@@ -9,6 +9,7 @@ import {CHATTING_MESSAGES} from '../database/database-helper';
 const ChatScreen = (props) => {
   const [messages, setMessages] = useState([]);
   const uid = props.navigation.getParam('uid', 'uid');
+  const idProduct = props.navigation.getParam('idProduct', '');
   const [otherUser, setOtherUser] = useState(null);
   const myId = useSelector((state) => state.auth.userId);
   const myPhotoUrl = useSelector((state) => state.auth.userPhoto);
@@ -19,6 +20,23 @@ const ChatScreen = (props) => {
     async (uid) => {
       const user = await helper.lookUpUserFromUserId(uid);
       setOtherUser(user);
+      if (user && idProduct) {
+        console.log('ID Product:', idProduct);
+        const product = await helper.lookUpProductFromId(idProduct);
+        if (product) {
+          const message = {
+            user: {
+              _id: uid,
+              name: user.name,
+              avatar: user.photoUrl,
+            },
+            text: 'Bạn đang quan tâm đến sản phẩm của chúng tôi?',
+            image: product.imageUrl1,
+            createdAt: new Date(),
+          };
+          onSend([message]);
+        }
+      }
     },
     [setOtherUser],
   );

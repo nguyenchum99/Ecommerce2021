@@ -118,8 +118,12 @@ const googleLogOut = async () => {
 
 export const logout = () => {
   return async (dispatch) => {
-    await googleLogOut();
-    await auth().signOut();
+    try {
+      await googleLogOut();
+      await auth().signOut();
+    } catch (err) {
+      console.log(err.message);
+    }
     dispatch({type: LOGOUT});
   };
 };

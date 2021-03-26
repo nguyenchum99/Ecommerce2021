@@ -30,12 +30,17 @@ export const fetchFollowingUsers = () => async (dispatch, getState) => {
     .equalTo(myUserId)
     .on('value', async (snapshot) => {
       const listUsers = [];
-      snapshot.forEach(async (item) => {
+      const listItem = [];
+      snapshot.forEach((item) => {
         if (item.val().isFollowing) {
-          const user = await helper.lookUpUserFromUserId(item.val().userId);
-          listUsers.push(user);
+          listItem.push(item);
         }
       });
+      for (let i = 0; i < listItem.length; i++) {
+        const item = listItem[i];
+        const user = await helper.lookUpUserFromUserId(item.val().userId);
+        listUsers.push(user);
+      }
       dispatch({type: SET_FOLLOWING_USERS, followingUsers: listUsers});
     });
 };
@@ -47,14 +52,18 @@ export const fetchFollowerUsers = () => async (dispatch, getState) => {
     .orderByChild('userId')
     .equalTo(myUserId)
     .on('value', async (snapshot) => {
-      console.log('SNapshot', snapshot.val());
       const listUsers = [];
-      snapshot.forEach(async (item) => {
+      const listItem = [];
+      snapshot.forEach((item) => {
         if (item.val().isFollowing) {
-          const user = await helper.lookUpUserFromUserId(item.val().userId);
-          listUsers.push(user);
+          listItem.push(item);
         }
       });
+      for (let i = 0; i < listItem.length; i++) {
+        const item = listItem[i];
+        const user = await helper.lookUpUserFromUserId(item.val().myUserid);
+        listUsers.push(user);
+      }
       dispatch({type: SET_FOLLOWER_USERS, followerUsers: listUsers});
     });
 };

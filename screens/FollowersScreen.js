@@ -41,7 +41,7 @@ class FollowerScreen extends Component {
         <FlatList
           style={styles.userList}
           columnWrapperStyle={styles.listContainer}
-          data={this.props.followingUsers}
+          data={this.props.followerUsers}
           keyExtractor={(item) => item.uid}
           renderItem={({item}) => {
             return (

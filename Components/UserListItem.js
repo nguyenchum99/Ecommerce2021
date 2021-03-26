@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import database from '@react-native-firebase/database';
+import {GiftedAvatar} from 'react-native-gifted-chat';
 
 class UserListItem extends Component {
   constructor(props) {
@@ -69,7 +70,14 @@ class UserListItem extends Component {
   render() {
     return (
       <View style={styles.card}>
-        <Image style={styles.image} source={{uri: this.props.item.photoUrl}} />
+        <GiftedAvatar
+          user={{
+            name: this.props.item.name,
+            avatar: this.props.item.photoUrl,
+          }}
+          avatarStyle={styles.image}
+          textStyle={{fontSize: 30}}
+        />
         <View style={styles.cardContent}>
           <Text style={styles.name}>{this.props.item.name}</Text>
           <TouchableOpacity
@@ -104,6 +112,7 @@ const styles = StyleSheet.create({
   cardContent: {
     marginLeft: 20,
     marginTop: 10,
+    alignItems: 'flex-start',
   },
   image: {
     width: 90,

@@ -32,13 +32,11 @@ export const createChatRoomWithUserIds = async (uid1, uid2) => {
 };
 
 // Create chat room with id and init title for chatroom (Create instance in Chats table)
-export const createChatRoom = async (id, chatRoom) => {
+export const createChatRoom = async (id, sellerId) => {
   await database()
     .ref(CHATTING_CHATS + `/${id}`)
     .set({
-      title: chatRoom.title,
-      lastMessageId: chatRoom.lastMessageId,
-      timestamp: chatRoom.timestamp,
+      sellerId: sellerId,
     });
   //   console.log(`Created chatRoom: ${id} ${chatRoom}`);
 };
@@ -68,8 +66,7 @@ export const lookUpChatRoomWithUserIds = async (uid1, uid2) => {
     });
   if (!value) {
     value = await createChatRoomWithUserIds(uid1, uid2); //Create instance of chat room in Members table
-    // const chatRoom = new Chat('OtherUser', null, new Date().toISOString());
-    // await createChatRoom(value, chatRoom); //Create instance of chat room in Chats table
+    await createChatRoom(value, uid2); //Create instance of chat room in Chats table
   }
   return value;
 };
@@ -96,6 +93,17 @@ export const lookUpUserFromUserId = async (userId) => {
       snapshot.forEach((item) => {
         value = item.val();
       });
+    });
+  return value;
+};
+
+// Return product with id (Search in Products table)
+export const lookUpProductFromId = async (id) => {
+  let value = null;
+  await database()
+    .ref(`Products/${id}`)
+    .once('value', (item) => {
+      value = item.val();
     });
   return value;
 };

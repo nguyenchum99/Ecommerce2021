@@ -1,4 +1,5 @@
 import {SET_CHATROOMS} from '../actions/chats';
+import auth from '@react-native-firebase/auth';
 
 const initialState = {
   chatRooms: [],
@@ -7,15 +8,16 @@ const initialState = {
 };
 
 const chatsReducer = (state = initialState, action) => {
+  const myUserId = auth().currentUser ? auth().currentUser.uid : null;
   switch (action.type) {
     case SET_CHATROOMS:
       return {
         chatRooms: action.chatRooms,
         buyChatRooms: action.chatRooms.filter(
-          (chatRoom) => chatRoom.chatRoom.type === 'buy',
+          (chatRoom) => chatRoom.chatRoom.sellerId !== myUserId,
         ),
         sellChatRooms: action.chatRooms.filter(
-          (chatRoom) => chatRoom.chatRoom.type === 'sell',
+          (chatRoom) => chatRoom.chatRoom.sellerId === myUserId,
         ),
       };
     default:

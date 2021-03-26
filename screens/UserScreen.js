@@ -1,16 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator} from 'react-native';
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Button,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {GiftedAvatar} from 'react-native-gifted-chat';
 import {useDispatch, useSelector} from 'react-redux';
 import UserTopNavigator from '../navigation/UserTopNavigator';
-
 import * as authActions from '../store/actions/auth';
 import * as usersActions from '../store/actions/users';
 
@@ -37,7 +29,10 @@ const UserScreen = (props) => {
     <View style={styles.container}>
       <View style={styles.card}>
         <TouchableOpacity onPress={() => props.navigation.navigate('Expand')}>
-          <Image source={{uri: userPhoto}} style={styles.image} />
+          <GiftedAvatar
+            user={{name: userName, avatar: userPhoto}}
+            avatarStyle={styles.image}
+          />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => props.navigation.navigate('Profile')}>
           <View>

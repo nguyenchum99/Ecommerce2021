@@ -32,13 +32,14 @@ const ChatRoomsScreen = (props) => {
 
   const renderSearchBar = () => {
     return (
-      <View style={styles.searchbar}>
-        <SearchBar
-          placeholder="Type Here..."
-          onChangeText={(key) => setSearchKey(key)}
-          value={searchKey}
-        />
-      </View>
+      <SearchBar
+        placeholder="Type Here..."
+        round="true"
+        onChangeText={(key) => setSearchKey(key)}
+        value={searchKey}
+        lightTheme="true"
+        backgroundColor="transparent"
+      />
     );
   };
 

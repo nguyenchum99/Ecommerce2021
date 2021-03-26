@@ -1,19 +1,16 @@
 import React, {Component} from 'react';
 import {
+  Dimensions,
+  FlatList,
   StyleSheet,
   Text,
   View,
   Image,
-  TouchableOpacity,
-  FlatList,
-  Dimensions,
-  Modal,
-  ScrollView,
 } from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {GiftedAvatar} from 'react-native-gifted-chat';
 import {connect} from 'react-redux';
-import {firebaseApp} from '../Components/FirebaseConfig';
-
-
+import database from '@react-native-firebase/database';
 
 class FollowingScreen extends Component {
   constructor(props) {
@@ -33,79 +30,64 @@ class FollowingScreen extends Component {
   // setModalVisible(visible) {
   //   this.setState({modalVisible: visible});
   // }
-
-  _unfollow(key) {
-    firebaseApp.database().ref(`Follows/${key}`).update({
-      isFollowing: false,
-    });
+  _unfollow(item) {
+    // database().ref(`Follows/${key}`).update({
+    //   isFollowing: false,
+    // });
+    console.log('Item', item);
   }
 
-  componentDidMount() {
-    firebaseApp
-      .database()
-      .ref('Follows')
-      .orderByChild('myUserid')
-      .equalTo(this.props.userId)
-      .on('value', (snapshot) => {
-        const user = [];
-        // console.log("snapshop", snapshot.val())
-        snapshot.forEach((child) => {
-          // console.log('following sjdkfhfs', child.val());
-          if (child.val().isFollowing === true) {
-            // console.log('following sjdkfhfs', child.key);
-           
-            firebaseApp
-              .database()
-              .ref('Users/')
-              .orderByChild('uid')
-              .equalTo(child.val().userId)
-              .on('value', (snap) => {
-               
-                // const info = [];
-                // console.log('nguyen snapnsajsoidj', snap.val());
-                snap.forEach((item) => {
-                  // console.log('nguyen nguyen nguyen', child.key);
-
-                  user.push({
-                    key: child.key,
-                    userId: item.val().uid,
-                    name: item.val().name,
-                    email: item.val().email,
-                    photoUrl: item.val().photoUrl,
-                    isFollowing: child.val().isFollowing,
-                  });
-                  console.log('delete', user);
-                  this.setState({listUser: user});
-                  console.log("list",this.state.listUser)
-                });
-                //  this.setState({listUser: info});
-                //  console.log('following sjdkfhfs', this.state.listUser);
-              });
-            
-          }
-          this.setState({listUser: user});
-        });
+  _toggleFollowState = (myUserid, userId) => {
+    const key = myUserid + '_' + userId;
+    database()
+      .ref(`Follows/`)
+      .orderByChild('myUserid_userId')
+      .equalTo(key)
+      .once('value', (snapshot) => {
+        if (snapshot.val()) {
+          snapshot.forEach((item) => {
+            database()
+              .ref(`Follows/${item.key}/isFollowing`)
+              .transaction((state) => !state);
+          });
+        } else {
+          database().ref('Follows').push().set({
+            myUserid_userId: key,
+            myUserid: myUserid,
+            userId: userId,
+            isFollowing: true,
+          });
+        }
       });
-  }
+  };
 
   render() {
-    
+    console.log(this.props.followingUsers.length);
     return (
       <View style={styles.container}>
         <FlatList
           style={styles.userList}
           columnWrapperStyle={styles.listContainer}
-          data={this.state.listUser}
+          data={this.props.followingUsers}
           keyExtractor={(item) => item.key}
           renderItem={({item}) => {
             return (
               <View style={styles.card}>
-                <Image style={styles.image} source={{uri: item.photoUrl}} />
+                <GiftedAvatar
+                  user={{
+                    name: item.name,
+                    avatar: item.photoUrl,
+                  }}
+                  avatarStyle={styles.image}
+                  textStyle={{fontSize: 30}}
+                />
                 <View style={styles.cardContent}>
                   <Text style={styles.name}>{item.name}</Text>
                   <TouchableOpacity
                     style={styles.followButton}
-                    onPress={() => this._unfollow(item.key)}>
+                    onPress={() =>
+                      this._toggleFollowState(this.props.userId, item.uid)
+                    }>
                     <Text style={styles.followButtonText}>Unfollow</Text>
                   </TouchableOpacity>
                 </View>

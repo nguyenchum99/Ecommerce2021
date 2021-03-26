@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import {GiftedAvatar} from 'react-native-gifted-chat';
 import {useSelector} from 'react-redux';
 import {CHATTING_CHATS, CHATTING_MESSAGES} from '../database/database-helper';
 
@@ -56,9 +57,12 @@ const ChatListItem = (props) => {
     <TouchableWithoutFeedback onPress={onClick}>
       <View style={styles.container}>
         <View style={styles.lefContainer}>
-          <Image
-            source={{uri: chatRoom.otherUser.photoUrl}}
-            style={styles.avatar}
+          <GiftedAvatar
+            user={{
+              name: chatRoom.otherUser.name,
+              avatar: chatRoom.otherUser.photoUrl,
+            }}
+            avatarStyle={styles.avatar}
           />
 
           <View style={styles.midContainer}>

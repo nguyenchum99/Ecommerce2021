@@ -10,6 +10,7 @@ import {
   View,
   TextInput,
 } from 'react-native';
+import {Icon} from 'react-native-elements';
 import {AirbnbRating} from 'react-native-ratings';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
@@ -21,6 +22,7 @@ class LocalScreen extends React.Component {
       data: [],
       isLoading: true,
       clickLikeItem: false,
+      searchKey: '',
     };
   }
 
@@ -47,10 +49,14 @@ class LocalScreen extends React.Component {
       });
   }
 
+  filterProduct() {
+    const list = this.state.data.filter((item) => {
+      return item.name.indexOf(this.state.searchKey) !== -1;
+    });
+    return list;
+  }
 
   render() {
-    // console.log(this.state.isLoading);
-    const {data} = this.state;
     return (
       <>
         <>
@@ -61,23 +67,19 @@ class LocalScreen extends React.Component {
         <View style={styles.container}>
           <View style={styles.formContent}>
             <View style={styles.inputContainer}>
-              <Image
-                style={[styles.icon, styles.inputIcon]}
-                source={{
-                  uri: 'https://png.icons8.com/search/androidL/100/000000',
-                }}
-              />
+              <Icon name="search" style={styles.inputIcon} />
               <TextInput
                 style={styles.inputs}
                 placeholder="Search"
                 underlineColorAndroid="transparent"
+                onChangeText={(text) => this.setState({searchKey: text})}
               />
             </View>
           </View>
           <FlatList
             style={styles.list}
             contentContainerStyle={styles.listContainer}
-            data={this.state.data}
+            data={this.filterProduct()}
             horizontal={false}
             numColumns={2}
             keyExtractor={(item) => {

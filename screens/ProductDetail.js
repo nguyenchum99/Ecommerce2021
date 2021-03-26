@@ -13,6 +13,7 @@ import {
 import {SliderBox} from 'react-native-image-slider-box';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
+import * as helper from '../database/database-helper';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -43,7 +44,7 @@ class ProductDetail extends React.Component {
 
   postComment() {
     if (this.state.comment != null) {
-     firebaseApp.database().ref('Comments').push({
+      firebaseApp.database().ref('Comments').push({
         idProduct: this.state.idProduct,
         idUser: this.props.userId,
         nameUser: this.props.userName,
@@ -174,6 +175,19 @@ class ProductDetail extends React.Component {
     );
   };
 
+  sendMessage = async () => {
+    const myId = this.props.userId;
+    const shopId = this.state.idUser;
+    const idProduct = this.state.idProduct;
+    const chatRoomId = await helper.lookUpChatRoomWithUserIds(myId, shopId);
+    this.props.navigation.navigate('ChatRoom', {
+      uid: shopId,
+      chatRoomId: chatRoomId,
+      idProduct: idProduct,
+      title: this.state.userName,
+    });
+  };
+
   render() {
     // console.log('iumages', this.state.listImage);
     return (
@@ -252,6 +266,20 @@ class ProductDetail extends React.Component {
               <Text>Đánh giá</Text>
             </View>
           </TouchableOpacity>
+          <View style={styles.footer}>
+            <Text>Nhắn tin</Text>
+
+            <TouchableOpacity
+              style={styles.btnSend}
+              onPress={() => this.sendMessage()}>
+              <Image
+                source={{
+                  uri: 'https://img.icons8.com/small/75/ffffff/filled-sent.png',
+                }}
+                style={styles.iconSend}
+              />
+            </TouchableOpacity>
+          </View>
           <View style={styles.card}>
             <View style={styles.cardHeader2}>
               <Text style={styles.cardTitle}>
@@ -271,7 +299,6 @@ class ProductDetail extends React.Component {
               </Text>
             </View>
           </View>
-
           <View style={styles.footer}>
             <View style={styles.inputContainercmt}>
               <TextInput
@@ -351,6 +378,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#eeeeee',
     paddingHorizontal: 10,
     padding: 5,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   btnSend: {
     backgroundColor: '#00BFFF',
