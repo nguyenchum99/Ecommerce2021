@@ -11,6 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {connect} from 'react-redux';
+import { firebaseApp } from '../Components/FirebaseConfig';
 
 class FollowerScreen extends Component {
   constructor(props) {
@@ -34,6 +35,8 @@ class FollowerScreen extends Component {
   _deleteFollowerUser() {
     alert('Are you sure to delete follower user?');
   }
+
+ 
 
   render() {
     return (

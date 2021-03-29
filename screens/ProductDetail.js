@@ -255,18 +255,8 @@ class ProductDetail extends React.Component {
               />
               <Text style={styles.username}>{this.state.userName}</Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                marginLeft: 60,
-              }}>
-              <Text>Danh sách</Text>
-              <Text>Bán</Text>
-              <Text>Đánh giá</Text>
-            </View>
           </TouchableOpacity>
-          <View style={styles.footer}>
+          {/* <View style={styles.footer}>
             <Text>Nhắn tin</Text>
 
             <TouchableOpacity
@@ -279,7 +269,7 @@ class ProductDetail extends React.Component {
                 style={styles.iconSend}
               />
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View style={styles.card}>
             <View style={styles.cardHeader2}>
               <Text style={styles.cardTitle}>
@@ -299,6 +289,20 @@ class ProductDetail extends React.Component {
               </Text>
             </View>
           </View>
+
+          <View style={styles.addToCarContainer}>
+            <TouchableOpacity
+              style={styles.shareButton}
+              onPress={() => this.sendMessage()}>
+              <Text style={styles.shareButtonText}>Nhắn tin</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.shareButton}
+              onPress={() => this.sendMessage()}>
+              <Text style={styles.shareButtonText}>Mua hàng</Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.footer}>
             <View style={styles.inputContainercmt}>
               <TextInput
@@ -371,6 +375,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
+  },
+  shareButton: {
+    marginBottom: 10,
+    height: 45,
+    width: 150,
+    alignItems: 'center',
+    borderRadius: 30,
+    backgroundColor: '#00BFFF',
+  },
+  shareButtonText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+  },
+  addToCarContainer: {
+    marginLeft: 20,
+    marginRight: 20,
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
   },
   footer: {
     flexDirection: 'row',
@@ -513,7 +536,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   username: {
-    marginTop: 10,
+    marginTop: 20,
     marginLeft: 20,
     color: '#000000',
     fontWeight: 'bold',

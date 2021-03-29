@@ -8,11 +8,22 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
 import EditInfoProduct from '../Components/EditInfoProduct';
 import {firebaseApp} from '../Components/FirebaseConfig';
 
+
+const {width, height} = Dimensions.get('window');
+// orientation must fixed
+const SCREEN_WIDTH = width < height ? width : height;
+
+const numColumns = 3;
+// item size
+const RECIPE_ITEM_HEIGHT = 100;
+const RECIPE_ITEM_OFFSET = 10;
+const RECIPE_ITEM_MARGIN = RECIPE_ITEM_OFFSET * 2;
 class ListingScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -97,8 +108,8 @@ class ListingScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <FlatList
+      <View>
+        {/* <FlatList
           data={this.state.data}
           renderItem={({item}) => {
             return (
@@ -115,6 +126,25 @@ class ListingScreen extends React.Component {
           }}
           keyExtractor={(item) => item.key.toString()}
           numColumns={3}
+        /> */}
+
+        <FlatList
+          vertical
+          showsVerticalScrollIndicator={false}
+          numColumns={3}
+          data={this.state.data}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              underlayColor="rgba(73,182,77,0.9)"
+              onPress={() => this.selectProductEdit(item.key)}>
+              <View style={styles.container}>
+                <Image style={styles.photo} source={{uri: item.productImage}} />
+                <Text style={styles.title}>{item.productName}</Text>
+                <Text style={{color: 'grey'}}>{item.productPrice} VND</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => `${item.key}`}
         />
         <EditInfoProduct ref={'editModal'} parentFlatList={this} />
       </View>
@@ -132,29 +162,25 @@ export default connect(mapStateToProps, null)(ListingScreen);
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ffffff',
-  },
-  card: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    borderWidth: 0.5,
-    borderColor: '#e6e6e6',
-  },
-  image: {
-    marginTop: 10,
-    marginLeft: 50,
-    marginRight: 10,
-    width: 100,
-    height: 150,
-    justifyContent: 'center',
+    alignItems: 'center',
+    margin: RECIPE_ITEM_OFFSET,
+    marginTop: 30,
+    width:
+      (SCREEN_WIDTH - RECIPE_ITEM_MARGIN) / numColumns - RECIPE_ITEM_OFFSET,
+    height: RECIPE_ITEM_HEIGHT + 60,
   },
   title: {
-    marginLeft: 50,
-    color: 'red',
-    fontWeight: 'bold',
+    margin: 10,
+    marginBottom: 5,
+    color: 'black',
+    fontSize: 13,
+    textAlign: 'center',
   },
-  price: {
-    marginLeft: 20,
-    color: '#000000',
+  photo: {
+    width:
+      (SCREEN_WIDTH - RECIPE_ITEM_MARGIN) / numColumns - RECIPE_ITEM_OFFSET,
+    height: RECIPE_ITEM_HEIGHT,
+    borderRadius: 60,
   },
 });

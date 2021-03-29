@@ -9,11 +9,13 @@ import {
   TouchableOpacity,
   View,
   TextInput,
+  TouchableHighlight,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import {AirbnbRating} from 'react-native-ratings';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
+import {RecipeCard} from './AppStyles';
 
 class LocalScreen extends React.Component {
   constructor(props) {
@@ -51,7 +53,10 @@ class LocalScreen extends React.Component {
 
   filterProduct() {
     const list = this.state.data.filter((item) => {
-      return item.name.indexOf(this.state.searchKey) !== -1;
+      return (
+        item.name.toLowerCase().indexOf(this.state.searchKey.toLowerCase()) !==
+        -1
+      );
     });
     return list;
   }
@@ -76,7 +81,7 @@ class LocalScreen extends React.Component {
               />
             </View>
           </View>
-          <FlatList
+          {/* <FlatList
             style={styles.list}
             contentContainerStyle={styles.listContainer}
             data={this.filterProduct()}
@@ -145,61 +150,33 @@ class LocalScreen extends React.Component {
                 </View>
               );
             }}
+          /> */}
+          <FlatList
+            vertical
+            showsVerticalScrollIndicator={false}
+            numColumns={2}
+            data={this.filterProduct()}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                underlayColor="rgba(73,182,77,0.9)"
+                onPress={() =>
+                  this.props.navigation.navigate('Detail', {
+                    idProduct: item.key,
+                  })
+                }>
+                <View style={styles.containerCard}>
+                  <Image
+                    style={styles.photoCard}
+                    source={{uri: item.imageUrl}}
+                  />
+                  <Text style={styles.titleCard}>{item.name}</Text>
+                  <Text style={styles.categoryCard}>{item.price} VND</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => `${item.key}`}
           />
         </View>
-        {/* <ScrollView style={styles.container}>
-          <FlatList
-            data={data}
-            renderItem={({item, index}) => {
-              return (
-                <View style={styles.card}>
-                  <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.props.navigation.navigate('Detail', {
-                          idProduct: item.key,
-                        })
-                      }>
-                      <Image
-                        source={{uri: item.imageUrl}}
-                        style={styles.image}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
-                      {item.isLike ? (
-                        <Image
-                          source={require('../assets/icons/heart(1).png')}
-                          style={{height: 25, width: 25, margin: 5}}
-                        />
-                      ) : (
-                        <Image
-                          source={require('../assets/icons/heart.png')}
-                          style={{height: 25, width: 25, margin: 5}}
-                        />
-                      )}
-                    </TouchableOpacity>
-                  </View>
-                  <AirbnbRating
-                    size={15}
-                    showRating={false}
-                    isDisabled={true}
-                  />
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      marginBottom: 10,
-                      justifyContent: 'center',
-                    }}>
-                    <Text style={styles.title}>{item.name}</Text>
-                    <Text style={styles.price}>{item.price}$</Text>
-                  </View>
-                </View>
-              );
-            }}
-            keyExtractor={(item) => item.key}
-            numColumns={2}
-          />
-        </ScrollView> */}
       </>
     );
   }
@@ -217,6 +194,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  containerCard: RecipeCard.container,
+  photoCard: RecipeCard.photo,
+  titleCard: RecipeCard.title,
+  categoryCard: RecipeCard.category,
   formContent: {
     flexDirection: 'row',
   },

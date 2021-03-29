@@ -7,9 +7,22 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  Dimensions,
 } from 'react-native';
+import {connect} from 'react-redux';
 
-export default class ProfileUser extends Component {
+const {width, height} = Dimensions.get('window');
+// orientation must fixed
+const SCREEN_WIDTH = width < height ? width : height;
+
+const numColumns = 3;
+// item size
+const RECIPE_ITEM_HEIGHT = 100;
+const RECIPE_ITEM_OFFSET = 10;
+const RECIPE_ITEM_MARGIN = RECIPE_ITEM_OFFSET * 2;
+
+
+ class ProfileUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,6 +32,8 @@ export default class ProfileUser extends Component {
       listProduct: {},
       countProduct: 0,
       selectScreen: '',
+      isFollowed: '',
+      keyFollwed: '',
     };
   }
 
@@ -56,10 +71,32 @@ export default class ProfileUser extends Component {
           countProduct: li.count,
         });
       });
+
+      //check follow
+      const key = this.props.userId + '_' + userIdProfile;
+      console.log('keyyyyyyyyyyy', key);
+      this.setState({keyFollwed: key});
+      firebaseApp
+        .database()
+        .ref('Follows/')
+        .orderByChild('myUserid_userId')
+        .equalTo(key)
+        .once('value', (snapshot) => {
+          console.log('follwoing', snapshot.val());
+          this.setState({isFollowed: snapshot.child('isFollowing').val()});
+          //this.state.isFollowed = snapshot.child('isFollowing').val();
+        });
+
+  }
+
+  clickFollowing = ()=> {
+    
   }
 
 
   render() {
+
+    
     return (
       <View style={{backgroundColor: '#ffffff'}}>
         <View style={styles.header}>
@@ -68,90 +105,90 @@ export default class ProfileUser extends Component {
               style={styles.avatar}
               source={{uri: this.state.userAvatarProfile}}
             />
-            <Text style={styles.name}>{this.state.userNameProfile}</Text>
-            <TouchableOpacity
-              style={styles.followButton}
-              onPress={() => this._unfollow(item.key)}>
-              <Text style={styles.followButtonText}>Unfollow</Text>
-            </TouchableOpacity>
+            <View>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Text style={styles.name}>{this.state.userNameProfile}</Text>
+                <TouchableOpacity
+                  style={styles.followButton}
+                  onPress={() => this.clickFollowing()}>
+                  {this.state.isFollowed ? (
+                    <Text style={styles.followButtonText}>Bỏ theo dõi</Text>
+                  ) : (
+                    <Text style={styles.followButtonText}>Theo dõi</Text>
+                  )}
+                
+                </TouchableOpacity>
+              </View>
+
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Text style={styles.nametxt}>Danh sách 13</Text>
+                <Text style={styles.nametxt}>Đã bán 2</Text>
+                <Text style={styles.nametxt}>Người theo dõi 100</Text>
+              </View>
+            </View>
           </View>
         </View>
         <FlatList
-          style={styles.list}
-          contentContainerStyle={styles.listContainer}
+          vertical
+          showsVerticalScrollIndicator={false}
+          numColumns={3}
           data={this.state.listProduct}
-          horizontal={false}
-          numColumns={2}
-          keyExtractor={(item) => {
-            return item.key;
-          }}
-          ItemSeparatorComponent={() => {
-            return <View style={styles.separator} />;
-          }}
-          renderItem={(post) => {
-            const item = post.item;
-            return (
-              <View style={styles.card}>
-                <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.navigate('Detail', {
-                      idProduct: item.key,
-                    })
-                  }>
-                  <View style={styles.cardHeader}>
-                    <View>
-                      <Text style={styles.title}>{item.productName}</Text>
-                      <Text style={styles.price}>{item.productPrice} VND</Text>
-                    </View>
-                  </View>
-                  <Image
-                    style={styles.cardImage}
-                    source={{uri: item.productImage}}
-                  />
-                </TouchableOpacity>
-
-                <View style={styles.cardFooter}>
-                  <View style={styles.socialBarContainer}>
-                    <View style={styles.socialBarSection}>
-                      <TouchableOpacity
-                        style={styles.socialBarButton}
-                        onPress={() => this.addProductToCart()}>
-                        <Image
-                          style={styles.icon}
-                          source={{
-                            uri:
-                              'https://img.icons8.com/nolan/96/3498db/add-shopping-cart.png',
-                          }}
-                        />
-                        <Text style={[styles.socialBarLabel, styles.buyNow]}>
-                          Buy Now
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.socialBarSection}>
-                      <TouchableOpacity style={styles.socialBarButton}>
-                        <Image
-                          style={styles.icon}
-                          source={{
-                            uri:
-                              'https://img.icons8.com/color/50/000000/hearts.png',
-                          }}
-                        />
-                        <Text style={styles.socialBarLabel}>25</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
+          renderItem={({item}) => (
+            <TouchableOpacity
+              underlayColor="rgba(73,182,77,0.9)"
+              onPress={() =>
+                this.props.navigation.navigate('Detail', {
+                  idProduct: item.key,
+                })
+              }>
+              <View style={styles.container}>
+                <Image style={styles.photo} source={{uri: item.productImage}} />
+                <Text style={styles.title}>{item.productName}</Text>
+                <Text style={{color: 'grey'}}>{item.productPrice} VND</Text>
               </View>
-            );
-          }}
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => `${item.key}`}
         />
       </View>
     );
   }
 }
 
+
+const mapStateToProps = (state) => {
+  return {
+    ...state.auth,
+  };
+};
+
+export default connect(mapStateToProps, null)(ProfileUser);
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    margin: RECIPE_ITEM_OFFSET,
+    marginTop: 30,
+    width:
+      (SCREEN_WIDTH - RECIPE_ITEM_MARGIN) / numColumns - RECIPE_ITEM_OFFSET,
+    height: RECIPE_ITEM_HEIGHT + 60,
+  },
+  title: {
+    margin: 10,
+    marginBottom: 5,
+    color: 'black',
+    fontSize: 13,
+    textAlign: 'center',
+  },
+  photo: {
+    width:
+      (SCREEN_WIDTH - RECIPE_ITEM_MARGIN) / numColumns - RECIPE_ITEM_OFFSET,
+    height: RECIPE_ITEM_HEIGHT,
+    borderRadius: 60,
+  },
   header: {
     flexDirection: 'column',
   },
@@ -169,7 +206,7 @@ const styles = StyleSheet.create({
   },
   followButton: {
     marginTop: 10,
-    height: 35,
+    height: 30,
     width: 100,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -186,6 +223,13 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 10,
     fontWeight: 'bold',
+  },
+  nametxt: {
+    fontSize: 12,
+    color: '#000000',
+    marginLeft: 20,
+    marginTop: 10,
+    
   },
   profileDetail: {
     alignSelf: 'center',

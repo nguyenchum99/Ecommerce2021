@@ -95,7 +95,7 @@ const ChatScreen = (props) => {
         .push();
       newRef.set({
         ...m,
-        createdAt: new Date(m.createdAt).toISOString(),
+        createdAt: new Date(m.createdAt).getTime(),
       });
       //update last message in chat room
       const chatRoomRef = database().ref(
