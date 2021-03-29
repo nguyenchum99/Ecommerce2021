@@ -9,6 +9,7 @@ import {Provider} from 'react-redux';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
 import ReduxThunk from 'redux-thunk';
 import NavigationContainer from './navigation/NavigationContainer';
+import NotificationScreen from './screens/NotificationScreen';
 import TestScreen from './screens/TestScreen';
 import authReducer from './store/reducers/auth';
 import chatsReducer from './store/reducers/chats';
@@ -27,6 +28,7 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer />
     </Provider>
+    // <NotificationScreen/>
     // <CommentList/>
     //<TestScreen/>
   );

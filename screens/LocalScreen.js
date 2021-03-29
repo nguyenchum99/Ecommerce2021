@@ -16,6 +16,7 @@ import {AirbnbRating} from 'react-native-ratings';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
 import {RecipeCard} from './AppStyles';
+import ButtonToggleGroup from 'react-native-button-toggle-group';
 
 class LocalScreen extends React.Component {
   constructor(props) {
@@ -61,6 +62,15 @@ class LocalScreen extends React.Component {
     return list;
   }
 
+
+  chooseLocal(val){
+    if(val == "Phân loại"){
+      this.props.navigation.navigate('Category');
+    }else if (val == 'Khu vực') {
+
+    }
+  }
+
   render() {
     return (
       <>
@@ -81,76 +91,16 @@ class LocalScreen extends React.Component {
               />
             </View>
           </View>
-          {/* <FlatList
-            style={styles.list}
-            contentContainerStyle={styles.listContainer}
-            data={this.filterProduct()}
-            horizontal={false}
-            numColumns={2}
-            keyExtractor={(item) => {
-              return item.key;
-            }}
-            ItemSeparatorComponent={() => {
-              return <View style={styles.separator} />;
-            }}
-            renderItem={(post) => {
-              const item = post.item;
-              return (
-                <View style={styles.card}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('Detail', {
-                        idProduct: item.key,
-                      })
-                    }>
-                    <View style={styles.cardHeader}>
-                      <View>
-                        <Text style={styles.title}>{item.name}</Text>
-                        <Text style={styles.price}>{item.price} VND</Text>
-                      </View>
-                    </View>
-                    <Image
-                      style={styles.cardImage}
-                      source={{uri: item.imageUrl}}
-                    />
-                  </TouchableOpacity>
+        
 
-                  <View style={styles.cardFooter}>
-                    <View style={styles.socialBarContainer}>
-                      <View style={styles.socialBarSection}>
-                        <TouchableOpacity
-                          style={styles.socialBarButton}
-                          onPress={() => this.addProductToCart()}>
-                          <Image
-                            style={styles.icon}
-                            source={{
-                              uri:
-                                'https://img.icons8.com/nolan/96/3498db/add-shopping-cart.png',
-                            }}
-                          />
-                          <Text style={[styles.socialBarLabel, styles.buyNow]}>
-                            Buy Now
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                      <View style={styles.socialBarSection}>
-                        <TouchableOpacity style={styles.socialBarButton}>
-                          <Image
-                            style={styles.icon}
-                            source={{
-                              uri:
-                                'https://img.icons8.com/color/50/000000/hearts.png',
-                            }}
-                          />
-                          <Text style={styles.socialBarLabel}>25</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              );
-            }}
-          /> */}
+          <ButtonToggleGroup
+            highlightBackgroundColor={'blue'}
+            highlightTextColor={'white'}
+            inactiveBackgroundColor={'transparent'}
+            inactiveTextColor={'grey'}
+            values={['Phân loại', 'Khu vực']}
+            onSelect={(val) => this.chooseLocal(val)}
+          />
           <FlatList
             vertical
             showsVerticalScrollIndicator={false}

@@ -1,170 +1,105 @@
 import React from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { TouchableOpacity } from 'react-native';
+import {FlatList, Text, View, Image, TouchableHighlight, StyleSheet} from 'react-native';
 
-const data_category = [
+
+const categories = [
   {
+    label: 'Thời trang',
+    value: 'Thời trang',
+    image: 'https://cdn.gumac.vn//image/01/thang-9-2019/bst-thg-9-2019/anhbia060920191601356149.jpg',    
     id: 1,
-    title: 'Điện thoại - Máy tính bảng',
-    list: [
-      {
-        id_con: 'smart_phone',
-        name: 'Điện thoại Smartphone',
-      },
-      {
-        id_con: 'may_tinh_bang',
-        name: 'Máy tính bảng',
-      },
-      {
-        id_con: 'may_doc_sach',
-        name: 'Máy đọc sách',
-      },
-    ],
   },
   {
+    label: 'Điện thoại',
+    value: 'Điện thoại',
+    image: 'https://file1.dangcongsan.vn/data/0/images/2020/09/21/ctvbandoc/dienthoai.jpg',
     id: 2,
-    title: 'Thời trang nữ',
-    list: [
-      {
-        id_con: 'ao',
-        name: 'Áo',
-      },
-      {
-        id_con: 'vay',
-        name: 'Váy',
-      },
-      {
-        id_con: 'quan',
-        name: 'Quần',
-      },
-      {
-        id_con: 'do_boi',
-        name: 'Đồ bơi',
-      },
-    ],
   },
   {
+    label: 'Đồ gia dụng',
+    value: 'Đồ gia dụng',
+    image:
+      'https://www.sapo.vn/blog/wp-content/uploads/2018/01/the-gioi-do-gia-dung-min.jpg',
     id: 3,
-    title: 'Giày - dép nữ',
-    list: [
-      {
-        id_con: 'cao_got',
-        name: 'Giày cao gót',
-      },
-      {
-        id_con: 'the_thao_nu',
-        name: 'Giày thể thao',
-      },
-      {
-        id_con: 'sandal',
-        name: 'Sandals nữ',
-      },
-      {
-        id_con: 'bup_be',
-        name: 'Giày búp bê',
-      },
-    ],
   },
 ];
 
+
+
 export default class CategoryScreen extends React.Component {
+
   constructor(props) {
     super(props);
-    this.state = {
-      id_phanLoai: '',
-      namePhanLoai: '',
-      idCategory: '',
-      nameCategory: '',
-    };
   }
 
-  chooseCategory(idPL, namePL, id_category, name_category) {
-    console.log('category' + idPL + ' ' + id_category + ' ' + name_category);
-    // this.props.navigation.setParams({ category: id_category });
-    this.props.navigation.navigate('Camera', {category: name_category});
-  }
 
   render() {
     return (
-      <View style={styles.container}>
+      <View>
         <FlatList
-          data={data_category}
-          renderItem={({item, index}) => {
-            return (
-              <View>
-                <Text style={styles.emptyListStyle}>{item.title}</Text>
-                {item.list.map((element, key) => (
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.chooseCategory(
-                        item.id,
-                        item.title,
-                        element.id_con,
-                        element.name,
-                      )
-                    }>
-                    <Text style={styles.textStyle}> {element.name} </Text>
-                    <View
-                      style={{
-                        width: '100%',
-                        height: 1,
-                        backgroundColor: '#cccccc',
-                      }}
-                    />
-                  </TouchableOpacity>
-                ))}
+          data={categories}
+          renderItem={({item}) => (
+            <TouchableOpacity
+             
+              onPress={() =>
+                this.props.navigation.navigate('Listcateogory', {
+                  category: item.label,
+                })
+              }>
+              <View style={styles.categoriesItemContainer}>
+                <Image
+                  style={styles.categoriesPhoto}
+                  source={{uri: item.image}}
+                />
+                <Text style={styles.categoriesName}>{item.label}</Text>
               </View>
-            );
-          }}
-          keyExtractor={(item) => item.key.toString()}
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => `${item.id}`}
         />
       </View>
     );
   }
 }
 
+
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#ffffff',
-  },
-  card: {
+  categoriesItemContainer: {
     flex: 1,
-    borderRadius: 10,
-    backgroundColor: '#ffffff',
-    margin: 5,
-  },
-  image: {
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
-    width: 100,
-    height: 150,
-    borderRadius: 10,
+    margin: 10,
     justifyContent: 'center',
+    alignItems: 'center',
+    height: 215,
+    borderColor: '#cccccc',
+    borderWidth: 0.5,
+    borderRadius: 20,
   },
-  title: {
-    marginLeft: 20,
-    color: '#000000',
-    fontWeight: 'bold',
-  },
-  price: {
-    marginLeft: 20,
-    color: '#000000',
-  },
-  emptyListStyle: {
-    padding: 10,
-    fontSize: 18,
-    backgroundColor: '#ff9933',
-    color: '#ffffff',
-  },
-  itemStyle: {
-    padding: 10,
-  },
-  headerFooterStyle: {
+  categoriesPhoto: {
     width: '100%',
-    height: 45,
-    backgroundColor: '#606070',
+    height: 155,
+    borderRadius: 20,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    shadowColor: 'blue',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 5,
+    shadowOpacity: 1.0,
+    elevation: 3,
   },
-  textStyle: {
-    padding: 7,
+  categoriesName: {
+    flex: 1,
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#333333',
+    marginTop: 8,
+  },
+  categoriesInfo: {
+    marginTop: 3,
+    marginBottom: 5,
   },
 });

@@ -111,13 +111,13 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     marginLeft: 20,
-    marginTop: 10,
+ 
     alignItems: 'flex-start',
   },
   image: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
 
   card: {
@@ -129,17 +129,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.37,
     shadowRadius: 7.49,
     elevation: 12,
-
-    marginVertical: 10,
+    marginVertical: 5,
     marginHorizontal: 20,
     backgroundColor: 'white',
     flexBasis: '46%',
     padding: 10,
     flexDirection: 'row',
+    borderRadius: 10,
   },
 
   name: {
-    fontSize: 20,
+    fontSize: 15,
     flex: 1,
     alignSelf: 'center',
     color: '#008080',
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00BFFF',
     alignContent: 'center',
     color: '#FFFFFF',
-    fontSize: 18,
+    fontSize: 13,
     alignSelf: 'center',
   },
 });

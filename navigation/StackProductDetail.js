@@ -1,7 +1,11 @@
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
+import CategoryScreen from '../screens/CategoryScreen';
 import ChatScreen from '../screens/ChatScreen';
 import HomeScreen from '../screens/HomeScreen';
+import ListCategory from '../screens/ListCategory';
+import OrderScreen from '../screens/OrderScreen';
+
 import ProductDetail from '../screens/ProductDetail';
 import ProfileUser from '../screens/ProfileUser';
 
@@ -28,6 +32,28 @@ const StackProductDetail = createStackNavigator({
     screen: ChatScreen,
     navigationOptions: {
       headerShown: true,
+    },
+  },
+  Category: {
+    screen: CategoryScreen,
+    navigationOptions: {
+      headerShown: true,
+      title: 'Phân loại',
+    },
+  },
+  Listcateogory: {
+    screen: ListCategory,
+    navigationOptions: {
+      headerShown: true,
+      title: 'Danh mục',
+    },
+  },
+
+  Order: {
+    screen: OrderScreen,
+    navigationOptions: {
+      headerShown: true,
+      title: 'Đặt hàng',
     },
   },
 });

@@ -238,7 +238,30 @@ class ProductDetail extends React.Component {
               autoplay
               circleLoop
             />
+            {this.state.idUser !== this.props.userId ? (
+              <View style={styles.addToCarContainer}>
+                <TouchableOpacity
+                  style={styles.shareBtn}
+                  onPress={() => this.sendMessage()}>
+                  <Text style={styles.shareBtnText}>Nhắn tin</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.shareBtn}
+                  onPress={() =>
+                    this.props.navigation.navigate('Order', {
+                      idProduct: this.state.idProduct,
+                      productName: this.state.productName,
+                      productImage: this.state.productImage1,
+                      productPrice: this.state.productPrice,
+                      productDescription: this.state.productDescription
+                    })
+                  }>
+                  <Text style={styles.shareBtnText}>Mua hàng</Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
+
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
@@ -273,7 +296,7 @@ class ProductDetail extends React.Component {
           <View style={styles.card}>
             <View style={styles.cardHeader2}>
               <Text style={styles.cardTitle}>
-                Danh mục: {this.state.productCategory}{' '}
+                Phân loại: {this.state.productCategory}{' '}
               </Text>
               <Text style={styles.cardTitle}>
                 Tình trạng: {this.state.productStatus}{' '}
@@ -288,19 +311,6 @@ class ProductDetail extends React.Component {
                 {this.state.productDescription}
               </Text>
             </View>
-          </View>
-
-          <View style={styles.addToCarContainer}>
-            <TouchableOpacity
-              style={styles.shareButton}
-              onPress={() => this.sendMessage()}>
-              <Text style={styles.shareButtonText}>Nhắn tin</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.shareButton}
-              onPress={() => this.sendMessage()}>
-              <Text style={styles.shareButtonText}>Mua hàng</Text>
-            </TouchableOpacity>
           </View>
 
           <View style={styles.footer}>
@@ -376,24 +386,19 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 20,
   },
-  shareButton: {
+  shareBtn: {
     marginBottom: 10,
-    height: 45,
-    width: 150,
+    padding: 10,
     alignItems: 'center',
-    borderRadius: 30,
     backgroundColor: '#00BFFF',
   },
-  shareButtonText: {
-    color: '#FFFFFF',
-    fontSize: 10,
+  shareBtnText: {
+    color: '#ffffff',
+    fontSize: 15,
   },
   addToCarContainer: {
-    marginLeft: 20,
-    marginRight: 20,
     flexDirection: 'row',
     flex: 1,
-    justifyContent: 'space-between',
   },
   footer: {
     flexDirection: 'row',
