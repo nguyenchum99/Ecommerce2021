@@ -14,7 +14,7 @@ const list = [
     icon: 'group',
   },
   {
-    title: 'Lịch sử bán',
+    title: 'Đơn hàng bán',
     icon: 'history',
   },
   {

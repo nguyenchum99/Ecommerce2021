@@ -208,17 +208,17 @@ const LoginScreen = (props) => {
       <View style={styles.inputContainer}>
         <Image style={[styles.icon, styles.inputIcon]} source={{ uri: 'https://png.icons8.com/envelope/androidL/40/3498db' }} />
         <TextInput style={styles.inputs}
-          placeholder="Password"
+          placeholder="Mật khẩu"
           secureTextEntry={true}
           underlineColorAndroid='transparent' />
       </View>
 
       <TouchableOpacity style={styles.restoreButtonContainer}>
-        <Text>Forgot?</Text>
+        <Text>Quên mật khẩu?</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.buttonContainer, styles.loginButton]}>
-        <Text style={styles.loginText}>Login</Text>
+        <Text style={styles.loginText}>Đăng nhập</Text>
       </TouchableOpacity>
 
 
@@ -232,7 +232,7 @@ const LoginScreen = (props) => {
       <TouchableOpacity style={[styles.buttonContainer, styles.googleButton]} onPress={googleLoginHandler}>
         <View style={styles.socialButtonContent}>
           <Image style={styles.icon} source={{ uri: 'https://png.icons8.com/google/androidL/40/FFFFFF' }} />
-          <Text style={styles.loginText}>Sign in with google</Text>
+          <Text style={styles.loginText}>Đăng nhập với Google</Text>
         </View>
       </TouchableOpacity>
     </View>

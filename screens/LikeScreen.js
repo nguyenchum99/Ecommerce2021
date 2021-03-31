@@ -1,5 +1,6 @@
 import {firebaseApp} from '../Components/FirebaseConfig';
 import React, {Component} from 'react';
+import {Icon} from 'react-native-elements';
 import {
   StyleSheet,
   Text,
@@ -21,6 +22,7 @@ class LikeScreen extends React.Component {
       data: [],
       isLike: '',
       key: '',
+      recommendation : []
     };
   }
 
@@ -49,6 +51,10 @@ class LikeScreen extends React.Component {
           data: li,
         });
       });
+
+      //recommend
+
+
   }
 
   clickLike(key) {

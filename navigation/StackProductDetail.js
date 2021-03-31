@@ -5,6 +5,7 @@ import ChatScreen from '../screens/ChatScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ListCategory from '../screens/ListCategory';
 import OrderScreen from '../screens/OrderScreen';
+import OrderSuccess from '../screens/OrderSuccess';
 
 import ProductDetail from '../screens/ProductDetail';
 import ProfileUser from '../screens/ProfileUser';
@@ -53,6 +54,13 @@ const StackProductDetail = createStackNavigator({
     screen: OrderScreen,
     navigationOptions: {
       headerShown: true,
+      title: 'Đặt hàng',
+    },
+  },
+  OrderSuccess: {
+    screen: OrderSuccess,
+    navigationOptions: {
+      headerShown: false,
       title: 'Đặt hàng',
     },
   },

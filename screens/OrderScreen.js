@@ -10,12 +10,10 @@ import {
   View,
   Alert,
 } from 'react-native';
-import {SliderBox} from 'react-native-image-slider-box';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
-import * as helper from '../database/database-helper';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {Input} from 'react-native-elements';
+import {ListItem, Icon} from 'react-native-elements';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -28,6 +26,7 @@ class ProductDetail extends React.Component {
       phoneUser: '',
       addressUser: '',
       idProduct: '',
+      idUserSell: ''
     };
   }
 
@@ -36,6 +35,7 @@ class ProductDetail extends React.Component {
     const name = this.props.navigation.getParam('productName');
     const price = this.props.navigation.getParam('productPrice');
     const image = this.props.navigation.getParam('productImage');
+    const idUserSell = this.props.navigation.getParam('idUserSell');
 
     console.log('image', image);
     this.setState({
@@ -43,6 +43,7 @@ class ProductDetail extends React.Component {
       productName: name,
       productImage: image,
       productPrice: price,
+      idUserSell: idUserSell
     });
   }
 
@@ -68,6 +69,12 @@ class ProductDetail extends React.Component {
               userName: this.props.userName,
               address: this.state.addressUser,
               phone: this.state.phoneUser,
+              idUserSell: this.state.idUserSell
+            });
+
+            alert('Đặt hàng thành công');
+            this.props.navigation.navigate('OrderSuccess', {
+              idProduct: this.state.idProduct,
             });
 
             this.setState({
@@ -78,9 +85,8 @@ class ProductDetail extends React.Component {
               productImage: null,
               addressUser: null,
               phoneUser: null,
+              idUserSell: null
             });
-
-            alert('Đặt hàng thành công');
           },
         },
       ],
@@ -100,24 +106,51 @@ class ProductDetail extends React.Component {
             </Text>
           </View>
         </View>
-        <Text>Địa chỉ giao hàng</Text>
-        <Text>Tên người nhận: {this.props.userName}</Text>
-        <Text>Phí ship: </Text>
-        <Text>Thuế: </Text>
+        <ListItem bottomDivider>
+          <ListItem.Content>
+            <ListItem.Title>
+              Tên người nhận: {this.props.userName}
+            </ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+        <ListItem bottomDivider>
+          <ListItem.Content>
+            <ListItem.Title>
+              <Text>Phí ship: </Text>
+            </ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+        <ListItem bottomDivider>
+          <ListItem.Content>
+            <ListItem.Title>
+              <Text>Thuế: </Text>
+            </ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+
         <Input
           placeholder="Địa chỉ"
-          errorStyle={{color: 'red'}}
-          errorMessage="ENTER A VALID ERROR HERE"
           onChangeText={(value) => this.setState({addressUser: value})}
         />
         <Input
           placeholder="Số điện thoại"
-          errorStyle={{color: 'red'}}
-          errorMessage="ENTER A VALID ERROR HERE"
           onChangeText={(value) => this.setState({phoneUser: value})}
         />
-        <Text>Thuế: </Text>
-        <Text>Tổng: {this.state.productPrice} VND</Text>
+        <ListItem bottomDivider>
+          <ListItem.Content>
+            <ListItem.Title>
+              <Text>Thuế: </Text>
+            </ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+        <ListItem bottomDivider>
+          <ListItem.Content>
+            <ListItem.Title>
+              <Text>Tổng: {this.state.productPrice} VND</Text>
+            </ListItem.Title>
+          </ListItem.Content>
+        </ListItem>
+
         <TouchableOpacity
           style={[styles.buttonContainer, styles.loginButton]}
           onPress={() => this.orderProduct()}>

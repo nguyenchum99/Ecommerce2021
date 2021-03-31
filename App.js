@@ -10,6 +10,7 @@ import {applyMiddleware, combineReducers, createStore} from 'redux';
 import ReduxThunk from 'redux-thunk';
 import NavigationContainer from './navigation/NavigationContainer';
 import NotificationScreen from './screens/NotificationScreen';
+import OrderScreen from './screens/OrderScreen';
 import TestScreen from './screens/TestScreen';
 import authReducer from './store/reducers/auth';
 import chatsReducer from './store/reducers/chats';
@@ -28,9 +29,10 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer />
     </Provider>
+    //<OrderScreen/>
     // <NotificationScreen/>
     // <CommentList/>
-    //<TestScreen/>
+   // <TestScreen/>
   );
 };
 

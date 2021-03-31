@@ -85,7 +85,7 @@ class LocalScreen extends React.Component {
               <Icon name="search" style={styles.inputIcon} />
               <TextInput
                 style={styles.inputs}
-                placeholder="Search"
+                placeholder="Tìm kiếm"
                 underlineColorAndroid="transparent"
                 onChangeText={(text) => this.setState({searchKey: text})}
               />

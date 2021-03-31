@@ -149,6 +149,7 @@ class ProductDetail extends React.Component {
             productImage1: this.state.productImage1,
             isLiked: true,
           });
+
         }
       });
   };
@@ -253,7 +254,8 @@ class ProductDetail extends React.Component {
                       productName: this.state.productName,
                       productImage: this.state.productImage1,
                       productPrice: this.state.productPrice,
-                      productDescription: this.state.productDescription
+                      productDescription: this.state.productDescription,
+                      idUserSell: this.state.idUser,
                     })
                   }>
                   <Text style={styles.shareBtnText}>Mua hàng</Text>
@@ -279,20 +281,7 @@ class ProductDetail extends React.Component {
               <Text style={styles.username}>{this.state.userName}</Text>
             </View>
           </TouchableOpacity>
-          {/* <View style={styles.footer}>
-            <Text>Nhắn tin</Text>
 
-            <TouchableOpacity
-              style={styles.btnSend}
-              onPress={() => this.sendMessage()}>
-              <Image
-                source={{
-                  uri: 'https://img.icons8.com/small/75/ffffff/filled-sent.png',
-                }}
-                style={styles.iconSend}
-              />
-            </TouchableOpacity>
-          </View> */}
           <View style={styles.card}>
             <View style={styles.cardHeader2}>
               <Text style={styles.cardTitle}>
@@ -311,30 +300,31 @@ class ProductDetail extends React.Component {
                 {this.state.productDescription}
               </Text>
             </View>
-          </View>
+            <View style={styles.footer}>
+              <View style={styles.inputContainercmt}>
+                <TextInput
+                  style={styles.inputscmt}
+                  placeholder="Bình luận..."
+                  underlineColorAndroid="transparent"
+                  value={this.state.comment}
+                  onChangeText={(text) => this.setState({comment: text})}
+                />
+              </View>
 
-          <View style={styles.footer}>
-            <View style={styles.inputContainercmt}>
-              <TextInput
-                style={styles.inputscmt}
-                placeholder="Bình luận..."
-                underlineColorAndroid="transparent"
-                value={this.state.comment}
-                onChangeText={(text) => this.setState({comment: text})}
-              />
+              <TouchableOpacity
+                style={styles.btnSend}
+                onPress={() => this.postComment()}>
+                <Image
+                  source={{
+                    uri:
+                      'https://img.icons8.com/small/75/ffffff/filled-sent.png',
+                  }}
+                  style={styles.iconSend}
+                />
+              </TouchableOpacity>
             </View>
-
-            <TouchableOpacity
-              style={styles.btnSend}
-              onPress={() => this.postComment()}>
-              <Image
-                source={{
-                  uri: 'https://img.icons8.com/small/75/ffffff/filled-sent.png',
-                }}
-                style={styles.iconSend}
-              />
-            </TouchableOpacity>
           </View>
+
           <View>
             <FlatList
               style={styles.root}
@@ -349,12 +339,11 @@ class ProductDetail extends React.Component {
               renderItem={({item}) => {
                 return (
                   <View style={styles.containerItem}>
-                    <TouchableOpacity onPress={() => {}}>
-                      <Image
-                        style={styles.image}
-                        source={{uri: item.avatarUser}}
-                      />
-                    </TouchableOpacity>
+                    <Image
+                      style={styles.image}
+                      source={{uri: item.avatarUser}}
+                    />
+
                     <View style={styles.contentCmt}>
                       <View style={styles.contentHeadercmt}>
                         <Text style={styles.nameusercmt}>{item.nameUser}</Text>
@@ -399,6 +388,7 @@ const styles = StyleSheet.create({
   addToCarContainer: {
     flexDirection: 'row',
     flex: 1,
+    justifyContent: 'flex-end'
   },
   footer: {
     flexDirection: 'row',
