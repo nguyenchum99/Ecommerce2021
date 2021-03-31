@@ -60,6 +60,9 @@ const ExpandScreen = (props) => {
     else if( index == 1){
        props.navigation.navigate('Sell');
     }
+    else if( index == 2){
+       props.navigation.navigate('Buy');
+    }
   };
 
   return (

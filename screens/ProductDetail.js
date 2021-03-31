@@ -1,4 +1,5 @@
 import database from '@react-native-firebase/database';
+import {isNull} from 'lodash';
 import React from 'react';
 import {
   FlatList,
@@ -39,6 +40,7 @@ class ProductDetail extends React.Component {
       valueLike: 0,
       selectedImage: '',
       listImage: '',
+      isSoldOut: '',
     };
   }
 
@@ -113,6 +115,7 @@ class ProductDetail extends React.Component {
         this.state.productStatus = snapshot.child('status').val();
         this.state.productCategory = snapshot.child('category').val();
         this.state.userAvatar = snapshot.child('userAvatar').val();
+        this.state.isSoldOut = snapshot.child('sold').val();
       });
 
     this._checkLikeState(idProduct, this.props.userId);
@@ -261,7 +264,6 @@ class ProductDetail extends React.Component {
                 </TouchableOpacity>
               ) : null}
             </View>
-
             <SliderBox
               images={this.state.listImage}
               sliderBoxHeight={300}
@@ -275,13 +277,17 @@ class ProductDetail extends React.Component {
               autoplay
               circleLoop
             />
-            {this.state.idUser !== this.props.userId ? (
+
+            {this.state.isSoldOut ? (
+              <Text> Đã bán hết</Text>
+            ) : this.state.idUser !== this.props.userId ? (
               <View style={styles.addToCarContainer}>
                 <TouchableOpacity
                   style={styles.shareBtn}
                   onPress={() => this.sendMessage()}>
                   <Text style={styles.shareBtnText}>Nhắn tin</Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity
                   style={styles.shareBtn}
                   onPress={() =>

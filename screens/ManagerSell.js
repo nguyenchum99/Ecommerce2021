@@ -45,7 +45,6 @@ class ManagerSell extends React.Component {
           data: li,
         });
 
-        console.log("sellllllll", this.state.data);
       });
   }
 

@@ -12,9 +12,9 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {ListItem, Icon} from 'react-native-elements';
-import { firebaseApp } from '../Components/FirebaseConfig';
+import {firebaseApp} from '../Components/FirebaseConfig';
 
-class SellDetail extends React.Component {
+class BuyConfirm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,6 +30,7 @@ class SellDetail extends React.Component {
       productPrice: '',
       userName: '',
       key: '',
+      orderSuccess: '',
     };
   }
 
@@ -46,6 +47,9 @@ class SellDetail extends React.Component {
     const productPrice = this.props.navigation.getParam('productPrice');
     const userName = this.props.navigation.getParam('userName');
     const key = this.props.navigation.getParam('key');
+    const orderSuccess = this.props.navigation.getParam('orderSuccess');
+
+    
 
     this.setState({
       address: address,
@@ -60,26 +64,40 @@ class SellDetail extends React.Component {
       productPrice: productPrice,
       userName: userName,
       key: key,
+      orderSuccess: orderSuccess,
     });
   }
 
-  xacThucDonHang() {
-      // update trang thai don thanh cong
+  //xác nhận đã nhận được hàng thành công
+  daNhanDon() {
+    // update trang thai don thanh cong
     firebaseApp.database().ref(`Orders/${this.state.key}`).update({
-        orderSuccess: true
-    });
-    //update san pham da ban
-    firebaseApp.database().ref(`Products/${this.state.idProduct}`).update({
-      sold: true,
+      receiveProductSuccess: true
     });
     
+    this.props.navigation.navigate('Rating', {
+      address: this.state.address,
+      createAt: this.state.createAt,
+      idProduct: this.state.idProduct,
+      idUser: this.state.idUser,
+      phone: this.state.phone,
+      productImage: this.state.productImage,
+      idProduct: this.state.idProduct,
+      productName: this.state.productName,
+      userPhoto: this.state.userPhoto,
+      productPrice: this.state.productPrice,
+      userName: this.state.userName,
+      key: this.state.key,
+      orderSuccess: this.state.orderSuccess,
+      idUserSell : this.state.idUserSell
+    });
   }
 
   render() {
+   
     return (
       <View>
         <View style={styles.box}>
-        
           <Image style={styles.image} source={{uri: this.state.productImage}} />
           <View style={styles.boxContent}>
             <Text style={styles.title}>{this.state.productName}</Text>
@@ -105,18 +123,22 @@ class SellDetail extends React.Component {
             <ListItem.Title>
               <Text>Số điện thoại: {this.state.phone} </Text>
             </ListItem.Title>
+            <ListItem.Title>
+              giao dich{' '}
+              {this.state.orderSuccess ? <Text>thanh cong</Text> : null}
+            </ListItem.Title>
           </ListItem.Content>
         </ListItem>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[styles.buttonContainer, styles.loginButton]}
           onPress={() => this.orderProduct()}>
           <Text style={styles.loginText}>Phí ship</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={[styles.buttonContainer, styles.loginButton]}
-          onPress={() => this.xacThucDonHang()}>
-          <Text style={styles.loginText}>Xác nhận đơn hàng</Text>
+          onPress={() => this.daNhanDon()}>
+          <Text style={styles.loginText}>Đã nhận đơn</Text>
         </TouchableOpacity>
       </View>
     );
@@ -129,7 +151,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, null)(SellDetail);
+export default connect(mapStateToProps, null)(BuyConfirm);
 const styles = StyleSheet.create({
   loginText: {
     color: 'white',

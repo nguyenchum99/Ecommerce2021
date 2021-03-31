@@ -2,7 +2,7 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import ExpandScreen from '../screens/ExpandScreen';
 import FindFriendScreen from '../screens/FindFriendScreen';
-
+import StackBuy from './StackBuy';
 import StackSell from './StackSell';
 
 
@@ -22,6 +22,13 @@ const StackExpandNavigator = createStackNavigator(
     },
     Sell: {
       screen: StackSell,
+      navigationOptions: {
+        title: 'Quản lý đơn hàng bán',
+        headerShown: false,
+      },
+    },
+    Buy: {
+      screen: StackBuy,
       navigationOptions: {
         title: 'Quản lý đơn hàng bán',
         headerShown: false,
