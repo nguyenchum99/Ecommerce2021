@@ -1,85 +1,85 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
 import {connect} from 'react-redux';
+import {ListItem, Icon} from 'react-native-elements';
+import {useDispatch, useSelector} from 'react-redux';
+import * as authActions from '../store/actions/auth';
+import * as usersActions from '../store/actions/users';
 
+const list = [
+  {
+    title: 'Tìm kiếm bạn bè',
+    icon: 'group',
+  },
+  {
+    title: 'Lịch sử bán',
+    icon: 'history',
+  },
+  {
+    title: 'Đơn hàng mua',
+    icon: 'shopping-cart',
+  },
+  {
+    title: 'Hoạt động của bạn',
+    icon: 'equalizer',
+  },
+  {
+    title: 'Đăng xuất',
+    icon: 'logout',
+  },
+];
 
-class ExpandScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={{
-            height: 35,
-            backgroundColor: '#DDDDDD',
-            padding: 10,
-            borderWidth: 1,
-            borderColor: '#000000',
-          }}
-          onPress={() => this.props.navigation.navigate('Find')}>
-          <Text
-            style={{
-              padding: 5,
-            }}>
-            Tìm kiếm bạn bè
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            height: 35,
-            backgroundColor: '#DDDDDD',
-            padding: 10,
-            borderWidth: 1,
-            borderColor: '#000000',
-          }}
-          onPress={() => this.props.navigation.navigate('Find')}>
-          <Text
-            style={{
-              padding: 5,
-            }}>
-            Danh mục
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            height: 35,
-            backgroundColor: '#DDDDDD',
-            padding: 10,
-            borderWidth: 1,
-            borderColor: '#000000',
-          }}
-          onPress={() => this.props.navigation.navigate('Find')}>
-          <Text
-            style={{
-              padding: 5,
-            }}>
-            yêu thích
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
-
-const mapStateToProps = (state) => {
-  return {
-    ...state.auth,
+const ExpandScreen = (props) => {
+  const dispatch = useDispatch();
+  const logoutHandler = () => {
+    dispatch(authActions.logout());
   };
+  const userName = useSelector((state) => state.auth.userName);
+  const userPhoto = useSelector((state) => state.auth.userPhoto);
+  const userId = useSelector((state) => state.auth.userId);
+  const users = useSelector((state) => state.users.users);
+
+  const fetchUserData = async () => {
+    await dispatch(usersActions.fetchUsers());
+    await dispatch(usersActions.fetchFollowerUsers());
+    await dispatch(usersActions.fetchFollowingUsers());
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, [userId]);
+
+  const selectExpand = (index) => {
+    if (index == 0) {
+      props.navigation.navigate('Find');
+    } else if (index == 4) {
+      logoutHandler();
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {list.map((item, i) => (
+        <TouchableOpacity onPress={() => selectExpand(i)}>
+          <ListItem key={i} bottomDivider>
+            <Icon name={item.icon} />
+            <ListItem.Content>
+              <ListItem.Title>{item.title}</ListItem.Title>
+            </ListItem.Content>
+            <ListItem.Chevron />
+          </ListItem>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
 };
 
-export default connect(mapStateToProps, null)(ExpandScreen);
+export default ExpandScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
 });

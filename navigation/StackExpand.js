@@ -14,9 +14,15 @@ const StackExpand = createStackNavigator(
     },
     Expand: {
       screen: StackExpandNavigator,
+      navigationOptions: {
+        title : 'Mở rộng'
+      },
     },
     Profile: {
       screen: EditProfileUser,
+      navigationOptions: {
+        headerShown: false,
+      },
     },
   },
   {

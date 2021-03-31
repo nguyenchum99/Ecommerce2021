@@ -41,9 +41,9 @@ const UserScreen = (props) => {
             <Text style={styles.location}>Editttt Profile</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={logoutHandler}>
+        {/* <TouchableOpacity onPress={logoutHandler}>
           <Text>Logout</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <UserTopNavigator />
     </View>
