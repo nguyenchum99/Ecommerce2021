@@ -4,6 +4,7 @@ import {SearchBar} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import ChatListItem from '../Components/ChatListItem';
 import * as chatActions from '../store/actions/chats';
+import * as notificationsActions from '../store/actions/notifications';
 
 const ChatRoomsScreen = (props) => {
   const onClick = (item) => {
@@ -15,6 +16,9 @@ const ChatRoomsScreen = (props) => {
   };
 
   const data = useSelector((state) => state.chats.sellChatRooms);
+  const notifications = useSelector(
+    (state) => state.notifications.notifications,
+  );
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -23,9 +27,12 @@ const ChatRoomsScreen = (props) => {
     setIsLoading(true);
     dispatch(chatActions.fetchChatRooms()).then(setIsLoading(false));
   }, []);
-
+  const fetchNotifications = useCallback(() => {
+    dispatch(notificationsActions.fetchNotifications());
+  }, []);
   useEffect(() => {
     if (data.length === 0) fetchData();
+    if (notifications.length == 0) fetchNotifications();
   }, [fetchData]);
 
   const [searchKey, setSearchKey] = useState();

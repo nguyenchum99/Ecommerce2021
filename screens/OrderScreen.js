@@ -60,17 +60,22 @@ class ProductDetail extends React.Component {
         {
           text: 'Có',
           onPress: () => {
-            firebaseApp.database().ref('Orders').push({
-              idProduct: this.state.idProduct,
-              productPrice: this.state.productPrice,
-              productName: this.state.productName,
-              productImage: this.state.productImage,
-              idUser: this.props.userId,
-              userName: this.props.userName,
-              address: this.state.addressUser,
-              phone: this.state.phoneUser,
-              idUserSell: this.state.idUserSell
-            });
+            firebaseApp
+              .database()
+              .ref('Orders')
+              .push({
+                idProduct: this.state.idProduct,
+                productPrice: this.state.productPrice,
+                productName: this.state.productName,
+                productImage: this.state.productImage,
+                idUser: this.props.userId,
+                userName: this.props.userName,
+                userPhoto: this.props.userPhoto,
+                address: this.state.addressUser,
+                phone: this.state.phoneUser,
+                idUserSell: this.state.idUserSell,
+                createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
+              });
 
             alert('Đặt hàng thành công');
             this.props.navigation.navigate('OrderSuccess', {

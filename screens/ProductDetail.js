@@ -42,6 +42,41 @@ class ProductDetail extends React.Component {
     };
   }
 
+  postNotification(type) {
+    const newRef = database().ref('Notifications').push();
+    switch (type) {
+      case 'like':
+        newRef.set({
+          uid1: this.props.userId,
+          userName: this.props.userName,
+          uid2: this.state.idUser,
+          content: `${this.props.userName} liked your product ${this.state.productName}`,
+          createdAt: new Date().toISOString(),
+          avatarUser: this.props.userPhoto,
+          attachment: this.state.productImage1,
+        });
+        break;
+      case 'comment':
+        newRef.set({
+          uid1: this.props.userId,
+          userName: this.props.userName,
+          uid2: this.state.idUser,
+          content: `${this.props.userName} commented on your product ${this.state.productName}: ${this.state.comment}`,
+          createdAt: new Date().toISOString(),
+          avatarUser: this.props.userPhoto,
+          attachment: this.state.productImage1,
+        });
+        break;
+      case 'order':
+        newRef.set({});
+      case 'follow':
+        newRef.set({});
+        break;
+      default:
+        break;
+    }
+  }
+
   postComment() {
     if (this.state.comment != null) {
       firebaseApp.database().ref('Comments').push({
@@ -53,6 +88,7 @@ class ProductDetail extends React.Component {
         avatarUser: this.props.userPhoto,
       });
       this.setState({comment: null});
+      this.postNotification('comment');
     }
   }
   componentDidMount() {
@@ -149,7 +185,7 @@ class ProductDetail extends React.Component {
             productImage1: this.state.productImage1,
             isLiked: true,
           });
-
+          this.postNotification('like');
         }
       });
   };
@@ -388,7 +424,7 @@ const styles = StyleSheet.create({
   addToCarContainer: {
     flexDirection: 'row',
     flex: 1,
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   footer: {
     flexDirection: 'row',

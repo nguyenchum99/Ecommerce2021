@@ -14,12 +14,14 @@ import OrderScreen from './screens/OrderScreen';
 import TestScreen from './screens/TestScreen';
 import authReducer from './store/reducers/auth';
 import chatsReducer from './store/reducers/chats';
+import notificationsReducer from './store/reducers/notifications';
 import usersReducer from './store/reducers/users';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   chats: chatsReducer,
   users: usersReducer,
+  notifications: notificationsReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
@@ -32,7 +34,7 @@ const App = () => {
     //<OrderScreen/>
     // <NotificationScreen/>
     // <CommentList/>
-   // <TestScreen/>
+    // <TestScreen/>
   );
 };
 

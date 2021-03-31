@@ -14,7 +14,7 @@ const list = [
     icon: 'group',
   },
   {
-    title: 'Đơn hàng bán',
+    title: 'Quản lý đơn bán',
     icon: 'history',
   },
   {
@@ -56,6 +56,9 @@ const ExpandScreen = (props) => {
       props.navigation.navigate('Find');
     } else if (index == 4) {
       logoutHandler();
+    }
+    else if( index == 1){
+       props.navigation.navigate('Sell');
     }
   };
 
