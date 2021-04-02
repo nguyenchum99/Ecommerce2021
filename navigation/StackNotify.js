@@ -14,6 +14,10 @@ const StackNotify = createStackNavigator({
   },
   myCmt: {
     screen: MyComment,
+    navigationOptions: {
+      headerShown: true,
+      title: 'Bình luận của bạn'
+    },
   },
 });
 

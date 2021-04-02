@@ -16,6 +16,7 @@ const UserScreen = (props) => {
   };
   const userName = useSelector((state) => state.auth.userName);
   const userPhoto = useSelector((state) => state.auth.userPhoto);
+  const email = useSelector((state) => state.auth.userEmail);
   const userId = useSelector((state) => state.auth.userId);
   const users = useSelector((state) => state.users.users);
   const buttons = ['Hello', 'World', 'Buttons'];
@@ -46,8 +47,8 @@ const UserScreen = (props) => {
         <TouchableOpacity onPress={() => props.navigation.navigate('Profile')}>
           <View>
             <Text style={styles.title}>{userName}</Text>
-            <Text style={styles.location}>Location: Ha noi</Text>
-            <Text style={styles.location}>Editttt Profile</Text>
+            <Text style={styles.location}>{email}</Text>
+         
           </View>
         </TouchableOpacity>
         {/* <TouchableOpacity onPress={logoutHandler}>

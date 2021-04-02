@@ -11,155 +11,161 @@ import {
   Button,
   TextInput,
 } from 'react-native';
-import { firebaseApp } from '../Components/FirebaseConfig';
+import {firebaseApp} from '../Components/FirebaseConfig';
 import {connect} from 'react-redux';
-
+import moment from 'moment';
 class MyComment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      contentCmt: '',
       avatarUser: '',
-      createAt: '',
+      createdAt: '',
       userName: '',
+      comment: '',
       idProduct: '',
+      productImage: '',
       productName: '',
       productPrice: '',
       productDescription: '',
       myComment: '',
-      productImage: '',
-      eventId: ''
+      eventId: '',
+      cmtDisplay: '',
+      isCmt: false,
+      cmtCreate: '',
     };
   }
 
   componentDidMount() {
     const avatarUser = this.props.navigation.getParam('avatarUser');
-    const createAt = this.props.navigation.getParam('createAt');
+    const createdAt = this.props.navigation.getParam('createdAt');
     const eventId = this.props.navigation.getParam('eventId');
-    const type = this.props.navigation.getParam('type');
     const userName = this.props.navigation.getParam('userName');
-
-    console.log('avatar' + avatarUser);
-    console.log('creat' + type);
-    console.log('eventId' + eventId);
-    console.log('userName' + userName);
+    const image = this.props.navigation.getParam('image');
+    const idProduct = this.props.navigation.getParam('idProduct');
+    const productName = this.props.navigation.getParam('productName');
+    const productPrice = this.props.navigation.getParam('productPrice');
+    const productDescription = this.props.navigation.getParam(
+      'productDescription',
+    );
+    const comment = this.props.navigation.getParam('comment');
 
     this.setState({
       avatarUser: avatarUser,
-      createAt: createAt,
+      eventId: eventId,
       userName: userName,
-      eventId: eventId
+      productImage: image,
+      idProduct: idProduct,
+      productName: productName,
+      productPrice: productPrice,
+      productDescription: productDescription,
+      comment: comment,
+      createdAt: createdAt
     });
-    //lay noidung cmt
+
+    //lay cmt cua nguoi ban
     firebaseApp
       .database()
       .ref(`Comments/${eventId}`)
-      .once('value', (snapshot) => {
-        // console.log(snapshot.child('content').val());
-        //this.setState({idProduct: snapshot.child('idProduct').val()});
-        this.state.idProduct = snapshot.child('idProduct').val();
-        this.state.contentCmt = snapshot.child('content').val();
-      //  this.state.myComment = snapshot.child('product_cmt').val();
-
-      });
-
-    //lay thong tin san pham
-    firebaseApp
-      .database()
-      .ref(`Products/${this.state.idProduct}`)
-      .once('value', (snapshot) => {
-        this.state.productName = snapshot.child('name').val();
-        this.state.productPrice = snapshot.child('price').val();
-        this.state.productDescription = snapshot.child('description').val();
-        this.state.productImage = snapshot.child('imageUrl1').val();
-
-      });
-      
-
-    // console.log('productName', this.state.productName);
-  }
-
-  postComment() {
-    if (this.state.myComment != null) {
-      firebaseApp
-        .database()
-        .ref(`Comments/${this.state.eventId}`)
-        .update({
-          product_cmt: this.state.myComment,
+      .on('value', (snapshot) => {
+        this.setState({
+          cmtDisplay: snapshot.child('myComment').val(),
+          cmtCreate: snapshot.child('createAtCmtMyProduct').val(),
         });
-     
-      this.setState({myComment: null});
-      //this.postNotification('comment', newRef.key);
-    }
+      });
   }
+
+  postComment = () => {
+    if (this.state.myComment != null) {
+      // const newRef = firebaseApp.database().ref('Comments').push();
+      firebaseApp.database().ref(`Comments/${this.state.eventId}`).update({
+        //  nameUserProduct: this.props.userName,
+        //  idUserProduct: this.props.userId,
+        createAtCmtMyProduct: new Date().toISOString(),
+        myComment: this.state.myComment,
+      });
+      this.setState({myComment: null, isCmt: true
+      });
+    }
+  };
 
   render() {
-      console.log('testsatfsdyad', this.state.productImage );
-
     return (
       <View style={styles.container}>
-        <View style={{alignItems: 'center', marginHorizontal: 30}}>
-          <Image
-            style={styles.productImg}
-            source={{
-              uri: this.state.productImage
-            }}
-          />
-          <Text style={styles.name}>{this.state.productName}</Text>
-          <Text style={styles.price}>{this.state.productPrice}</Text>
-          <Text style={styles.description}>
-            {this.state.productDescription}
-          </Text>
-        </View>
-        <View style={styles.containerItem}>
-          <Image
-            style={styles.imagecmt}
-            source={{uri: this.state.avatarUser}}
-          />
-
-          <View style={styles.contentCmt}>
-            <View style={styles.contentHeadercmt}>
-              <Text style={styles.nameusercmt}>{this.state.userName}</Text>
-              <Text style={styles.timecmt}>{this.state.createAt}</Text>
-            </View>
-            <Text>{this.state.contentCmt}</Text>
-          </View>
-        </View>
-        {/* <View style={styles.containerItem}>
-          <Image
-            style={styles.imagecmt}
-            source={{uri: this.props.userPhoto}}
-          />
-
-          <View style={styles.contentCmt}>
-            <View style={styles.contentHeadercmt}>
-              <Text style={styles.nameusercmt}>{this.props.userName}</Text>         
-            </View>
-            <Text>{this.state.myComment}</Text>
-          </View>
-        </View> */}
-        <View style={styles.footer}>
-          <View style={styles.inputContainercmt}>
-            <TextInput
-              style={styles.inputscmt}
-              placeholder="Bình luận..."
-              underlineColorAndroid="transparent"
-              value={this.state.comment}
-              onChangeText={(text) => this.setState({myComment: text})}
-            />
-          </View>
-
-          <TouchableOpacity
-            style={styles.btnSend}
-            onPress={() => this.postComment()}>
+        <ScrollView>
+          <View style={[styles.card, styles.profileCard]}>
             <Image
+              style={styles.avatar}
               source={{
-                uri: 'https://img.icons8.com/small/75/ffffff/filled-sent.png',
+                uri: this.state.productImage,
               }}
-              style={styles.iconSend}
             />
-          </TouchableOpacity>
-        </View>
+            <Text style={styles.name}>
+              {this.state.productName} - {this.state.productPrice} VND
+            </Text>
+          </View>
+          <View style={styles.card}>
+            <Text style={styles.description}>
+              {this.state.productDescription}
+            </Text>
+          </View>
+          <View style={styles.containerItem}>
+            <Image style={styles.image} source={{uri: this.state.avatarUser}} />
+
+            <View style={styles.contentCmt}>
+              <View style={styles.contentHeadercmt}>
+                <Text style={styles.nameusercmt}>{this.state.userName}</Text>
+                <Text style={styles.timecmt}>
+                  {moment(new Date(this.state.createdAt)).fromNow()}
+                </Text>
+              </View>
+              <Text rkType="primary3 mediumLine">{this.state.comment}</Text>
+            </View>
+          </View>
+
+          {this.state.cmtDisplay == '' ? null : (
+            <View style={styles.containerItem2}>
+              <Image
+                style={styles.image}
+                source={{uri: this.props.userPhoto}}
+              />
+              <View style={styles.contentCmt}>
+                <View style={styles.contentHeadercmt}>
+                  <Text style={styles.nameusercmt}>{this.props.userName}</Text>
+                  <Text style={styles.timecmt}>
+                    {' '}
+                    {moment(new Date(this.state.cmtCreate)).fromNow()}
+                  </Text>
+                </View>
+                <Text rkType="primary3 mediumLine">
+                  {this.state.cmtDisplay}
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {/* binh luan cua ban */}
+          <View style={styles.footer}>
+            <View style={styles.inputContainercmt}>
+              <TextInput
+                style={styles.inputscmt}
+                placeholder="Bình luận..."
+                underlineColorAndroid="transparent"
+                value={this.state.myComment}
+                onChangeText={(text) => this.setState({myComment: text})}
+              />
+            </View>
+            <TouchableOpacity
+              style={styles.btnSend}
+              onPress={() => this.postComment()}>
+              <Image
+                source={{
+                  uri: 'https://img.icons8.com/small/75/ffffff/filled-sent.png',
+                }}
+                style={styles.iconSend}
+              />
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </View>
     );
   }
@@ -176,7 +182,71 @@ export default connect(mapStateToProps, null)(MyComment);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 10,
+    height: 100,
+  },
+  profileCard: {
+    height: 200,
+    alignItems: 'center',
     marginTop: 20,
+  },
+  avatar: {
+    width: 150,
+    height: 150,
+  },
+  containerItem: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    borderRadius: 10,
+  },
+  containerItem2: {
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginLeft: 50,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+  },
+  contentCmt: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  image: {
+    marginTop: 10,
+    marginLeft: 20,
+    width: 45,
+    height: 45,
+    borderRadius: 50,
+  },
+  contentHeadercmt: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+    marginTop: 5,
+  },
+  separatorcmt: {
+    height: 1,
+    backgroundColor: '#CCCCCC',
+  },
+  imagecmt: {
+    width: 45,
+    height: 45,
+    borderRadius: 20,
+  },
+  timecmt: {
+    fontSize: 11,
+    color: '#808080',
+  },
+  nameusercmt: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   footer: {
     flexDirection: 'row',
@@ -186,6 +256,19 @@ const styles = StyleSheet.create({
     padding: 5,
     alignItems: 'center',
     justifyContent: 'flex-end',
+  },
+  btnSend: {
+    backgroundColor: '#00BFFF',
+    width: 40,
+    height: 40,
+    borderRadius: 360,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconSend: {
+    width: 30,
+    height: 30,
+    alignSelf: 'center',
   },
   inputContainercmt: {
     borderColor: '#F5FCFF',
@@ -203,14 +286,6 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     borderBottomColor: '#FFFFFF',
     flex: 1,
-  },
-  btnSend: {
-    backgroundColor: '#00BFFF',
-    width: 40,
-    height: 40,
-    borderRadius: 360,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   productImg: {
     width: 200,
@@ -255,43 +330,44 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  containerItem: {
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingVertical: 12,
+  starContainer: {
+    justifyContent: 'center',
+    marginHorizontal: 30,
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    marginTop: 20,
   },
-  contentCmt: {
-    marginLeft: 10,
-    flex: 1,
-  },
-  contentHeadercmt: {
+  contentColors: {
+    justifyContent: 'center',
+    marginHorizontal: 30,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 6,
-    marginTop: 5,
+    marginTop: 20,
   },
-  separatorcmt: {
-    height: 1,
-    backgroundColor: '#CCCCCC',
+  contentSize: {
+    justifyContent: 'center',
+    marginHorizontal: 30,
+    flexDirection: 'row',
+    marginTop: 20,
   },
-  imagecmt: {
-    width: 45,
+  separator: {
+    height: 2,
+    backgroundColor: '#eeeeee',
+    marginTop: 20,
+    marginHorizontal: 30,
+  },
+  shareButton: {
+    marginTop: 10,
     height: 45,
-    borderRadius: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    backgroundColor: '#00BFFF',
   },
-  timecmt: {
-    fontSize: 11,
-    color: '#808080',
+  shareButtonText: {
+    color: '#FFFFFF',
+    fontSize: 20,
   },
-  nameusercmt: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    fontSize: 15,
+  addToCarContainer: {
+    marginHorizontal: 30,
   },
 });

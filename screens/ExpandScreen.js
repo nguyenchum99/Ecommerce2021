@@ -28,7 +28,7 @@ const list = [
   {
     title: 'Đăng xuất',
     icon: 'logout',
-  },
+  }
 ];
 
 const ExpandScreen = (props) => {

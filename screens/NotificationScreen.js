@@ -9,30 +9,89 @@ import {
   FlatList,
 } from 'react-native';
 import {connect} from 'react-redux';
+import { firebaseApp } from '../Components/FirebaseConfig';
 
 class NotificationScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      notifications: []
+    }
   }
 
-  openComment = (avatarUser, createAt, eventId, type, userName) => {
-    console.log('opencmt', avatarUser);
+  openComment = (
+    avatarUser,
+    createdAt,
+    eventId,
+    type,
+    userName,
+    image,
+    idProduct,
+    productName,
+    productPrice,
+    productDescription,
+    comment
+  ) => {
+  
     if (type == 'comment') {
       this.props.navigation.navigate('myCmt', {
         avatarUser: avatarUser,
-        createAt: createAt,
+        createdAt: createdAt,
         eventId: eventId,
         type: type,
         userName: userName,
+        image: image,
+        idProduct: idProduct,
+        productName: productName,
+        productPrice: productPrice,
+        productDescription: productDescription,
+        comment: comment
       });
     }
   };
 
+componentDidMount(){
+   firebaseApp
+      .database()
+      .ref('Notifications/')
+      .orderByChild('uid2')
+      .equalTo(this.props.userId)
+      .on('value', (snapshot) => {
+        const li = [];
+        snapshot.forEach((child) => {
+          li.push({
+            key: child.key,
+            attachment: child.val().attachment,
+            avatarUser: child.val().avatarUser,
+            comment: child.val().comment,
+            eventId: child.val().eventId,
+            idProduct: child.val().idProduct,
+            productDescription: child.val().productDescription,
+            productName: child.val().productName,
+            productPrice: child.val().productPrice,
+            type: child.val().type,
+            uid1: child.val().uid1,
+            uid2: child.val().uid2,
+            userName: child.val().userName,
+            content: child.val().content,
+            createdAt: child.val().createdAt,
+
+
+          });
+        });
+        this.setState({
+          notifications: li
+        });
+      });
+
+    }
+
   render() {
+    // console.log(this.props.notifications);
     return (
       <FlatList
         style={styles.root}
-        data={this.props.notifications}
+        data={this.state.notifications}
         extraData={this.state}
         ItemSeparatorComponent={() => {
           return <View style={styles.separator} />;
@@ -60,10 +119,16 @@ class NotificationScreen extends React.Component {
               onPress={() => {
                 this.openComment(
                   Notification.avatarUser,
-                  Notification.createAt,
+                  Notification.createdAt,
                   Notification.eventId,
                   Notification.type,
                   Notification.userName,
+                  Notification.attachment,
+                  Notification.idProduct,
+                  Notification.productName,
+                  Notification.productPrice,
+                  Notification.productDescription,
+                  Notification.comment
                 );
               }}>
               <Image
@@ -93,6 +158,7 @@ class NotificationScreen extends React.Component {
 const mapStateToProps = (state) => {
   return {
     ...state.notifications,
+    ...state.auth,
   };
 };
 

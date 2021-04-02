@@ -15,6 +15,7 @@ import {SliderBox} from 'react-native-image-slider-box';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
 import * as helper from '../database/database-helper';
+import moment from 'moment';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -56,8 +57,12 @@ class ProductDetail extends React.Component {
           createdAt: new Date().toISOString(),
           avatarUser: this.props.userPhoto,
           attachment: this.state.productImage1,
+          idProduct: this.state.idProduct,
+          productName: this.state.productName,
+          productPrice: this.state.productPrice,
+          productDescription: this.state.productDescription,
           eventId: key,
-          type: 'like'
+          type: 'like',
         });
         break;
       case 'comment':
@@ -69,8 +74,13 @@ class ProductDetail extends React.Component {
           createdAt: new Date().toISOString(),
           avatarUser: this.props.userPhoto,
           attachment: this.state.productImage1,
+          idProduct: this.state.idProduct,
+          productName: this.state.productName,
+          productPrice: this.state.productPrice,
+          productDescription: this.state.productDescription,
+          comment: this.state.comment,
           eventId: key,
-          type: 'comment'
+          type: 'comment',
         });
         break;
       case 'order':
@@ -84,19 +94,21 @@ class ProductDetail extends React.Component {
   }
 
   postComment() {
-   if (this.state.comment != null) {
-     const newRef = firebaseApp.database().ref('Comments').push();
-     newRef.set({
-       idProduct: this.state.idProduct,
-       idUser: this.props.userId,
-       nameUser: this.props.userName,
-       content: this.state.comment,
-       createAt: new Date().toISOString(),
-       avatarUser: this.props.userPhoto,
-     });
-     this.setState({comment: null});
-     this.postNotification('comment', newRef.key);
-   }
+    if (this.state.comment != null) {
+      const newRef = firebaseApp.database().ref('Comments').push();
+      newRef.set({
+        idProduct: this.state.idProduct,
+        idUser: this.props.userId,
+        nameUser: this.props.userName,
+        content: this.state.comment,
+        createAt: new Date().toISOString(),
+        avatarUser: this.props.userPhoto,
+        createAtCmtMyProduct: '',
+        myComment: '',
+      });
+      this.setState({comment: null});
+      this.postNotification('comment', newRef.key);
+    }
   }
   componentDidMount() {
     const idProduct = this.props.navigation.getParam('idProduct');
@@ -147,6 +159,8 @@ class ProductDetail extends React.Component {
             content: child.val().content,
             createAt: child.val().createAt,
             avatarUser: child.val().avatarUser,
+            myComment: child.val().myComment,
+            createAtCmtMyProduct: child.val().createAtCmtMyProduct,
           });
           this.setState({listComment: temp});
         });
@@ -183,18 +197,18 @@ class ProductDetail extends React.Component {
               .transaction((state) => !state);
           });
         } else {
-         const newRef = database().ref('Likes').push();
-         newRef.set({
-           idProduct_uid: key,
-           idProduct: idProduct,
-           uid: userId,
-           productName: this.state.productName,
-           productDescription: this.state.productDescription,
-           productPrice: this.state.productPrice,
-           productImage1: this.state.productImage1,
-           isLiked: true,
-         });
-         this.postNotification('like', newRef.key);
+          const newRef = database().ref('Likes').push();
+          newRef.set({
+            idProduct_uid: key,
+            idProduct: idProduct,
+            uid: userId,
+            productName: this.state.productName,
+            productDescription: this.state.productDescription,
+            productPrice: this.state.productPrice,
+            productImage1: this.state.productImage1,
+            isLiked: true,
+          });
+          this.postNotification('like', newRef.key);
         }
       });
   };
@@ -348,31 +362,37 @@ class ProductDetail extends React.Component {
                 {this.state.productDescription}
               </Text>
             </View>
-            <View style={styles.footer}>
-              <View style={styles.inputContainercmt}>
-                <TextInput
-                  style={styles.inputscmt}
-                  placeholder="Bình luận..."
-                  underlineColorAndroid="transparent"
-                  value={this.state.comment}
-                  onChangeText={(text) => this.setState({comment: text})}
-                />
-              </View>
 
-              <TouchableOpacity
-                style={styles.btnSend}
-                onPress={() => this.postComment()}>
-                <Image
-                  source={{
-                    uri:
-                      'https://img.icons8.com/small/75/ffffff/filled-sent.png',
-                  }}
-                  style={styles.iconSend}
-                />
-              </TouchableOpacity>
-            </View>
+            {/* text cmt */}
+
+            {this.state.idUser !== this.props.userId ? (
+              <View style={styles.footer}>
+                <View style={styles.inputContainercmt}>
+                  <TextInput
+                    style={styles.inputscmt}
+                    placeholder="Bình luận..."
+                    underlineColorAndroid="transparent"
+                    value={this.state.comment}
+                    onChangeText={(text) => this.setState({comment: text})}
+                  />
+                </View>
+
+                <TouchableOpacity
+                  style={styles.btnSend}
+                  onPress={() => this.postComment()}>
+                  <Image
+                    source={{
+                      uri:
+                        'https://img.icons8.com/small/75/ffffff/filled-sent.png',
+                    }}
+                    style={styles.iconSend}
+                  />
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
 
+          {/* danh sach binh luan */}
           <View>
             <FlatList
               style={styles.root}
@@ -386,6 +406,7 @@ class ProductDetail extends React.Component {
               }}
               renderItem={({item}) => {
                 return (
+                  <View>
                   <View style={styles.containerItem}>
                     <Image
                       style={styles.image}
@@ -399,6 +420,31 @@ class ProductDetail extends React.Component {
                       </View>
                       <Text rkType="primary3 mediumLine">{item.content}</Text>
                     </View>
+                    </View>
+                    {/* binh luan cua shop */}
+                    {item.myComment == '' ? null : (
+                      <View style={styles.containerItem2}>
+                        <Image
+                          style={styles.image}
+                          source={{uri: this.state.userAvatar}}
+                        />
+                        <View style={styles.contentCmt}>
+                          <View style={styles.contentHeadercmt}>
+                            <Text style={styles.nameusercmt}>
+                              {' '}
+                              {this.state.userName}
+                            </Text>
+                            <Text style={styles.timecmt}>
+                              {' '}
+                              {item.createAtCmtMyProduct}
+                            </Text>
+                          </View>
+                          <Text rkType="primary3 mediumLine">
+                            {item.myComment}
+                          </Text>
+                        </View>
+                      </View>
+                    )}
                   </View>
                 );
               }}
@@ -595,6 +641,14 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'flex-start',
+  },
+  containerItem2: {
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginLeft: 50,
+    backgroundColor: 'green',
+    borderRadius: 10,
   },
   contentCmt: {
     marginLeft: 10,
