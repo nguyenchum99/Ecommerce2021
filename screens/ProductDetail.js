@@ -44,7 +44,7 @@ class ProductDetail extends React.Component {
     };
   }
 
-  postNotification(type) {
+  postNotification(type, key) {
     const newRef = database().ref('Notifications').push();
     switch (type) {
       case 'like':
@@ -52,10 +52,12 @@ class ProductDetail extends React.Component {
           uid1: this.props.userId,
           userName: this.props.userName,
           uid2: this.state.idUser,
-          content: `${this.props.userName} liked your product ${this.state.productName}`,
+          content: `${this.props.userName} đã thích sản phẩm ${this.state.productName} của bạn`,
           createdAt: new Date().toISOString(),
           avatarUser: this.props.userPhoto,
           attachment: this.state.productImage1,
+          eventId: key,
+          type: 'like'
         });
         break;
       case 'comment':
@@ -63,10 +65,12 @@ class ProductDetail extends React.Component {
           uid1: this.props.userId,
           userName: this.props.userName,
           uid2: this.state.idUser,
-          content: `${this.props.userName} commented on your product ${this.state.productName}: ${this.state.comment}`,
+          content: `${this.props.userName} đã bình luận về sản phẩm ${this.state.productName}: ${this.state.comment}`,
           createdAt: new Date().toISOString(),
           avatarUser: this.props.userPhoto,
           attachment: this.state.productImage1,
+          eventId: key,
+          type: 'comment'
         });
         break;
       case 'order':
@@ -80,18 +84,19 @@ class ProductDetail extends React.Component {
   }
 
   postComment() {
-    if (this.state.comment != null) {
-      firebaseApp.database().ref('Comments').push({
-        idProduct: this.state.idProduct,
-        idUser: this.props.userId,
-        nameUser: this.props.userName,
-        content: this.state.comment,
-        createAt: new Date().toISOString(),
-        avatarUser: this.props.userPhoto,
-      });
-      this.setState({comment: null});
-      this.postNotification('comment');
-    }
+   if (this.state.comment != null) {
+     const newRef = firebaseApp.database().ref('Comments').push();
+     newRef.set({
+       idProduct: this.state.idProduct,
+       idUser: this.props.userId,
+       nameUser: this.props.userName,
+       content: this.state.comment,
+       createAt: new Date().toISOString(),
+       avatarUser: this.props.userPhoto,
+     });
+     this.setState({comment: null});
+     this.postNotification('comment', newRef.key);
+   }
   }
   componentDidMount() {
     const idProduct = this.props.navigation.getParam('idProduct');
@@ -178,17 +183,18 @@ class ProductDetail extends React.Component {
               .transaction((state) => !state);
           });
         } else {
-          database().ref('Likes').push().set({
-            idProduct_uid: key,
-            idProduct: idProduct,
-            uid: userId,
-            productName: this.state.productName,
-            productDescription: this.state.productDescription,
-            productPrice: this.state.productPrice,
-            productImage1: this.state.productImage1,
-            isLiked: true,
-          });
-          this.postNotification('like');
+         const newRef = database().ref('Likes').push();
+         newRef.set({
+           idProduct_uid: key,
+           idProduct: idProduct,
+           uid: userId,
+           productName: this.state.productName,
+           productDescription: this.state.productDescription,
+           productPrice: this.state.productPrice,
+           productImage1: this.state.productImage1,
+           isLiked: true,
+         });
+         this.postNotification('like', newRef.key);
         }
       });
   };

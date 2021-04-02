@@ -5,6 +5,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import UserTopNavigator from '../navigation/UserTopNavigator';
 import * as authActions from '../store/actions/auth';
 import * as usersActions from '../store/actions/users';
+import {ButtonGroup} from 'react-native-elements';
+import ExpandScreen from './ExpandScreen';
+
 
 const UserScreen = (props) => {
   const dispatch = useDispatch();
@@ -15,6 +18,8 @@ const UserScreen = (props) => {
   const userPhoto = useSelector((state) => state.auth.userPhoto);
   const userId = useSelector((state) => state.auth.userId);
   const users = useSelector((state) => state.users.users);
+  const buttons = ['Hello', 'World', 'Buttons'];
+  
 
   const fetchUserData = async () => {
     await dispatch(usersActions.fetchUsers());
@@ -24,6 +29,10 @@ const UserScreen = (props) => {
   useEffect(() => {
     fetchUserData();
   }, [userId]);
+
+  const updateIndex = ()=> {
+
+  }
 
   return (
     <View style={styles.container}>
@@ -45,7 +54,13 @@ const UserScreen = (props) => {
           <Text>Logout</Text>
         </TouchableOpacity> */}
       </View>
-      <UserTopNavigator />
+      {/* <ButtonGroup
+        onPress={()=> updateIndex()}
+        buttons={buttons}
+        containerStyle={{height: 100}}
+      /> */}
+      {/* <UserTopNavigator /> */}
+      <ExpandScreen {...props}/>
     </View>
   );
 };

@@ -5,13 +5,12 @@ export const SET_NOTIFICATIONS = 'SET_NOTIFICATIONS';
 
 export const fetchNotifications = () => async (dispatch) => {
   const myUserId = auth().currentUser.uid;
-  console.log('Uid', myUserId);
+ // console.log('Uid', myUserId);
   database()
     .ref('Notifications')
     .orderByChild('uid2')
     .equalTo(myUserId)
     .on('value', async (snapshot) => {
-      console.log(snapshot.val());
       const listItem = [];
       snapshot.forEach((item) => {
         listItem.push(item.val());

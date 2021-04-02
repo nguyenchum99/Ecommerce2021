@@ -1,5 +1,6 @@
 import storage from '@react-native-firebase/storage';
 import React from 'react';
+import {ImageBackground} from 'react-native';
 import {
   Alert,
   Image,
@@ -15,6 +16,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
 import {CITIES} from '../constants/Cities';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const options = {
   title: 'Select Avatar',
@@ -60,7 +62,6 @@ class CameraScreen extends React.Component {
 
   componentDidMount() {
     const category = this.props.navigation.getParam('category');
-    console.log('get param' + category);
 
     this.setState({
       productImage1: null,
@@ -117,8 +118,7 @@ class CameraScreen extends React.Component {
             onPress: async () => {
               if (
                 this.state.productName == null ||
-                this.state.productPrice == null 
-             
+                this.state.productPrice == null
               ) {
                 alert('Bạn phải nhập đầy đủ thông tin');
               } else {
@@ -166,42 +166,7 @@ class CameraScreen extends React.Component {
     }
   };
 
-  // takeCamera = () => {
-  //   ImagePicker.launchCamera(options, (response) => {
-  //     // Same code as in above section!
-  //     console.log('take phpto' + response.uri);
-
-  //     this.setState({ productImage1: response.uri });
-  //   });
-  // };
-
-  // takePhotoLibrary = () => {
-  //   // launchImageLibrary({}, (response) => {
-  //   //   console.log(response.uri);
-  //   //   this.setState({productImage1: response.uri});
-  //   // });
-  //   ImagePicker.launchImageLibrary(options, (response) => {
-  //     // Same code as in above section!
-  //     console.log(response.uri);
-  //     //setProductImage1(response.uri);
-  //     this.setState({ productImage1: response.uri });
-  //   });
-  // };
-
   takeImage = () => {
-    // console.log('Take image');
-
-    // launchCamera(
-    //   {
-    //     mediaType: 'photo',
-    //     includeBase64: false,
-    //     maxHeight: 200,
-    //     maxWidth: 200,
-    //   },
-    //   (response) => {
-    //     console.log('Image Uri: ', response);
-    //   },
-    // );
     ImagePicker.showImagePicker(options, (response) => {
       number++;
       if (number == 1) {
@@ -214,8 +179,6 @@ class CameraScreen extends React.Component {
           this.setState({
             productImage1: response.uri,
           });
-
-          console.log('image 1' + this.state.productImage1);
 
           // this.uploadImage1();
         }
@@ -230,7 +193,6 @@ class CameraScreen extends React.Component {
             productImage2: response.uri,
           });
 
-          console.log('image 2' + this.state.productImage2);
           // this.uploadImage2();
         }
       } else if (number == 3) {
@@ -243,7 +205,7 @@ class CameraScreen extends React.Component {
           this.setState({
             productImage3: response.uri,
           });
-          console.log('image 3' + this.state.productImage3);
+
           number = 0;
 
           // this.uploadImage3();
@@ -252,11 +214,106 @@ class CameraScreen extends React.Component {
     });
   };
 
+  changeImage1 = () => {
+    Alert.alert(
+      'Thông báo',
+      'Thay đổi ảnh',
+      [
+        {
+          text: 'Xóa ảnh',
+          onPress: () => {
+            number = 0;
+            this.setState({productImage1: null});
+          },
+          style: 'cancel',
+        },
+        {
+          text: 'Thay ảnh khác',
+          onPress: () => {
+            number = 0;
+            this.takeImage();
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+  changeImage3= () => {
+    Alert.alert(
+      'Thông báo',
+      'Thay đổi ảnh',
+      [
+        {
+          text: 'Xóa ảnh',
+          onPress: () => {
+            number = 2;
+            this.setState({productImage3: null});
+          },
+          style: 'cancel',
+        },
+        {
+          text: 'Thay ảnh khác',
+          onPress: () => {
+            number = 2;
+            this.takeImage();
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+  changeImage2 = () => {
+    Alert.alert(
+      'Thông báo',
+      'Thay đổi ảnh',
+      [
+        {
+          text: 'Xóa ảnh',
+          onPress: () => {
+            number = 1;
+            this.setState({productImage2: null});
+          },
+          style: 'cancel',
+        },
+        {
+          text: 'Thay ảnh khác',
+          onPress: () => {
+            number = 1;
+            this.takeImage();
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
   render() {
-    console.log('click camera' + number);
     return (
       <View style={styles.screen}>
         <Text style={styles.title}>Tạo sản phẩm của bạn</Text>
+        <View style={{flexDirection: 'row'}}>
+          <TouchableOpacity
+            onPress={() => this.takeImage()}
+            style={styles.icon}>
+            <Feather name="plus-circle" color="#356" size={50} />
+          </TouchableOpacity>
+
+          <TouchableOpacity >
+            <Image
+              style={styles.imageUrl}
+              source={{uri: this.state.productImage1}}></Image>
+          </TouchableOpacity>
+          <TouchableOpacity >
+            <Image
+              style={styles.imageUrl}
+              source={{uri: this.state.productImage2}}></Image>
+          </TouchableOpacity>
+          <TouchableOpacity >
+            <Image
+              style={styles.imageUrl}
+              source={{uri: this.state.productImage3}}></Image>
+          </TouchableOpacity>
+        </View>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <View style={{flex: 3, marginLeft: 20}}>
             <Text>Tên sản phẩm</Text>
@@ -336,35 +393,7 @@ class CameraScreen extends React.Component {
             />
           </View>
         </View>
-        <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity
-            onPress={() => this.takeImage()}
-            style={styles.icon}>
-            <Feather name="plus-circle" color="#356" size={50} />
-          </TouchableOpacity>
-          <Image
-            style={styles.imageUrl}
-            source={{uri: this.state.productImage1}}></Image>
-          <Image
-            style={styles.imageUrl}
-            source={{uri: this.state.productImage2}}></Image>
-          <Image
-            style={styles.imageUrl}
-            source={{uri: this.state.productImage3}}></Image>
 
-          {/* <TouchableOpacity onPress={() => this.takePhotoLibrary()}>
-              <Image
-                source={require('../assets/icons/icons8-photo-gallery-40.png')}
-                style={styles.icon}
-              />
-            </TouchableOpacity> */}
-        </View>
-
-        {/* <TouchableOpacity
-          style={styles.choose}
-          onPress={() => this.props.navigation.navigate('Category')}>
-          <Text style={styles.textBtn}>Choose category</Text>
-        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.button}
           onPress={() => this.addNewproduct()}>

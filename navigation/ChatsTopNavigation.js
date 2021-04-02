@@ -4,6 +4,7 @@ import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import NotificationScreen from '../screens/NotificationScreen';
 import StackChat from './StackChat';
 import StackChatBuy from './StackChatBuy';
+import StackNotify from './StackNotify';
 
 const ChatsTopNavigation = createMaterialTopTabNavigator(
   {
@@ -21,9 +22,10 @@ const ChatsTopNavigation = createMaterialTopTabNavigator(
       },
     },
     Notify: {
-      screen: NotificationScreen,
+      screen: StackNotify,
       navigationOptions: {
         tabBarLabel: 'Thông báo',
+        
       },
     },
   },

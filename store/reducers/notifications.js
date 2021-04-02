@@ -7,7 +7,6 @@ const initialState = {
 const notificationsReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_NOTIFICATIONS:
-      console.log('Notifications: ', action.notifications);
       return {
         notifications: action.notifications,
       };
