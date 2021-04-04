@@ -40,7 +40,8 @@ class LikeScreen extends React.Component {
               productImage1: child.val().productImage1,
               isLiked: child.val().isLiked,
             });
-            likedCategories.push(child.val().productCategory);
+            if (likedCategories.indexOf(child.val().productCategory) == -1)
+              likedCategories.push(child.val().productCategory);
           }
         });
         this.setState({
