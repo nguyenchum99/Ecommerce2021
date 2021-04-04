@@ -3,6 +3,9 @@
 // git commit -m "commit-message (replace this by your commit message)"
 // git push -u origin master
 
+//Build apk run without metro
+// ./gradlew assembleRelease
+
 import React from 'react';
 import 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
@@ -34,11 +37,11 @@ const App = () => {
       <NavigationContainer />
     </Provider>
     //<RatingProduct/>
-   // <ManagerBuy/>
+    // <ManagerBuy/>
     //<OrderScreen/>
     // <NotificationScreen/>
     // <CommentList/>
-   // <TestScreen/>
+    // <TestScreen/>
   );
 };
 

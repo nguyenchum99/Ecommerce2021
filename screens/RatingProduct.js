@@ -104,15 +104,15 @@ export default class RatingProduct extends Component {
             count={5}
             reviews={['Terrible', 'Bad', 'Meh', 'OK', 'Good']}
             defaultRating={11}
-            size={20}
+            size={25}
             onFinishRating={(text) => this.setState({rating: text})}
           />
-
+        
           <View style={styles.addToCarContainer}>
             <TouchableOpacity
               style={styles.shareButton}
               onPress={() => this.ratingCompleted()}>
-              <Text style={styles.shareButtonText}>Add To Cart</Text>
+              <Text style={styles.shareButtonText}>Đánh giá</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

@@ -22,13 +22,25 @@ const list = [
     icon: 'shopping-cart',
   },
   {
+    title: 'Người theo dõi',
+    icon: 'shopping-cart',
+  },
+  {
+    title: 'Đang theo dõi',
+    icon: 'shopping-cart',
+  },
+  {
+    title: 'Quản lý danh mục',
+    icon: 'shopping-cart',
+  },
+  {
     title: 'Hoạt động của bạn',
     icon: 'equalizer',
   },
   {
     title: 'Đăng xuất',
     icon: 'logout',
-  }
+  },
 ];
 
 const ExpandScreen = (props) => {
@@ -54,14 +66,21 @@ const ExpandScreen = (props) => {
   const selectExpand = (index) => {
     if (index == 0) {
       props.navigation.navigate('Find');
-    } else if (index == 4) {
+    } else if (index == 7) {
       logoutHandler();
+    } else if (index == 1) {
+      props.navigation.navigate('Sell');
+    } else if (index == 2) {
+      props.navigation.navigate('Buy');
+    } else if (index == 3) {
+      props.navigation.navigate('Followers');
+    } else if (index == 4) {
+      props.navigation.navigate('Following');
+    } else if (index == 5) {
+      props.navigation.navigate('List');
     }
-    else if( index == 1){
-       props.navigation.navigate('Sell');
-    }
-    else if( index == 2){
-       props.navigation.navigate('Buy');
+     else if (index == 5) {
+      props.navigation.navigate('Active');
     }
   };
 

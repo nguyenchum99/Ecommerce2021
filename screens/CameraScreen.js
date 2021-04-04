@@ -1,9 +1,8 @@
 import storage from '@react-native-firebase/storage';
 import React from 'react';
-import {ImageBackground} from 'react-native';
+import {Image} from 'react-native';
 import {
   Alert,
-  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -12,11 +11,10 @@ import {
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import RNPickerSelect from 'react-native-picker-select';
-import Feather from 'react-native-vector-icons/Feather';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
 import {CITIES} from '../constants/Cities';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 const options = {
   title: 'Select Avatar',
@@ -26,7 +24,7 @@ const options = {
   },
 };
 
-const category = [
+export const category = [
   {label: 'Thời trang', value: 'Thời trang'},
   {label: 'Điện thoại', value: 'Điện thoại'},
   {label: 'Đồ gia dụng', value: 'Đồ gia dụng'},
@@ -38,7 +36,6 @@ const status = [
 ];
 
 const productRef = firebaseApp.database();
-var number = 0;
 class CameraScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -70,23 +67,9 @@ class CameraScreen extends React.Component {
     });
   }
 
-  uploadImage1 = async () => {
-    const reference = storage().ref(`${this.state.productImage1}`);
-    const pathToFile = `${this.state.productImage1}`;
-    await reference.putFile(pathToFile);
-    const imageUrl = await reference.getDownloadURL();
-    return imageUrl;
-  };
-  uploadImage2 = async () => {
-    const reference = storage().ref(`${this.state.productImage2}`);
-    const pathToFile = `${this.state.productImage2}`;
-    await reference.putFile(pathToFile);
-    const imageUrl = await reference.getDownloadURL();
-    return imageUrl;
-  };
-  uploadImage3 = async () => {
-    const reference = storage().ref(`${this.state.productImage3}`);
-    const pathToFile = `${this.state.productImage3}`;
+  uploadImage = async (image) => {
+    const reference = storage().ref(image);
+    const pathToFile = image;
     await reference.putFile(pathToFile);
     const imageUrl = await reference.getDownloadURL();
     return imageUrl;
@@ -122,9 +105,15 @@ class CameraScreen extends React.Component {
               ) {
                 alert('Bạn phải nhập đầy đủ thông tin');
               } else {
-                const imageUrl1 = await this.uploadImage1();
-                const imageUrl2 = await this.uploadImage2();
-                const imageUrl3 = await this.uploadImage3();
+                const imageUrl1 = await this.uploadImage(
+                  this.state.productImage1,
+                );
+                const imageUrl2 = await this.uploadImage(
+                  this.state.productImage2,
+                );
+                const imageUrl3 = await this.uploadImage(
+                  this.state.productImage3,
+                );
 
                 productRef.ref('Products').push({
                   name: this.state.productName,
@@ -166,153 +155,65 @@ class CameraScreen extends React.Component {
     }
   };
 
-  takeImage = () => {
+  takeImage = (productImage) => {
+    if (productImage == 'productImage1' && !!this.state.productImage1) {
+      return;
+    } else if (productImage == 'productImage2' && !!this.state.productImage2) {
+      return;
+    } else if (productImage == 'productImage3' && !!this.state.productImage3) {
+      return;
+    }
     ImagePicker.showImagePicker(options, (response) => {
-      number++;
-      if (number == 1) {
-        this.setState({productImage1: ''});
-        if (response.didCancel) {
-        } else if (response.error) {
-        } else if (response.customButton) {
-        } else {
-          const source = {uri: response.uri};
-          this.setState({
-            productImage1: response.uri,
-          });
-
-          // this.uploadImage1();
-        }
-      } else if (number == 2) {
-        this.setState({productImage2: ''});
-        if (response.didCancel) {
-        } else if (response.error) {
-        } else if (response.customButton) {
-        } else {
-          const source = {uri: response.uri};
-          this.setState({
-            productImage2: response.uri,
-          });
-
-          // this.uploadImage2();
-        }
-      } else if (number == 3) {
-        this.setState({productImage3: ''});
-        if (response.didCancel) {
-        } else if (response.error) {
-        } else if (response.customButton) {
-        } else {
-          const source = {uri: response.uri};
-          this.setState({
-            productImage3: response.uri,
-          });
-
-          number = 0;
-
-          // this.uploadImage3();
-        }
+      if (productImage == 'productImage1') {
+        this.setState({productImage1: response.uri});
+      } else if (productImage == 'productImage2') {
+        this.setState({productImage2: response.uri});
+      } else if (productImage == 'productImage3') {
+        this.setState({productImage3: response.uri});
       }
     });
   };
 
-  changeImage1 = () => {
-    Alert.alert(
-      'Thông báo',
-      'Thay đổi ảnh',
-      [
-        {
-          text: 'Xóa ảnh',
-          onPress: () => {
-            number = 0;
-            this.setState({productImage1: null});
-          },
-          style: 'cancel',
-        },
-        {
-          text: 'Thay ảnh khác',
-          onPress: () => {
-            number = 0;
-            this.takeImage();
-          },
-        },
-      ],
-      {cancelable: false},
-    );
-  };
-  changeImage3= () => {
-    Alert.alert(
-      'Thông báo',
-      'Thay đổi ảnh',
-      [
-        {
-          text: 'Xóa ảnh',
-          onPress: () => {
-            number = 2;
-            this.setState({productImage3: null});
-          },
-          style: 'cancel',
-        },
-        {
-          text: 'Thay ảnh khác',
-          onPress: () => {
-            number = 2;
-            this.takeImage();
-          },
-        },
-      ],
-      {cancelable: false},
-    );
-  };
-  changeImage2 = () => {
-    Alert.alert(
-      'Thông báo',
-      'Thay đổi ảnh',
-      [
-        {
-          text: 'Xóa ảnh',
-          onPress: () => {
-            number = 1;
-            this.setState({productImage2: null});
-          },
-          style: 'cancel',
-        },
-        {
-          text: 'Thay ảnh khác',
-          onPress: () => {
-            number = 1;
-            this.takeImage();
-          },
-        },
-      ],
-      {cancelable: false},
-    );
+  deleteImage = (productImage) => {
+    if (productImage == 'productImage1') this.setState({productImage1: null});
+    else if (productImage == 'productImage2')
+      this.setState({productImage2: null});
+    else if (productImage == 'productImage3')
+      this.setState({productImage3: null});
   };
 
   render() {
     return (
       <View style={styles.screen}>
         <Text style={styles.title}>Tạo sản phẩm của bạn</Text>
-        <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity
-            onPress={() => this.takeImage()}
-            style={styles.icon}>
-            <Feather name="plus-circle" color="#356" size={50} />
-          </TouchableOpacity>
-
-          <TouchableOpacity >
-            <Image
-              style={styles.imageUrl}
-              source={{uri: this.state.productImage1}}></Image>
-          </TouchableOpacity>
-          <TouchableOpacity >
-            <Image
-              style={styles.imageUrl}
-              source={{uri: this.state.productImage2}}></Image>
-          </TouchableOpacity>
-          <TouchableOpacity >
-            <Image
-              style={styles.imageUrl}
-              source={{uri: this.state.productImage3}}></Image>
-          </TouchableOpacity>
+        <View style={styles.imageContainer}>
+          <ImageViewHolder
+            image={this.state.productImage1}
+            onAddingHandler={() => {
+              this.takeImage('productImage1');
+            }}
+            onDeletingHandler={() => {
+              this.deleteImage('productImage1');
+            }}
+          />
+          <ImageViewHolder
+            image={this.state.productImage2}
+            onAddingHandler={() => {
+              this.takeImage('productImage2');
+            }}
+            onDeletingHandler={() => {
+              this.deleteImage('productImage2');
+            }}
+          />
+          <ImageViewHolder
+            image={this.state.productImage3}
+            onAddingHandler={() => {
+              this.takeImage('productImage3');
+            }}
+            onDeletingHandler={() => {
+              this.deleteImage('productImage3');
+            }}
+          />
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <View style={{flex: 3, marginLeft: 20}}>
@@ -403,6 +304,43 @@ class CameraScreen extends React.Component {
     );
   }
 }
+
+const ImageViewHolder = (props) => {
+  return (
+    <TouchableOpacity style={styles.image} onPress={props.onAddingHandler}>
+      <View
+        style={{
+          width: '100%',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'lightgray',
+        }}>
+        {!props.image && <AntDesign name="plus" size={50} color="white" />}
+        {!!props.image && (
+          <Image
+            source={{uri: props.image}}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+            }}
+          />
+        )}
+        {!!props.image && (
+          <TouchableOpacity
+            style={styles.close}
+            onPress={props.onDeletingHandler}>
+            <AntDesign name="closesquareo" size={24} color="white" />
+          </TouchableOpacity>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+};
+
 const mapStateToProps = (state) => {
   return {
     ...state.auth,
@@ -432,6 +370,24 @@ const styles = StyleSheet.create({
     height: 80,
     marginTop: 20,
     marginRight: 20,
+  },
+  imageContainer: {
+    flexDirection: 'row',
+    height: '20%',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  image: {
+    width: '30%',
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'lightgray',
+  },
+  close: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
   },
   icon: {
     height: 50,

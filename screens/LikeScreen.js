@@ -1,18 +1,14 @@
-import {firebaseApp} from '../Components/FirebaseConfig';
-import React, {Component} from 'react';
-import {Icon} from 'react-native-elements';
+import database from '@react-native-firebase/database';
+import React from 'react';
 import {
+  FlatList,
+  Image,
   StyleSheet,
   Text,
-  View,
-  TextInput,
-  Button,
-  TouchableHighlight,
-  Alert,
-  Image,
-  FlatList,
   TouchableOpacity,
+  View,
 } from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 
 class LikeScreen extends React.Component {
@@ -22,19 +18,18 @@ class LikeScreen extends React.Component {
       data: [],
       isLike: '',
       key: '',
-      recommendation : []
+      recommendation: [],
     };
   }
 
   componentDidMount() {
-   //console.log("dskfdsssssfffffffffffff", this.props.userId)
-    firebaseApp
-      .database()
+    database()
       .ref('Likes')
       .orderByChild('uid')
       .equalTo(this.props.userId)
       .on('value', (snapshot) => {
         const li = [];
+        const likedCategories = [];
         snapshot.forEach((child) => {
           if (child.val().isLiked) {
             li.push({
@@ -43,34 +38,82 @@ class LikeScreen extends React.Component {
               productDescription: child.val().productDescription,
               productPrice: child.val().productDescription,
               productImage1: child.val().productImage1,
-              isLike: child.val().isLiked,
+              isLiked: child.val().isLiked,
             });
+            likedCategories.push(child.val().productCategory);
           }
         });
         this.setState({
           data: li,
         });
+        //recommend
+        this.setState({
+          recommendation: [],
+        });
+        likedCategories.map((category) => {
+          const list = [];
+          database()
+            .ref('Products')
+            .orderByChild('category')
+            .equalTo(category)
+            .limitToFirst(3)
+            .on('value', (snapshot) => {
+              snapshot.forEach((child) => {
+                list.push({
+                  key: child.key,
+                  productName: child.val().name,
+                  productDescription: child.val().description,
+                  productPrice: child.val().price,
+                  productImage1: child.val().imageUrl1,
+                  isLiked: false,
+                });
+              });
+              this.setState({
+                recommendation: this.state.recommendation.concat(list),
+              });
+            });
+        });
       });
-
-      //recommend
-
-
-  }
-
-  clickLike(key) {
-    //this.setState({isLike: !this.state.isLike});
-    firebaseApp.database().ref(`Likes/${key}`).update({
-      isLiked: false,
-    });
   }
 
   render() {
     return (
+      <ScrollView>
+        <SectionItem title="Liked products" data={this.state.data} />
+        <SectionItem title="Recommendations" data={this.state.recommendation} />
+      </ScrollView>
+    );
+  }
+}
+
+const SectionItem = (props) => {
+  const clickLike = (key) => {
+    database().ref(`Likes/${key}`).update({
+      isLiked: false,
+    });
+  };
+  return (
+    <View>
+      <View style={styles.header}>
+        <Text style={styles.textHeader}>{props.title}</Text>
+      </View>
       <FlatList
         enableEmptySections={true}
-        data={this.state.data}
+        data={props.data}
         keyExtractor={(item) => {
           return item.key;
+        }}
+        ListEmptyComponent={() => {
+          return (
+            <View
+              style={{
+                height: 100,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text>There is no item</Text>
+            </View>
+          );
         }}
         renderItem={({item}) => {
           return (
@@ -78,15 +121,23 @@ class LikeScreen extends React.Component {
               <Image style={styles.image} source={{uri: item.productImage1}} />
               <View style={styles.boxContent}>
                 <Text style={styles.title}>{item.productName}</Text>
-                <Text style={styles.description}>
+                <Text
+                  style={styles.description}
+                  numberOfLines={2}
+                  ellipsizeMode="tail">
                   {item.productDescription}
                 </Text>
                 <View style={styles.buttons}>
-                  <TouchableOpacity onPress={() => this.clickLike(item.key)}>
-                    <Image
-                      style={styles.icon}
-                      source={require('../assets/icons/heart(1).png')}
-                    />
+                  <TouchableOpacity
+                    onPress={() => {
+                      clickLike(item.key);
+                    }}>
+                    {item.isLiked && (
+                      <Image
+                        style={styles.icon}
+                        source={require('../assets/icons/heart(1).png')}
+                      />
+                    )}
                   </TouchableOpacity>
                 </View>
               </View>
@@ -94,9 +145,9 @@ class LikeScreen extends React.Component {
           );
         }}
       />
-    );
-  }
-}
+    </View>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {
@@ -107,6 +158,15 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, null)(LikeScreen);
 
 const styles = StyleSheet.create({
+  screen: {flex: 1},
+  header: {
+    padding: 10,
+    backgroundColor: 'lightgray',
+  },
+  textHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
   image: {
     width: 100,
     height: 100,

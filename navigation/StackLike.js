@@ -7,15 +7,18 @@ const StackLike = createStackNavigator(
   {
     List: {
       screen: LikeScreen,
+      navigationOptions: {
+        headerShown: true,
+      },
     },
     Detail: {
       screen: ItemDetail,
     },
   },
   {
-    headerMode: 'List',
+    headerMode: 'Favorite',
     navigationOptions: {
-      headerShown: false,
+      headerShown: true,
     },
   },
 );

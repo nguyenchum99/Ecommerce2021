@@ -206,6 +206,7 @@ class ProductDetail extends React.Component {
             productDescription: this.state.productDescription,
             productPrice: this.state.productPrice,
             productImage1: this.state.productImage1,
+            productCategory: this.state.productCategory,
             isLiked: true,
           });
           this.postNotification('like', newRef.key);
@@ -407,19 +408,21 @@ class ProductDetail extends React.Component {
               renderItem={({item}) => {
                 return (
                   <View>
-                  <View style={styles.containerItem}>
-                    <Image
-                      style={styles.image}
-                      source={{uri: item.avatarUser}}
-                    />
+                    <View style={styles.containerItem}>
+                      <Image
+                        style={styles.image}
+                        source={{uri: item.avatarUser}}
+                      />
 
-                    <View style={styles.contentCmt}>
-                      <View style={styles.contentHeadercmt}>
-                        <Text style={styles.nameusercmt}>{item.nameUser}</Text>
-                        <Text style={styles.timecmt}>{item.createAt}</Text>
+                      <View style={styles.contentCmt}>
+                        <View style={styles.contentHeadercmt}>
+                          <Text style={styles.nameusercmt}>
+                            {item.nameUser}
+                          </Text>
+                          <Text style={styles.timecmt}>{item.createAt}</Text>
+                        </View>
+                        <Text rkType="primary3 mediumLine">{item.content}</Text>
                       </View>
-                      <Text rkType="primary3 mediumLine">{item.content}</Text>
-                    </View>
                     </View>
                     {/* binh luan cua shop */}
                     {item.myComment == '' ? null : (
