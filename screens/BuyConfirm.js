@@ -35,7 +35,7 @@ class BuyConfirm extends React.Component {
       location: '',
       key: '',
       cancelOrder: '',
-      receiveProductSuccess: ''
+      receiveProductSuccess: '',
     };
   }
 
@@ -57,7 +57,6 @@ class BuyConfirm extends React.Component {
     const total = this.props.navigation.getParam('total');
     const location = this.props.navigation.getParam('location');
     const cancelOrder = this.props.navigation.getParam('cancelOrder');
-   
 
     this.setState({
       address: address,
@@ -76,21 +75,18 @@ class BuyConfirm extends React.Component {
       soLuong: soLuong,
       total: total,
       location: location,
-      cancelOrder: cancelOrder
+      cancelOrder: cancelOrder,
     });
 
     //check ham da nhan don
-  firebaseApp
-    .database()
-    .ref(`Orders/${key}`)
-    .on('value', (snapshot) => {
-      this.state.receiveProductSuccess = snapshot
-        .child('receiveProductSuccess')
-        .val();
-     
-    });
-
-    
+    firebaseApp
+      .database()
+      .ref(`Orders/${key}`)
+      .on('value', (snapshot) => {
+        this.state.receiveProductSuccess = snapshot
+          .child('receiveProductSuccess')
+          .val();
+      });
   }
 
   //xác nhận đã nhận được hàng thành công
@@ -180,12 +176,15 @@ class BuyConfirm extends React.Component {
           </ListItem.Content>
         </ListItem>
 
+{/* check da dat hang thanh cong va da danh gia hay chua, chi duoc danh gia 1 lan */}
         {this.state.orderSuccess ? (
-          <TouchableOpacity
-            style={[styles.buttonContainer, styles.loginButton]}
-            onPress={() => this.daNhanDon()}>
-            <Text style={styles.loginText}>Đã nhận đơn</Text>
-          </TouchableOpacity>
+          this.state.receiveProductSuccess ? null : (
+            <TouchableOpacity
+              style={[styles.buttonContainer, styles.loginButton]}
+              onPress={() => this.daNhanDon()}>
+              <Text style={styles.loginText}>Đã nhận đơn</Text>
+            </TouchableOpacity>
+          )
         ) : null}
       </View>
     );

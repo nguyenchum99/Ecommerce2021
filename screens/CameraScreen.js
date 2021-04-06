@@ -136,6 +136,7 @@ class CameraScreen extends React.Component {
                     imageUrl2: imageUrl2,
                     imageUrl3: imageUrl3,
                     soLuong: this.state.soLuong,
+                    soLuongBanDau: this.state.soLuong,
                     createAt: new Date().toISOString(),
                     timeUpdate: '',
                     location: this.state.location,
