@@ -27,7 +27,7 @@ export default class OrderSuccess extends Component {
 
   componentDidMount() {
     const idProduct = this.props.navigation.getParam('idProduct');
-    console.log("order dushdsf", idProduct);
+
     //read info product
     firebaseApp
       .database()
@@ -42,7 +42,7 @@ export default class OrderSuccess extends Component {
   }
 
   clickEventListener() {
-    Alert.alert('Success', 'Product has beed added to cart');
+    this.props.navigation.navigate('Home');
   }
 
   render() {
@@ -59,14 +59,13 @@ export default class OrderSuccess extends Component {
               <Image
                 style={styles.productImg}
                 source={{
-                  uri: this.state.productImage1
-                    
+                  uri: this.state.productImage1,
                 }}
               />
               <Text style={styles.name}>{this.state.productName}</Text>
               <Text style={styles.price}>{this.state.productPrice} VND</Text>
               <Text style={styles.description}>
-              {this.state.productDescription}
+                {this.state.productDescription}
               </Text>
             </View>
             <View
@@ -89,7 +88,7 @@ export default class OrderSuccess extends Component {
             <View style={styles.addToCarContainer}>
               <TouchableOpacity
                 style={styles.shareButton}
-                onPress={() => this.clickEventListener()}>
+                onPress={() => this.props.navigation.navigate('Home')}>
                 <Text style={styles.shareButtonText}>Tiếp tục</Text>
               </TouchableOpacity>
             </View>

@@ -2,6 +2,7 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import CategoryScreen from '../screens/CategoryScreen';
 import ChatScreen from '../screens/ChatScreen';
+import FreeProducts from '../screens/FreeProducts';
 import HomeScreen from '../screens/HomeScreen';
 import ListCategory from '../screens/ListCategory';
 import OrderScreen from '../screens/OrderScreen';
@@ -62,6 +63,13 @@ const StackProductDetail = createStackNavigator({
     navigationOptions: {
       headerShown: false,
       title: 'Đặt hàng',
+    },
+  },
+  Free: {
+    screen: FreeProducts,
+    navigationOptions: {
+   
+      title: 'Mặt hàng giá 0 đồng',
     },
   },
 });

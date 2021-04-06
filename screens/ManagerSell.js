@@ -39,6 +39,9 @@ class ManagerSell extends React.Component {
             productPrice: child.val().productPrice,
             userName: child.val().userName,
             userPhoto: child.val().userPhoto,
+            location: child.val().location,
+            soLuong: child.val().soLuong,
+            total: child.val().total,
           });
         });
         this.setState({
@@ -90,7 +93,10 @@ class ManagerSell extends React.Component {
                   userName: Notification.userName,
                   userPhoto: Notification.userPhoto,
                   productPrice: Notification.productPrice,
-                  key: Notification.key
+                  key: Notification.key,
+                  location: Notification.location,
+                  soLuong: Notification.soLuong,
+                  total: Notification.total
                 })
               }>
               <Image

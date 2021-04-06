@@ -14,6 +14,8 @@ import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
 import {Input} from 'react-native-elements';
 import {ListItem, Icon} from 'react-native-elements';
+import RNPickerSelect from 'react-native-picker-select';
+import {CITIES} from '../constants/Cities';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -26,7 +28,11 @@ class ProductDetail extends React.Component {
       phoneUser: '',
       addressUser: '',
       idProduct: '',
-      idUserSell: ''
+      idUserSell: '',
+      location: 'Hà Nội',
+      soLuong: '',
+      soLuongOrder: '',
+      total: ''
     };
   }
 
@@ -36,14 +42,16 @@ class ProductDetail extends React.Component {
     const price = this.props.navigation.getParam('productPrice');
     const image = this.props.navigation.getParam('productImage');
     const idUserSell = this.props.navigation.getParam('idUserSell');
+    const soLuong = this.props.navigation.getParam('soLuong');
+    
 
-    console.log('image', image);
     this.setState({
       idProduct: idProduct,
       productName: name,
       productImage: image,
       productPrice: price,
-      idUserSell: idUserSell
+      idUserSell: idUserSell,
+      soLuong: soLuong,
     });
   }
 
@@ -60,38 +68,46 @@ class ProductDetail extends React.Component {
         {
           text: 'Có',
           onPress: () => {
-            firebaseApp
-              .database()
-              .ref('Orders')
-              .push({
+            if (this.state.soLuongOrder <= this.state.soLuong) {
+              
+              firebaseApp
+                .database()
+                .ref('Orders')
+                .push({
+                  idProduct: this.state.idProduct,
+                  productPrice: this.state.productPrice,
+                  productName: this.state.productName,
+                  productImage: this.state.productImage,
+                  idUser: this.props.userId,
+                  userName: this.props.userName,
+                  userPhoto: this.props.userPhoto,
+                  address: this.state.addressUser,
+                  phone: this.state.phoneUser,
+                  idUserSell: this.state.idUserSell,
+                  location: this.state.location,
+                  createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
+                  soLuong: this.state.soLuongOrder,
+                  total: this.state.soLuongOrder*this.state.productPrice
+                });
+
+              alert('Đặt hàng thành công');
+              this.props.navigation.navigate('OrderSuccess', {
                 idProduct: this.state.idProduct,
-                productPrice: this.state.productPrice,
-                productName: this.state.productName,
-                productImage: this.state.productImage,
-                idUser: this.props.userId,
-                userName: this.props.userName,
-                userPhoto: this.props.userPhoto,
-                address: this.state.addressUser,
-                phone: this.state.phoneUser,
-                idUserSell: this.state.idUserSell,
-                createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
               });
 
-            alert('Đặt hàng thành công');
-            this.props.navigation.navigate('OrderSuccess', {
-              idProduct: this.state.idProduct,
-            });
-
-            this.setState({
-              idProduct: null,
-              productName: null,
-              productDescription: null,
-              productPrice: null,
-              productImage: null,
-              addressUser: null,
-              phoneUser: null,
-              idUserSell: null
-            });
+              this.setState({
+                idProduct: null,
+                productName: null,
+                productDescription: null,
+                productPrice: null,
+                productImage: null,
+                addressUser: null,
+                phoneUser: null,
+                idUserSell: null,
+              });
+            }else{
+              alert('Số lượng đặt mua phải nhỏ hơn hoặc bằng số lượng của sản phẩm')
+            }
           },
         },
       ],
@@ -101,7 +117,7 @@ class ProductDetail extends React.Component {
 
   render() {
     return (
-      <View>
+      <ScrollView>
         <View style={styles.box}>
           <Image style={styles.image} source={{uri: this.state.productImage}} />
           <View style={styles.boxContent}>
@@ -109,59 +125,65 @@ class ProductDetail extends React.Component {
             <Text style={styles.description}>
               {this.state.productPrice} VND
             </Text>
+            <Text style={styles.description}>
+              Số lượng: {this.state.soLuong}
+            </Text>
           </View>
         </View>
+        <View style={styles.box2}>
+          <Text style={styles.title2}>
+            Tên người nhận: {this.props.userName}
+          </Text>
+          <Text style={styles.title2}>Địa chỉ nhận hàng</Text>
+          <Input
+            placeholder="..."
+            onChangeText={(value) => this.setState({addressUser: value})}
+          />
+          <View style={{marginTop: 10, marginLeft: 10}}>
+            <Text style={styles.title}>Chọn địa điểm</Text>
+            <RNPickerSelect
+              onValueChange={(location) => this.setState({location})}
+              items={CITIES}
+              useNativeAndroidPickerStyle={true}
+              placeholder={{
+                label: this.state.location,
+                value: this.state.location,
+              }}
+              value={this.state.location}
+            />
+          </View>
+          <Text style={styles.title2}>Số điện thoại</Text>
+          <Input
+            placeholder="..."
+            keyboardType="numeric"
+            onChangeText={(value) => this.setState({phoneUser: value})}
+          />
+          <Text style={styles.title2}>Số lượng</Text>
+          <Input
+            placeholder="..."
+            keyboardType="numeric"
+            onChangeText={(value) => this.setState({soLuongOrder: value})}
+          />
+        </View>
+
         <ListItem bottomDivider>
           <ListItem.Content>
             <ListItem.Title>
-              Tên người nhận: {this.props.userName}
-            </ListItem.Title>
-          </ListItem.Content>
-        </ListItem>
-        <ListItem bottomDivider>
-          <ListItem.Content>
-            <ListItem.Title>
-              <Text>Phí ship: </Text>
-            </ListItem.Title>
-          </ListItem.Content>
-        </ListItem>
-        <ListItem bottomDivider>
-          <ListItem.Content>
-            <ListItem.Title>
-              <Text>Thuế: </Text>
+              <Text style={styles.title}>
+                Tổng: {this.state.soLuongOrder*this.state.productPrice} VND
+              </Text>
             </ListItem.Title>
           </ListItem.Content>
         </ListItem>
 
-        <Input
-          placeholder="Địa chỉ"
-          onChangeText={(value) => this.setState({addressUser: value})}
-        />
-        <Input
-          placeholder="Số điện thoại"
-          onChangeText={(value) => this.setState({phoneUser: value})}
-        />
-        <ListItem bottomDivider>
-          <ListItem.Content>
-            <ListItem.Title>
-              <Text>Thuế: </Text>
-            </ListItem.Title>
-          </ListItem.Content>
-        </ListItem>
-        <ListItem bottomDivider>
-          <ListItem.Content>
-            <ListItem.Title>
-              <Text>Tổng: {this.state.productPrice} VND</Text>
-            </ListItem.Title>
-          </ListItem.Content>
-        </ListItem>
-
-        <TouchableOpacity
-          style={[styles.buttonContainer, styles.loginButton]}
-          onPress={() => this.orderProduct()}>
-          <Text style={styles.loginText}>Đặt hàng</Text>
-        </TouchableOpacity>
-      </View>
+        <View>
+          <TouchableOpacity
+            style={[styles.buttonContainer, styles.loginButton]}
+            onPress={() => this.orderProduct()}>
+            <Text style={styles.loginText}>Đặt hàng</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     );
   }
 }
@@ -185,6 +207,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: 250,
     borderRadius: 30,
+    marginLeft: 80,
   },
   loginButton: {
     backgroundColor: '#3498db',
@@ -193,13 +216,21 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 10,
+    marginLeft: 10,
+    marginHorizontal: 10,
   },
   box: {
     padding: 10,
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 10,
+    marginBottom: 10,
     backgroundColor: 'white',
     flexDirection: 'row',
+  },
+  box2: {
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: 'white',
+    flexDirection: 'column',
   },
   boxContent: {
     flex: 1,
@@ -210,6 +241,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     color: '#151515',
+  },
+  title2: {
+    fontSize: 18,
+    color: '#151515',
+    marginLeft: 10,
+    marginBottom: 10,
   },
   description: {
     fontSize: 15,

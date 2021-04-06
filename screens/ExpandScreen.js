@@ -23,15 +23,15 @@ const list = [
   },
   {
     title: 'Người theo dõi',
-    icon: 'shopping-cart',
+    icon: 'groups',
   },
   {
     title: 'Đang theo dõi',
-    icon: 'shopping-cart',
+    icon: 'groups',
   },
   {
     title: 'Quản lý danh mục',
-    icon: 'shopping-cart',
+    icon: 'category',
   },
   {
     title: 'Hoạt động của bạn',
@@ -79,7 +79,7 @@ const ExpandScreen = (props) => {
     } else if (index == 5) {
       props.navigation.navigate('List');
     }
-     else if (index == 5) {
+     else if (index == 6) {
       props.navigation.navigate('Active');
     }
   };

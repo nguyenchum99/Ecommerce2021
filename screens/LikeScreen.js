@@ -11,6 +11,7 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 
+
 class LikeScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -80,8 +81,8 @@ class LikeScreen extends React.Component {
   render() {
     return (
       <ScrollView>
-        <SectionItem title="Liked products" data={this.state.data} />
-        <SectionItem title="Recommendations" data={this.state.recommendation} />
+        <SectionItem title="Các sản phẩm đã thích" data={this.state.data} />
+        <SectionItem title="Có thể bạn thích" data={this.state.recommendation} />
       </ScrollView>
     );
   }
@@ -112,7 +113,7 @@ const SectionItem = (props) => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Text>There is no item</Text>
+              <Text>Không có sản phẩm nào</Text>
             </View>
           );
         }}
@@ -167,6 +168,7 @@ const styles = StyleSheet.create({
   textHeader: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: 'red'
   },
   image: {
     width: 100,

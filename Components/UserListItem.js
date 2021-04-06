@@ -19,6 +19,7 @@ class UserListItem extends Component {
     super(props);
     this.state = {
       isFlowing: false,
+      userId: ''
     };
   }
 
@@ -45,6 +46,7 @@ class UserListItem extends Component {
 
   _toggleFollowState = (myUserid, userId) => {
     const key = myUserid + '_' + userId;
+    
     database()
       .ref(`Follows/`)
       .orderByChild('myUserid_userId')
@@ -70,14 +72,24 @@ class UserListItem extends Component {
   render() {
     return (
       <View style={styles.card}>
-        <GiftedAvatar
-          user={{
-            name: this.props.item.name,
-            avatar: this.props.item.photoUrl,
-          }}
-          avatarStyle={styles.image}
-          textStyle={{fontSize: 30}}
-        />
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate('ProfileFriend', {
+              userId: this.props.item.uid,
+              userName: this.props.item.name,
+              userPhoto: this.props.item.photoUrl,
+            })
+          }>
+          <GiftedAvatar
+            user={{
+              name: this.props.item.name,
+              avatar: this.props.item.photoUrl,
+            }}
+            avatarStyle={styles.image}
+            textStyle={{fontSize: 30}}
+          />
+        </TouchableOpacity>
+
         <View style={styles.cardContent}>
           <Text style={styles.name}>{this.props.item.name}</Text>
           <TouchableOpacity
@@ -85,9 +97,9 @@ class UserListItem extends Component {
               this._toggleFollowState(this.props.userId, this.props.item.uid);
             }}>
             {this.state.isFlowing ? (
-              <Text style={styles.followButton}>Following</Text>
+              <Text style={styles.followButton}>Đang theo dõi</Text>
             ) : (
-              <Text style={styles.followButton}>Follow</Text>
+              <Text style={styles.followButton}>Theo dõi</Text>
             )}
           </TouchableOpacity>
         </View>

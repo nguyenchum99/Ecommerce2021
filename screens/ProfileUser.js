@@ -47,6 +47,7 @@ const RECIPE_ITEM_MARGIN = RECIPE_ITEM_OFFSET * 2;
       userIdProfile: userIdProfile,
     });
 
+    //lít danh sach
     firebaseApp
       .database()
       .ref('Products/')
@@ -64,14 +65,20 @@ const RECIPE_ITEM_MARGIN = RECIPE_ITEM_OFFSET * 2;
             productCategory: child.val().category,
             location: child.val().location,
             createAt: child.val().createAt,
+            sold: child.val().sold,
           });
+          
         });
+        console.log("lentgth" + li.length)
         this.setState({
           listProduct: li,
-          countProduct: li.count,
+          countProduct: li.length,
+         
         });
       });
 
+      //tinh so hang ban duọc
+      
       //check follow
       const key = this.props.userId + '_' + userIdProfile;
       console.log('keyyyyyyyyyyy', key);
@@ -123,7 +130,7 @@ const RECIPE_ITEM_MARGIN = RECIPE_ITEM_OFFSET * 2;
 
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={styles.nametxt}>Danh sách 13</Text>
+                <Text style={styles.nametxt}>Sản phẩm {this.state.countProduct}</Text>
                 <Text style={styles.nametxt}>Đã bán 2</Text>
                 <Text style={styles.nametxt}>Người theo dõi 100</Text>
               </View>

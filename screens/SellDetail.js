@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {ListItem, Icon} from 'react-native-elements';
-import { firebaseApp } from '../Components/FirebaseConfig';
+import {firebaseApp} from '../Components/FirebaseConfig';
 
 class SellDetail extends React.Component {
   constructor(props) {
@@ -30,6 +30,12 @@ class SellDetail extends React.Component {
       productPrice: '',
       userName: '',
       key: '',
+      soLuong: '',
+      total: '',
+      location: '',
+      soLuongProduct: '',
+      confirmOrder: '',
+      cancelOrder: '',
     };
   }
 
@@ -45,6 +51,9 @@ class SellDetail extends React.Component {
     const userPhoto = this.props.navigation.getParam('userPhoto');
     const productPrice = this.props.navigation.getParam('productPrice');
     const userName = this.props.navigation.getParam('userName');
+    const location = this.props.navigation.getParam('location');
+    const soLuong = this.props.navigation.getParam('soLuong');
+    const total = this.props.navigation.getParam('total');
     const key = this.props.navigation.getParam('key');
 
     this.setState({
@@ -60,38 +69,114 @@ class SellDetail extends React.Component {
       productPrice: productPrice,
       userName: userName,
       key: key,
+      location: location,
+      total: total,
+      soLuong: soLuong,
     });
+
+    //lay so luong cua san pham
+    firebaseApp
+      .database()
+      .ref(`Products/${idProduct}`)
+      .on('value', (snapshot) => {
+        this.state.soLuongProduct = snapshot.child('soLuong').val();
+      });
+
+    //check trang thai don hang
+    firebaseApp
+      .database()
+      .ref(`Orders/${key}`)
+      .on('value', (snapshot) => {
+        this.state.confirmOrder = snapshot.child('orderSuccess').val();
+        this.state.cancelOrder = snapshot.child('cancelOrder').val();
+      });
+
+    
   }
 
   xacThucDonHang() {
-      // update trang thai don thanh cong
-    firebaseApp.database().ref(`Orders/${this.state.key}`).update({
-        orderSuccess: true
-    });
-    //update san pham da ban
-    firebaseApp.database().ref(`Products/${this.state.idProduct}`).update({
-      sold: true,
-    });
-    
+    Alert.alert('Xác thực', 'Xác nhận đơn hàng', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          if(this.state.soLuongProduct == 0){
+            alert('Số lượng hàng đã hết');
+            this.props.navigation.navigate('Manager');
+          }else {
+            // update trang thai don thanh cong
+            firebaseApp.database().ref(`Orders/${this.state.key}`).update({
+              orderSuccess: true,
+            });
+            //update san pham da ban
+            firebaseApp
+              .database()
+              .ref(`Products/${this.state.idProduct}`)
+              .update({
+                sold: true,
+                soLuong: this.state.soLuongProduct - this.state.soLuong,
+              });
+            alert('Xác nhận đơn hàng thành công');
+            this.props.navigation.navigate('Manager');
+          }
+         
+        },
+      },
+    ]);
   }
+
+  huyDonHang = () => {
+    Alert.alert('Hủy đơn', 'Xác nhận hủy đơn hàng', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          // update trang thai don thanh cong
+          firebaseApp.database().ref(`Orders/${this.state.key}`).update({
+            cancelOrder: true,
+          });
+          alert('Hủy đơn hàng thành công');
+          this.props.navigation.navigate('Manager');
+        },
+      },
+    ]);
+  };
 
   render() {
     return (
       <View>
         <View style={styles.box}>
-        
           <Image style={styles.image} source={{uri: this.state.productImage}} />
           <View style={styles.boxContent}>
             <Text style={styles.title}>{this.state.productName}</Text>
             <Text style={styles.description}>
               {this.state.productPrice} VND
             </Text>
+            <Text style={styles.description}>
+              Số lượng hiện có: {this.state.soLuongProduct} 
+            </Text>
           </View>
         </View>
         <ListItem bottomDivider>
           <ListItem.Content>
+            <ListItem.Title>Mã đơn hàng: {this.state.key}</ListItem.Title>
             <ListItem.Title>
               Tên người mua: {this.state.userName}
+            </ListItem.Title>
+            <ListItem.Title>
+              Thời gian đặt: {this.state.createAt}
+            </ListItem.Title>
+            <ListItem.Title>Số lượng đặt mua: {this.state.soLuong}</ListItem.Title>
+            <ListItem.Title>
+              Đơn giá: {this.state.productPrice} VNĐ
             </ListItem.Title>
             <ListItem.Title>
               <Text>Phí ship: </Text>
@@ -103,21 +188,40 @@ class SellDetail extends React.Component {
               <Text>Địa chỉ: {this.state.address} </Text>
             </ListItem.Title>
             <ListItem.Title>
+              <Text>Tỉnh: {this.state.location} </Text>
+            </ListItem.Title>
+            <ListItem.Title>
               <Text>Số điện thoại: {this.state.phone} </Text>
+            </ListItem.Title>
+            <ListItem.Title>
+              <Text>Tổng đơn hàng: {this.state.total} VNĐ</Text>
             </ListItem.Title>
           </ListItem.Content>
         </ListItem>
-
-        <TouchableOpacity
-          style={[styles.buttonContainer, styles.loginButton]}
-          onPress={() => this.orderProduct()}>
-          <Text style={styles.loginText}>Phí ship</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.buttonContainer, styles.loginButton]}
-          onPress={() => this.xacThucDonHang()}>
-          <Text style={styles.loginText}>Xác nhận đơn hàng</Text>
-        </TouchableOpacity>
+        {this.state.cancelOrder ? (
+          <Text
+            style={{marginLeft: 20, marginTop: 10, color: 'red', fontSize: 18}}>
+            Đơn hàng đã hủy
+          </Text>
+        ) : this.state.confirmOrder ? (
+          <Text
+            style={{marginLeft: 20, marginTop: 10, color: 'red', fontSize: 18}}>
+            Đơn hàng xác nhận thành công
+          </Text>
+        ) : (
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <TouchableOpacity
+              style={[styles.buttonContainer, styles.loginButton]}
+              onPress={() => this.huyDonHang()}>
+              <Text style={styles.loginText}>Hủy đơn</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.buttonContainer, styles.loginButton]}
+              onPress={() => this.xacThucDonHang()}>
+              <Text style={styles.loginText}>Xác nhận đơn hàng</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     );
   }
@@ -135,13 +239,15 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   buttonContainer: {
+    flex: 2,
     height: 45,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
-    width: 250,
-    borderRadius: 30,
+    marginTop: 20,
+    borderColor: '#ffffff',
+    borderWidth: 1,
   },
   loginButton: {
     backgroundColor: '#3498db',

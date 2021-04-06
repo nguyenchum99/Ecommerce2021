@@ -1,13 +1,17 @@
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
+import ChartScreen from '../screens/ChartScreen';
+import EditProduct from '../screens/EditProduct';
 import EditProfileUser from '../screens/EditProfileUser';
 import FindFriendScreen from '../screens/FindFriendScreen';
 import FollowersScreen from '../screens/FollowersScreen';
 import FollowingScreen from '../screens/FollowingScreen';
+import FriendProfile from '../screens/FriendProfile';
+import ListtingScreen from '../screens/ListtingScreen';
 import UserScreen from '../screens/UserScreen';
 
 import StackBuy from './StackBuy';
-import StackEditProduct from './StackEditProduct';
+
 import StackSell from './StackSell';
 
 const StackUser = createStackNavigator({
@@ -54,10 +58,25 @@ const StackUser = createStackNavigator({
     },
   },
   List: {
-    screen: StackEditProduct,
+    screen: ListtingScreen,
+    navigationOptions: {
+      title: 'Danh mục sản phẩm',
+    },
   },
   Active: {
-    screen: StackBuy,
+    screen: ChartScreen,
+  },
+  Edit: {
+    screen: EditProduct,
+    navigationOptions: {
+      title: 'Sửa thông tin sản phẩm',
+    },
+  },
+  ProfileFriend: {
+    screen: FriendProfile,
+    navigationOptions: {
+      title: 'Shop',
+    },
   },
 });
 

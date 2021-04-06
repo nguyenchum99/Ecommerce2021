@@ -1,130 +1,45 @@
-import React, {Component} from 'react';
-import {StyleSheet, Text, View, Image, ScrollView} from 'react-native';
+import React from 'react';
+import {StyleSheet, Dimensions, ScrollView} from 'react-native';
+import {Block, theme, Text} from 'galio-framework';
+import articles from '../constants/articles';
+import Card from '../Components/Card';
+const {width} = Dimensions.get('screen');
 
-export default class TestScreen extends Component {
-  constructor(props) {
-    super(props);
-  }
+export default class TestScreen extends React.Component {
+  renderArticles = () => {
+    return (
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.articles}>
+        <Block flex>
+          <Card item={articles[0]} horizontal />
+          <Block flex row>
+            <Card item={articles[1]} style={{marginRight: theme.SIZES.BASE}} />
+            <Card item={articles[2]} />
+          </Block>
+          <Card item={articles[3]} horizontal />
+        </Block>
+      </ScrollView>
+    );
+  };
 
   render() {
     return (
-      <ScrollView>
-        <View style={styles.container}>
-          <View style={[styles.card, styles.profileCard]}>
-            <Image
-              style={styles.avatar}
-              source={{
-                uri: 'https://bootdey.com/img/Content/avatar/avatar6.png',
-              }}
-            />
-            <Text style={styles.name}>John Doe</Text>
-          </View>
-
-          <View style={styles.card}>
-            <Text style={styles.cardTittle}>Title</Text>
-            <Text> - Lorem ipsum dolor sit amet</Text>
-            <Text> - Lorem ipsum dolor sit amet</Text>
-            <Text> - Lorem ipsum dolor sit amet</Text>
-          </View>
-
-          <View style={styles.card}>
-            <Text style={styles.cardTittle}>Title</Text>
-            <Text> - Lorem ipsum dolor sit amet</Text>
-            <Text> - Lorem ipsum dolor sit amet</Text>
-            <Text> - Lorem ipsum dolor sit amet</Text>
-          </View>
-
-          <View style={styles.photosCard}>
-            <Text style={styles.cardTittle}>Photos</Text>
-            <View style={styles.photosContainer}>
-              <Image
-                style={styles.photo}
-                source={{
-                  uri: 'https://bootdey.com/img/Content/avatar/avatar1.png',
-                }}
-              />
-              <Image
-                style={styles.photo}
-                source={{
-                  uri: 'https://bootdey.com/img/Content/avatar/avatar2.png',
-                }}
-              />
-              <Image
-                style={styles.photo}
-                source={{
-                  uri: 'https://bootdey.com/img/Content/avatar/avatar3.png',
-                }}
-              />
-              <Image
-                style={styles.photo}
-                source={{
-                  uri: 'https://bootdey.com/img/Content/avatar/avatar4.png',
-                }}
-              />
-              <Image
-                style={styles.photo}
-                source={{
-                  uri: 'https://bootdey.com/img/Content/avatar/avatar5.png',
-                }}
-              />
-              <Image
-                style={styles.photo}
-                source={{
-                  uri: 'https://bootdey.com/img/Content/avatar/avatar6.png',
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </ScrollView>
+      <Block flex center style={styles.home}>
+        {this.renderArticles()}
+      </Block>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: '#DCDCDC',
+  home: {
+    width: width,
   },
-  cardTittle: {
-    color: '#808080',
-    fontSize: 22,
-    marginBottom: 5,
-  },
-  avatar: {
-    width: 150,
-    height: 150,
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    padding: 10,
-    height: 100,
-    marginTop: 10,
-  },
-  profileCard: {
-    height: 200,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  name: {
-    marginTop: 10,
-    fontSize: 22,
-    color: '#808080',
-  },
-  photosContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    height: 'auto',
-  },
-  photosCard: {
-    marginTop: 10,
-  },
-  photo: {
-    width: 113,
-    height: 113,
-    marginTop: 5,
-    marginRight: 5,
+  articles: {
+    width: width - theme.SIZES.BASE * 2,
+    paddingVertical: theme.SIZES.BASE,
+    paddingHorizontal: 2,
+    fontFamily: 'montserrat-regular',
   },
 });

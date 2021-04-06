@@ -56,11 +56,7 @@ class FollowerScreen extends Component {
                 <Image style={styles.image} source={{uri: item.photoUrl}} />
                 <View style={styles.cardContent}>
                   <Text style={styles.name}>{item.name}</Text>
-                  <TouchableOpacity
-                    style={styles.followButton}
-                    onPress={() => this._deleteFollowerUser()}>
-                    <Text style={{color: '#ffffff'}}>Delete</Text>
-                  </TouchableOpacity>
+                 
                 </View>
               </TouchableOpacity>
             );

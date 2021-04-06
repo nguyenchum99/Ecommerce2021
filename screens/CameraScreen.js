@@ -28,6 +28,11 @@ export const category = [
   {label: 'Thời trang', value: 'Thời trang'},
   {label: 'Điện thoại', value: 'Điện thoại'},
   {label: 'Đồ gia dụng', value: 'Đồ gia dụng'},
+  {label: 'Bàn ghế', value: 'Bàn ghế văn phòng'},
+  {label: 'Máy móc văn phòng', value: 'Máy móc văn phòng'},
+  {label: 'Đồ gỗ', value: 'Đồ gỗ'},
+  {label: 'Đồ điện tử', value: 'Đồ điện tử'},
+  {label: 'Điều hòa - Ti vi - Tủ lạnh', value: 'Điều hòa - Ti vi - Tủ lạnh'},
 ];
 
 const status = [
@@ -48,6 +53,7 @@ class CameraScreen extends React.Component {
       productImage3: null,
       productImage4: '',
       productCreateAt: '',
+      soLuong: '',
       productCategory: 'Thời trang',
       idUser: '',
       location: 'Hà Nội',
@@ -87,71 +93,79 @@ class CameraScreen extends React.Component {
     ) {
       alert('Bạn phải nhập đầy đủ thông tin');
     } else {
-      Alert.alert(
-        'Thông báo',
-        'Bạn có chắc muốn tạo món mới không ?',
-        [
-          {
-            text: 'No',
-            onPress: () => console.log('Cancel'),
-            style: 'cancel',
-          },
-          {
-            text: 'Yes',
-            onPress: async () => {
-              if (
-                this.state.productName == null ||
-                this.state.productPrice == null
-              ) {
-                alert('Bạn phải nhập đầy đủ thông tin');
-              } else {
-                const imageUrl1 = await this.uploadImage(
-                  this.state.productImage1,
-                );
-                const imageUrl2 = await this.uploadImage(
-                  this.state.productImage2,
-                );
-                const imageUrl3 = await this.uploadImage(
-                  this.state.productImage3,
-                );
-
-                productRef.ref('Products').push({
-                  name: this.state.productName,
-                  description: this.state.productDescription,
-                  price: this.state.productPrice,
-                  imageUrl1: imageUrl1,
-                  imageUrl2: imageUrl2,
-                  imageUrl3: imageUrl3,
-
-                  createAt: new Date().toISOString(),
-                  timeUpdate: '',
-                  location: this.state.location,
-                  idUser: this.props.userId,
-                  userName: this.props.userName,
-                  category: this.state.productCategory,
-                  status: this.state.productStatus,
-                  userAvatar: this.props.userPhoto,
-                });
-
-                this.setState({
-                  productName: null,
-                  productDescription: null,
-                  productPrice: null,
-                  productImage1: null,
-                  productImage2: null,
-                  productImage3: null,
-
-                  productCreateAt: null,
-                  productDescription: null,
-                });
-                this.props.navigation.navigate('Home');
-                alert('Tạo sản phẩm thành công');
-              }
+      if (
+        this.state.productImage1 == null ||
+        this.state.productImage1 == null ||
+        this.state.productImage1 == null
+      ) {
+        alert('Bạn phải đăng đủ ba ảnh');
+      } else {
+        Alert.alert(
+          'Thông báo',
+          'Đăng thông tin sản phẩm ?',
+          [
+            {
+              text: 'No',
+              onPress: () => console.log('Cancel'),
+              style: 'cancel',
             },
-          },
-        ],
-        {cancelable: false},
-      );
+            {
+              text: 'Yes',
+              onPress: async () => {
+                if (
+                  this.state.productName == null ||
+                  this.state.productPrice == null
+                ) {
+                  alert('Bạn phải nhập đầy đủ thông tin');
+                } else {
+                  const imageUrl1 = await this.uploadImage(
+                    this.state.productImage1,
+                  );
+                  const imageUrl2 = await this.uploadImage(
+                    this.state.productImage2,
+                  );
+                  const imageUrl3 = await this.uploadImage(
+                    this.state.productImage3,
+                  );
+
+                  productRef.ref('Products').push({
+                    name: this.state.productName,
+                    description: this.state.productDescription,
+                    price: this.state.productPrice,
+                    imageUrl1: imageUrl1,
+                    imageUrl2: imageUrl2,
+                    imageUrl3: imageUrl3,
+                    soLuong: this.state.soLuong,
+                    createAt: new Date().toISOString(),
+                    timeUpdate: '',
+                    location: this.state.location,
+                    idUser: this.props.userId,
+                    userName: this.props.userName,
+                    category: this.state.productCategory,
+                    status: this.state.productStatus,
+                    userAvatar: this.props.userPhoto,
+                  });
+
+                  this.setState({
+                    productName: null,
+                    productDescription: null,
+                    productPrice: null,
+                    productImage1: null,
+                    productImage2: null,
+                    productImage3: null,
+                    soLuong: null,
+                    productCreateAt: null,
+                    productDescription: null,
+                  });
+                  this.props.navigation.navigate('Home');
+                  alert('Tạo sản phẩm thành công');
+                }
+              },
+            },
+          ],
+          {cancelable: false},
+        );
+      }
     }
   };
 
@@ -186,6 +200,7 @@ class CameraScreen extends React.Component {
     return (
       <View style={styles.screen}>
         <Text style={styles.title}>Tạo sản phẩm của bạn</Text>
+        <Text style={{marginLeft: 20}}>Bạn phải đăng đủ ba ảnh</Text>
         <View style={styles.imageContainer}>
           <ImageViewHolder
             image={this.state.productImage1}
@@ -294,11 +309,19 @@ class CameraScreen extends React.Component {
             />
           </View>
         </View>
-
+        <View style={{flex: 2, marginRight: 20, marginLeft: 20}}>
+          <Text>Số lượng</Text>
+          <TextInput
+            keyboardType="numeric"
+            placeholder="..."
+            style={styles.input}
+            onChangeText={(text) => this.setState({soLuong: text})}
+            value={this.state.soLuong}></TextInput>
+        </View>
         <TouchableOpacity
           style={styles.button}
           onPress={() => this.addNewproduct()}>
-          <Text style={styles.textbutton}>Ok</Text>
+          <Text style={styles.textbutton}>Tạo sản phẩm</Text>
         </TouchableOpacity>
       </View>
     );
@@ -376,6 +399,8 @@ const styles = StyleSheet.create({
     height: '20%',
     alignItems: 'center',
     justifyContent: 'space-around',
+    marginLeft: 20,
+    marginRight: 20,
   },
   image: {
     width: '30%',
@@ -417,7 +442,7 @@ const styles = StyleSheet.create({
   textbutton: {
     color: '#ffffff',
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 15,
   },
   input: {
     borderWidth: 1,

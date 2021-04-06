@@ -62,12 +62,13 @@ class LocalScreen extends React.Component {
     return list;
   }
 
-
-  chooseLocal(val){
-    if(val == "Phân loại"){
+  chooseLocal(val) {
+    if (val == 'Phân loại') {
       this.props.navigation.navigate('Category');
-    }else if (val == 'Khu vực') {
-
+    } else if (val == 'Khu vực') {
+    }
+    else if (val == 'Gía 0 đồng') {
+      this.props.navigation.navigate('Free');
     }
   }
 
@@ -91,14 +92,11 @@ class LocalScreen extends React.Component {
               />
             </View>
           </View>
-        
-
-          <ButtonToggleGroup
-            highlightBackgroundColor={'blue'}
-            highlightTextColor={'white'}
+          <ButtonToggleGroup           
+            highlightTextColor={'red'}
             inactiveBackgroundColor={'transparent'}
-            inactiveTextColor={'grey'}
-            values={['Phân loại', 'Khu vực']}
+            inactiveTextColor={'red'}
+            values={['Phân loại',  'Gía 0 đồng']}
             onSelect={(val) => this.chooseLocal(val)}
           />
           <FlatList
@@ -143,6 +141,7 @@ export default connect(mapStateToProps, null)(LocalScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
   containerCard: RecipeCard.container,
   photoCard: RecipeCard.photo,
@@ -153,7 +152,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     borderBottomColor: '#F5FCFF',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#d9d9d9',
     borderRadius: 30,
     borderBottomWidth: 1,
     height: 45,

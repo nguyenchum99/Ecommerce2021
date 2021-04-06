@@ -42,6 +42,8 @@ class ProductDetail extends React.Component {
       selectedImage: '',
       listImage: '',
       isSoldOut: '',
+      soLuong: ''
+      
     };
   }
 
@@ -133,6 +135,7 @@ class ProductDetail extends React.Component {
         this.state.productCategory = snapshot.child('category').val();
         this.state.userAvatar = snapshot.child('userAvatar').val();
         this.state.isSoldOut = snapshot.child('sold').val();
+        this.state.soLuong = snapshot.child('soLuong').val();
       });
 
     this._checkLikeState(idProduct, this.props.userId);
@@ -261,6 +264,7 @@ class ProductDetail extends React.Component {
                 <Text style={styles.namePrice}>
                   {this.state.productPrice} VND
                 </Text>
+              
               </Text>
 
               {this.state.idUser !== this.props.userId ? (
@@ -299,8 +303,18 @@ class ProductDetail extends React.Component {
               circleLoop
             />
 
-            {this.state.isSoldOut ? (
-              <Text> Đã bán hết</Text>
+            {this.state.soLuong == 0 ? (
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  color: 'red',
+                  marginLeft: 10,
+                  marginTop: 10,
+                }}>
+                {' '}
+                Đã bán hết
+              </Text>
             ) : this.state.idUser !== this.props.userId ? (
               <View style={styles.addToCarContainer}>
                 <TouchableOpacity
@@ -319,6 +333,7 @@ class ProductDetail extends React.Component {
                       productPrice: this.state.productPrice,
                       productDescription: this.state.productDescription,
                       idUserSell: this.state.idUser,
+                      soLuong: this.state.soLuong
                     })
                   }>
                   <Text style={styles.shareBtnText}>Mua hàng</Text>
@@ -349,6 +364,9 @@ class ProductDetail extends React.Component {
             <View style={styles.cardHeader2}>
               <Text style={styles.cardTitle}>
                 Phân loại: {this.state.productCategory}{' '}
+              </Text>
+              <Text style={styles.cardTitle}>
+                Số lượng: {this.state.soLuong}{' '}
               </Text>
               <Text style={styles.cardTitle}>
                 Tình trạng: {this.state.productStatus}{' '}
@@ -395,6 +413,9 @@ class ProductDetail extends React.Component {
 
           {/* danh sach binh luan */}
           <View>
+            <Text style={{fontSize: 15, marginTop: 10, marginLeft: 20}}>
+              Bình luận sản phẩm
+            </Text>
             <FlatList
               style={styles.root}
               data={this.state.listComment}
@@ -619,6 +640,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: '#00BFFF',
+    fontSize: 15
   },
   image: {
     marginTop: 10,
@@ -639,19 +661,22 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   containerItem: {
-    paddingLeft: 10,
     paddingRight: 10,
     paddingVertical: 12,
+    borderRadius: 10,
+    marginRight: 10,
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
   containerItem2: {
-    padding: 10,
+    paddingRight: 10,
+    paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginLeft: 50,
-    backgroundColor: 'green',
     borderRadius: 10,
+    marginRight: 10,
+    marginLeft: 50,
+    backgroundColor: '#e6e6e6',
   },
   contentCmt: {
     marginLeft: 10,

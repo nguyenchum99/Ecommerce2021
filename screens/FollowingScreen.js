@@ -88,7 +88,7 @@ class FollowingScreen extends Component {
                     onPress={() =>
                       this._toggleFollowState(this.props.userId, item.uid)
                     }>
-                    <Text style={{color: '#ffffff'}}>Unfollow</Text>
+                    <Text style={{color: '#ffffff'}}>Bỏ theo dõi</Text>
                   </TouchableOpacity>
                 </View>
               </View>

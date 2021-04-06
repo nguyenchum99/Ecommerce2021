@@ -29,8 +29,12 @@ class BuyConfirm extends React.Component {
       userPhoto: '',
       productPrice: '',
       userName: '',
-      key: '',
       orderSuccess: '',
+      soLuong: '',
+      total: '',
+      location: '',
+      key: '',
+      cancelOrder: ''
     };
   }
 
@@ -48,8 +52,11 @@ class BuyConfirm extends React.Component {
     const userName = this.props.navigation.getParam('userName');
     const key = this.props.navigation.getParam('key');
     const orderSuccess = this.props.navigation.getParam('orderSuccess');
-
-    
+    const soLuong = this.props.navigation.getParam('soLuong');
+    const total = this.props.navigation.getParam('total');
+    const location = this.props.navigation.getParam('location');
+    const cancelOrder = this.props.navigation.getParam('cancelOrder');
+   
 
     this.setState({
       address: address,
@@ -65,16 +72,22 @@ class BuyConfirm extends React.Component {
       userName: userName,
       key: key,
       orderSuccess: orderSuccess,
+      soLuong: soLuong,
+      total: total,
+      location: location,
+      cancelOrder: cancelOrder
     });
+
+    
   }
 
   //xác nhận đã nhận được hàng thành công
   daNhanDon() {
     // update trang thai don thanh cong
     firebaseApp.database().ref(`Orders/${this.state.key}`).update({
-      receiveProductSuccess: true
+      receiveProductSuccess: true,
     });
-    
+
     this.props.navigation.navigate('Rating', {
       address: this.state.address,
       createAt: this.state.createAt,
@@ -89,12 +102,11 @@ class BuyConfirm extends React.Component {
       userName: this.state.userName,
       key: this.state.key,
       orderSuccess: this.state.orderSuccess,
-      idUserSell : this.state.idUserSell
+      idUserSell: this.state.idUserSell,
     });
   }
 
   render() {
-   
     return (
       <View>
         <View style={styles.box}>
@@ -108,8 +120,16 @@ class BuyConfirm extends React.Component {
         </View>
         <ListItem bottomDivider>
           <ListItem.Content>
+            <ListItem.Title>Mã đơn hàng: {this.state.key}</ListItem.Title>
             <ListItem.Title>
               Tên người mua: {this.state.userName}
+            </ListItem.Title>
+            <ListItem.Title>
+              Thời gian đặt: {this.state.createAt}
+            </ListItem.Title>
+            <ListItem.Title>Số lượng: {this.state.soLuong}</ListItem.Title>
+            <ListItem.Title>
+              Đơn giá: {this.state.productPrice} VNĐ
             </ListItem.Title>
             <ListItem.Title>
               <Text>Phí ship: </Text>
@@ -118,28 +138,41 @@ class BuyConfirm extends React.Component {
               <Text>Thuế: </Text>
             </ListItem.Title>
             <ListItem.Title>
-              <Text>Địa chỉ: {this.state.address} </Text>
+              <Text>Địa chỉ cụ thể: {this.state.address} </Text>
+            </ListItem.Title>
+            <ListItem.Title>
+              <Text>Tỉnh: {this.state.location} </Text>
             </ListItem.Title>
             <ListItem.Title>
               <Text>Số điện thoại: {this.state.phone} </Text>
             </ListItem.Title>
             <ListItem.Title>
-              giao dich{' '}
-              {this.state.orderSuccess ? <Text>thanh cong</Text> : null}
+              Tổng đơn hàng: {this.state.total} VNĐ
+            </ListItem.Title>
+            <ListItem.Title>
+              {this.state.cancelOrder ? (
+                <Text style={{color: 'red', fontSize: 18}}>Đơn hàng của bạn đã bị hủy</Text>
+              ) : (
+                <Text style={{color: 'red', fontSize: 18}}>
+                  Trạng thái giao dịch{' '}
+                  {this.state.orderSuccess ? (
+                    <Text>thành công</Text>
+                  ) : (
+                    <Text>chưa được xác nhận</Text>
+                  )}
+                </Text>
+              )}
             </ListItem.Title>
           </ListItem.Content>
         </ListItem>
 
-        {/* <TouchableOpacity
-          style={[styles.buttonContainer, styles.loginButton]}
-          onPress={() => this.orderProduct()}>
-          <Text style={styles.loginText}>Phí ship</Text>
-        </TouchableOpacity> */}
-        <TouchableOpacity
-          style={[styles.buttonContainer, styles.loginButton]}
-          onPress={() => this.daNhanDon()}>
-          <Text style={styles.loginText}>Đã nhận đơn</Text>
-        </TouchableOpacity>
+        {this.state.orderSuccess ? (
+          <TouchableOpacity
+            style={[styles.buttonContainer, styles.loginButton]}
+            onPress={() => this.daNhanDon()}>
+            <Text style={styles.loginText}>Đã nhận đơn</Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
     );
   }
@@ -164,6 +197,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: 250,
     borderRadius: 30,
+    marginTop: 20,
+    marginLeft: 80,
   },
   loginButton: {
     backgroundColor: '#3498db',

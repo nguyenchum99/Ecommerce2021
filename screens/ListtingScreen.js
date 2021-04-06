@@ -9,9 +9,9 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import {connect} from 'react-redux';
-import EditInfoProduct from '../Components/EditInfoProduct';
 import {firebaseApp} from '../Components/FirebaseConfig';
 
 
@@ -54,7 +54,7 @@ class ListingScreen extends React.Component {
           });
         });
 
-        this.setState({data: li});
+        this.setState({data: li, isLoading: true});
       });
   }
 
@@ -93,7 +93,9 @@ class ListingScreen extends React.Component {
         {
           text: 'Sửa thông tin',
           onPress: () => {
-            this.refs.editModal.showEditModal(key);
+            this.props.navigation.navigate('Edit', {
+                key: key
+            })
           },
         },
       ],
@@ -109,44 +111,32 @@ class ListingScreen extends React.Component {
   render() {
     return (
       <View>
-        {/* <FlatList
-          data={this.state.data}
-          renderItem={({item}) => {
-            return (
+        {this.state.isLoading == false ? (
+          <ActivityIndicator size="large" />
+        ) : (
+          <FlatList
+            vertical
+            showsVerticalScrollIndicator={false}
+            numColumns={3}
+            data={this.state.data}
+            renderItem={({item}) => (
               <TouchableOpacity
-                style={styles.card}
+                underlayColor="rgba(73,182,77,0.9)"
                 onPress={() => this.selectProductEdit(item.key)}>
-                <Image source={{uri: item.productImage}} style={styles.image} />
-                <View style={{flexDirection: 'row', marginBottom: 10}}>
+                <View style={styles.container}>
+                  <Image
+                    style={styles.photo}
+                    source={{uri: item.productImage}}
+                  />
                   <Text style={styles.title}>{item.productName}</Text>
-                  <Text style={styles.price}>{item.productPrice} đ</Text>
+                  <Text style={{color: 'grey'}}>{item.productPrice} VND</Text>
                 </View>
               </TouchableOpacity>
-            );
-          }}
-          keyExtractor={(item) => item.key.toString()}
-          numColumns={3}
-        /> */}
+            )}
+            keyExtractor={(item) => `${item.key}`}
+          />
+        )}
 
-        <FlatList
-          vertical
-          showsVerticalScrollIndicator={false}
-          numColumns={3}
-          data={this.state.data}
-          renderItem={({item}) => (
-            <TouchableOpacity
-              underlayColor="rgba(73,182,77,0.9)"
-              onPress={() => this.selectProductEdit(item.key)}>
-              <View style={styles.container}>
-                <Image style={styles.photo} source={{uri: item.productImage}} />
-                <Text style={styles.title}>{item.productName}</Text>
-                <Text style={{color: 'grey'}}>{item.productPrice} VND</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => `${item.key}`}
-        />
-        <EditInfoProduct ref={'editModal'} parentFlatList={this} />
       </View>
     );
   }

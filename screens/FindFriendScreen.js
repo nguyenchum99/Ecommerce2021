@@ -17,13 +17,14 @@ class FindFriendScreen extends Component {
           data={this.props.users}
           keyExtractor={(item) => item.uid}
           renderItem={({item}) => {
-            return <UserListItem item={item} />;
+            return <UserListItem item={item} {...this.props}/>;
           }}
         />
       </View>
     );
   }
 }
+
 
 const mapStateToProps = (state) => {
   return {

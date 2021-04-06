@@ -44,6 +44,10 @@ class ManagerBuy extends Component {
             userName: child.val().userName,
             userPhoto: child.val().userPhoto,
             orderSuccess: child.val().orderSuccess,
+            soLuong: child.val().soLuong,
+            total: child.val().total,
+            location: child.val().location,
+            cancelOrder: child.val().cancelOrder,
           });
         });
         this.setState({
@@ -64,6 +68,7 @@ class ManagerBuy extends Component {
           return (
             <TouchableOpacity style={styles.box} onPress = {()=> {
                 this.props.navigation.navigate('BuyDetail', {
+                  key: item.key,
                   address: item.address,
                   createAt: item.createAt,
                   idProduct: item.idProduct,
@@ -76,7 +81,10 @@ class ManagerBuy extends Component {
                   userPhoto: item.userPhoto,
                   productPrice: item.productPrice,
                   orderSuccess: item.orderSuccess,
-                  key: item.key,
+                  soLuong: item.soLuong,
+                  total: item.total,
+                  location: item.location,
+                  cancelOrder: item.cancelOrder
                 });
             }}>
               <Image style={styles.image} source={{uri: item.productImage}} />
