@@ -34,7 +34,8 @@ class BuyConfirm extends React.Component {
       total: '',
       location: '',
       key: '',
-      cancelOrder: ''
+      cancelOrder: '',
+      receiveProductSuccess: ''
     };
   }
 
@@ -76,6 +77,17 @@ class BuyConfirm extends React.Component {
       total: total,
       location: location,
       cancelOrder: cancelOrder
+    });
+
+    //check ham da nhan don
+  firebaseApp
+    .database()
+    .ref(`Orders/${key}`)
+    .on('value', (snapshot) => {
+      this.state.receiveProductSuccess = snapshot
+        .child('receiveProductSuccess')
+        .val();
+     
     });
 
     
@@ -151,7 +163,9 @@ class BuyConfirm extends React.Component {
             </ListItem.Title>
             <ListItem.Title>
               {this.state.cancelOrder ? (
-                <Text style={{color: 'red', fontSize: 18}}>Đơn hàng của bạn đã bị hủy</Text>
+                <Text style={{color: 'red', fontSize: 18}}>
+                  Đơn hàng của bạn đã bị hủy
+                </Text>
               ) : (
                 <Text style={{color: 'red', fontSize: 18}}>
                   Trạng thái giao dịch{' '}

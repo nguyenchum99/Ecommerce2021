@@ -30,7 +30,7 @@ export default class RatingProduct extends Component {
       key: '',
       orderSuccess: '',
       idUserSell: '',
-      rating: '',
+      rating: 5,
     };
   }
 
@@ -39,7 +39,6 @@ export default class RatingProduct extends Component {
     const createAt = this.props.navigation.getParam('createAt');
     const idProduct = this.props.navigation.getParam('idProduct');
     const idUser = this.props.navigation.getParam('idUser');
-    const idUserSell = this.props.navigation.getParam('idUserSell');
     const phone = this.props.navigation.getParam('phone');
     const productImage = this.props.navigation.getParam('productImage');
     const productName = this.props.navigation.getParam('productName');
@@ -74,10 +73,11 @@ export default class RatingProduct extends Component {
       idProduct: this.state.idProduct,
       idUser: this.state.idUser,
       rating: this.state.rating,
-      idUserSell: this.state.idUserSell,
+      key: this.state.key
     });
 
     alert('Cảm ơn bạn đã đánh giá');
+    this.props.navigation.navigate('ManagerBuy');
   }
 
   setRating(rating) {

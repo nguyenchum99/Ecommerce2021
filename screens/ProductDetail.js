@@ -42,7 +42,8 @@ class ProductDetail extends React.Component {
       selectedImage: '',
       listImage: '',
       isSoldOut: '',
-      soLuong: ''
+      soLuong: '',
+      rating: ''
       
     };
   }
@@ -119,7 +120,7 @@ class ProductDetail extends React.Component {
     firebaseApp
       .database()
       .ref(`Products/${idProduct}`)
-      .once('value', (snapshot) => {
+      .on('value', (snapshot) => {
         this.state.productName = snapshot.child('name').val();
         this.state.productDescription = snapshot.child('description').val();
         this.state.productPrice = snapshot.child('price').val();
@@ -168,6 +169,23 @@ class ProductDetail extends React.Component {
           this.setState({listComment: temp});
         });
       });
+
+     
+      //lay rating
+       firebaseApp
+         .database()
+         .ref('Ratings')
+         .orderByChild('idProduct')
+         .equalTo(idProduct)
+         .on('value', (snapshot) => {
+          var rating = 0;
+          snapshot.forEach((child) => {
+            rating += child.val().rating;
+          });
+          this.setState({rating: rating/2});
+        });
+
+     // this.setState({rating: rating})
   }
 
   _checkLikeState = (idProduct, userId) => {
@@ -264,7 +282,6 @@ class ProductDetail extends React.Component {
                 <Text style={styles.namePrice}>
                   {this.state.productPrice} VND
                 </Text>
-              
               </Text>
 
               {this.state.idUser !== this.props.userId ? (
@@ -333,7 +350,7 @@ class ProductDetail extends React.Component {
                       productPrice: this.state.productPrice,
                       productDescription: this.state.productDescription,
                       idUserSell: this.state.idUser,
-                      soLuong: this.state.soLuong
+                      soLuong: this.state.soLuong,
                     })
                   }>
                   <Text style={styles.shareBtnText}>Mua hàng</Text>
@@ -362,6 +379,9 @@ class ProductDetail extends React.Component {
 
           <View style={styles.card}>
             <View style={styles.cardHeader2}>
+              <Text style={styles.cardTitle}>
+               Đánh giá : {this.state.rating}{' '}
+              </Text>
               <Text style={styles.cardTitle}>
                 Phân loại: {this.state.productCategory}{' '}
               </Text>
