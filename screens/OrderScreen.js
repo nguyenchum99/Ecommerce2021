@@ -1,21 +1,18 @@
 import React from 'react';
 import {
-  FlatList,
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
-  Alert,
 } from 'react-native';
-import {connect} from 'react-redux';
-import {firebaseApp} from '../Components/FirebaseConfig';
-import {Input} from 'react-native-elements';
-import {ListItem, Icon} from 'react-native-elements';
+import {Input, ListItem} from 'react-native-elements';
 import RNPickerSelect from 'react-native-picker-select';
+import {connect} from 'react-redux';
 import {CITIES} from '../constants/Cities';
+import database from '@react-native-firebase/database';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -32,7 +29,7 @@ class ProductDetail extends React.Component {
       location: 'Hà Nội',
       soLuong: '',
       soLuongOrder: '',
-      total: ''
+      total: '',
     };
   }
 
@@ -43,7 +40,6 @@ class ProductDetail extends React.Component {
     const image = this.props.navigation.getParam('productImage');
     const idUserSell = this.props.navigation.getParam('idUserSell');
     const soLuong = this.props.navigation.getParam('soLuong');
-    
 
     this.setState({
       idProduct: idProduct,
@@ -69,9 +65,7 @@ class ProductDetail extends React.Component {
           text: 'Có',
           onPress: () => {
             if (this.state.soLuongOrder <= this.state.soLuong) {
-              
-              firebaseApp
-                .database()
+              database()
                 .ref('Orders')
                 .push({
                   idProduct: this.state.idProduct,
@@ -87,8 +81,24 @@ class ProductDetail extends React.Component {
                   location: this.state.location,
                   createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
                   soLuong: this.state.soLuongOrder,
-                  total: this.state.soLuongOrder*this.state.productPrice
+                  total: this.state.soLuongOrder * this.state.productPrice,
                 });
+
+              //post notification order
+              const newRef = database().ref('Notifications').push();
+              newRef.set({
+                uid1: this.props.userId,
+                userName: this.props.userName,
+                uid2: this.state.idUserSell,
+                content: `${this.props.userName} đã order sản phẩm ${this.state.productName} của bạn`,
+                createdAt: new Date().toISOString(),
+                avatarUser: this.props.userPhoto,
+                attachment: this.state.productImage,
+                idProduct: this.state.idProduct,
+                productName: this.state.productName,
+                productPrice: this.state.productPrice,
+                type: 'order',
+              });
 
               alert('Đặt hàng thành công');
               this.props.navigation.navigate('OrderSuccess', {
@@ -105,8 +115,10 @@ class ProductDetail extends React.Component {
                 phoneUser: null,
                 idUserSell: null,
               });
-            }else{
-              alert('Số lượng đặt mua phải nhỏ hơn hoặc bằng số lượng của sản phẩm')
+            } else {
+              alert(
+                'Số lượng đặt mua phải nhỏ hơn hoặc bằng số lượng của sản phẩm',
+              );
             }
           },
         },
@@ -170,7 +182,7 @@ class ProductDetail extends React.Component {
           <ListItem.Content>
             <ListItem.Title>
               <Text style={styles.title}>
-                Tổng: {this.state.soLuongOrder*this.state.productPrice} VND
+                Tổng: {this.state.soLuongOrder * this.state.productPrice} VND
               </Text>
             </ListItem.Title>
           </ListItem.Content>

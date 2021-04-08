@@ -7,6 +7,7 @@
 // ./gradlew assembleRelease
 
 import React from 'react';
+import {LogBox} from 'react-native';
 import 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
@@ -35,13 +36,13 @@ const rootReducer = combineReducers({
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const App = () => {
+  LogBox.ignoreAllLogs(true);
   return (
     <Provider store={store}>
       <NavigationContainer />
     </Provider>
     // <TestScreen/>
     //<ChartScreen/>
- 
   );
 };
 

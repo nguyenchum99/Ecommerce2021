@@ -121,7 +121,6 @@ class EditProduct extends React.Component {
       // imageUrl3: imageUrl3,
     });
     
-   
     this.props.navigation.navigate('List');
   }
 

@@ -140,7 +140,7 @@ class CameraScreen extends React.Component {
                     createAt: new Date().toISOString(),
                     timeUpdate: '',
                     location: this.state.location,
-                    idUser: this.props.userId,
+                    idUser: this.props.userId,  
                     userName: this.props.userName,
                     category: this.state.productCategory,
                     status: this.state.productStatus,
