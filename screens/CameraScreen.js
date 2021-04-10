@@ -1,5 +1,6 @@
 import storage from '@react-native-firebase/storage';
 import React from 'react';
+import {ActivityIndicator} from 'react-native';
 import {Image} from 'react-native';
 import {
   Alert,
@@ -60,6 +61,7 @@ class CameraScreen extends React.Component {
       userName: '',
       productStatus: 'Mới',
       count: 0,
+      isUploading: false,
     };
   }
 
@@ -74,10 +76,12 @@ class CameraScreen extends React.Component {
   }
 
   uploadImage = async (image) => {
+    this.setState({isUploading: true});
     const reference = storage().ref(image);
     const pathToFile = image;
     await reference.putFile(pathToFile);
     const imageUrl = await reference.getDownloadURL();
+    this.setState({isUploading: false});
     return imageUrl;
   };
 
@@ -140,7 +144,7 @@ class CameraScreen extends React.Component {
                     createAt: new Date().toISOString(),
                     timeUpdate: '',
                     location: this.state.location,
-                    idUser: this.props.userId,  
+                    idUser: this.props.userId,
                     userName: this.props.userName,
                     category: this.state.productCategory,
                     status: this.state.productStatus,
@@ -319,11 +323,15 @@ class CameraScreen extends React.Component {
             onChangeText={(text) => this.setState({soLuong: text})}
             value={this.state.soLuong}></TextInput>
         </View>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => this.addNewproduct()}>
-          <Text style={styles.textbutton}>Tạo sản phẩm</Text>
-        </TouchableOpacity>
+        {this.state.isUploading ? (
+          <ActivityIndicator size="large" color="gray" />
+        ) : (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => this.addNewproduct()}>
+            <Text style={styles.textbutton}>Tạo sản phẩm</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   }

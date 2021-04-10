@@ -78,8 +78,7 @@ const ExpandScreen = (props) => {
       props.navigation.navigate('Following');
     } else if (index == 5) {
       props.navigation.navigate('List');
-    }
-     else if (index == 6) {
+    } else if (index == 6) {
       props.navigation.navigate('Active');
     }
   };
@@ -88,7 +87,7 @@ const ExpandScreen = (props) => {
     <View style={styles.container}>
       {list.map((item, i) => (
         <TouchableOpacity onPress={() => selectExpand(i)}>
-          <ListItem key={i} bottomDivider>
+          <ListItem key={item.title} bottomDivider>
             <Icon name={item.icon} />
             <ListItem.Content>
               <ListItem.Title>{item.title}</ListItem.Title>

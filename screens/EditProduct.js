@@ -2,10 +2,11 @@ import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
-import { firebaseApp } from '../Components/FirebaseConfig';
+import {firebaseApp} from '../Components/FirebaseConfig';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImagePicker from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
+import {ActivityIndicator} from 'react-native';
 
 const options = {
   title: 'Select Avatar',
@@ -15,7 +16,6 @@ const options = {
   },
 };
 
-
 class EditProduct extends React.Component {
   constructor(props) {
     super(props);
@@ -24,8 +24,11 @@ class EditProduct extends React.Component {
       productDescription: '',
       productPrice: '',
       productImage1: '',
+      productImage1Changed: false,
       productImage2: '',
+      productImage2Changed: false,
       productImage3: '',
+      productImage3Changed: false,
       productCreateAt: '',
       productCategory: '',
       productStatus: '',
@@ -39,17 +42,19 @@ class EditProduct extends React.Component {
       isLike: false,
       valueLike: 0,
       selectedImage: '',
-
       listImage: '',
       isSoldOut: '',
+      isUploading: false,
     };
   }
 
   uploadImage = async (image) => {
+    this.setState({isUploading: true});
     const reference = storage().ref(image);
     const pathToFile = image;
     await reference.putFile(pathToFile);
     const imageUrl = await reference.getDownloadURL();
+    this.setState({isUploading: false});
     return imageUrl;
   };
 
@@ -90,11 +95,20 @@ class EditProduct extends React.Component {
     }
     ImagePicker.showImagePicker(options, (response) => {
       if (productImage == 'productImage1') {
-        this.setState({productImage1: response.uri});
+        this.setState({
+          productImage1: response.uri,
+          productImage1Changed: true,
+        });
       } else if (productImage == 'productImage2') {
-        this.setState({productImage2: response.uri});
+        this.setState({
+          productImage2: response.uri,
+          productImage2Changed: true,
+        });
       } else if (productImage == 'productImage3') {
-        this.setState({productImage3: response.uri});
+        this.setState({
+          productImage3: response.uri,
+          productImage3Changed: true,
+        });
       }
     });
   };
@@ -107,22 +121,27 @@ class EditProduct extends React.Component {
       this.setState({productImage3: null});
   };
 
-  editProduct = ()=> {
-
-    // const imageUrl1 = await this.uploadImage(this.state.productImage1);
-    // const imageUrl2 = await this.uploadImage(this.state.productImage2);
-    // const imageUrl3 = await this.uploadImage(this.state.productImage3);
+  editProduct = async () => {
+    const imageUrl1 = this.state.productImage1Changed
+      ? await this.uploadImage(this.state.productImage1)
+      : this.state.productImage1;
+    const imageUrl2 = this.state.productImage2Changed
+      ? await this.uploadImage(this.state.productImage2)
+      : this.state.productImage2;
+    const imageUrl3 = this.state.productImage3Changed
+      ? await this.uploadImage(this.state.productImage3)
+      : this.state.productImage3;
 
     firebaseApp.database().ref(`Products/${this.state.idProduct}`).update({
       description: this.state.productDescription,
       price: this.state.productPrice,
-      // imageUrl1: imageUrl1,
-      // imageUrl2: imageUrl2,
-      // imageUrl3: imageUrl3,
+      imageUrl1: imageUrl1,
+      imageUrl2: imageUrl2,
+      imageUrl3: imageUrl3,
     });
-    
+
     this.props.navigation.navigate('List');
-  }
+  };
 
   render() {
     return (
@@ -131,9 +150,7 @@ class EditProduct extends React.Component {
         <Text style={styles.title}>
           Phân loại: {this.state.productCategory}
         </Text>
-        <Text style={styles.title}>
-          Tạo : {this.state.productCreateAt}
-        </Text>
+        <Text style={styles.title}>Tạo : {this.state.productCreateAt}</Text>
         <Text style={styles.title}>Mô tả</Text>
         <TextInput
           style={styles.input}
@@ -176,11 +193,16 @@ class EditProduct extends React.Component {
             }}
           />
         </View>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => this.editProduct()}>
-          <Text style={styles.textbutton}>Sửa thông tin</Text>
-        </TouchableOpacity>
+
+        {!this.state.isUploading ? (
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => this.editProduct()}>
+            <Text style={styles.textbutton}>Sửa thông tin</Text>
+          </TouchableOpacity>
+        ) : (
+          <ActivityIndicator size="large" color="gray" />
+        )}
       </View>
     );
   }
@@ -221,7 +243,6 @@ const ImageViewHolder = (props) => {
   );
 };
 
-
 const mapStateToProps = (state) => {
   return {
     ...state.auth,
@@ -245,13 +266,15 @@ const styles = StyleSheet.create({
   textbutton: {
     color: '#ffffff',
     textAlign: 'center',
-    fontSize: 13
+    fontSize: 13,
   },
   imageContainer: {
     flexDirection: 'row',
     height: '20%',
     alignItems: 'center',
     justifyContent: 'space-around',
+    marginLeft: 20,
+    marginRight: 20,
   },
   input: {
     borderWidth: 1,
@@ -268,14 +291,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   image: {
-    width: 80,
-    height: 80,
-    borderRadius: 50,
+    width: '30%',
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'lightgray',
+  },
+  close: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
   },
   title: {
     marginLeft: 20,
     marginTop: 10,
-    fontSize: 15
+    fontSize: 15,
   },
   location: {
     fontSize: 15,

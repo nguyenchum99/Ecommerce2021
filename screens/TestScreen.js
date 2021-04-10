@@ -1,45 +1,42 @@
-import React from 'react';
-import {StyleSheet, Dimensions, ScrollView} from 'react-native';
-import {Block, theme, Text} from 'galio-framework';
-import articles from '../constants/articles';
-import Card from '../Components/Card';
-const {width} = Dimensions.get('screen');
+import React, {useState} from 'react';
+import {Button, TextInput} from 'react-native';
+import auth from '@react-native-firebase/auth';
 
-export default class TestScreen extends React.Component {
-  renderArticles = () => {
-    return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.articles}>
-        <Block flex>
-          <Card item={articles[0]} horizontal />
-          <Block flex row>
-            <Card item={articles[1]} style={{marginRight: theme.SIZES.BASE}} />
-            <Card item={articles[2]} />
-          </Block>
-          <Card item={articles[3]} horizontal />
-        </Block>
-      </ScrollView>
-    );
-  };
+const TestScreen = (props) => {
+  // If null, no SMS has been sent
+  const [confirm, setConfirm] = useState(null);
 
-  render() {
+  const [code, setCode] = useState('');
+
+  // Handle the button press
+  signInWithPhoneNumber = async(phoneNumber)=> {
+    const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+    setConfirm(confirmation);
+  }
+
+   confirmCode= async() =>{
+    try {
+      await confirm.confirm(code);
+    } catch (error) {
+      console.log('Invalid code.');
+    }
+  }
+
+  if (!confirm) {
     return (
-      <Block flex center style={styles.home}>
-        {this.renderArticles()}
-      </Block>
+      <Button
+        title="Phone Number Sign In"
+        onPress={() => signInWithPhoneNumber('+84982380237')}
+      />
     );
   }
-}
 
-const styles = StyleSheet.create({
-  home: {
-    width: width,
-  },
-  articles: {
-    width: width - theme.SIZES.BASE * 2,
-    paddingVertical: theme.SIZES.BASE,
-    paddingHorizontal: 2,
-    fontFamily: 'montserrat-regular',
-  },
-});
+  return (
+    <>
+      <TextInput value={code} onChangeText={(text) => setCode(text)} />
+      <Button title="Confirm Code" onPress={() => confirmCode()} />
+    </>
+  );
+};
+
+export default TestScreen;

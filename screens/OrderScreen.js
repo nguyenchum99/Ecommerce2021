@@ -13,6 +13,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import {connect} from 'react-redux';
 import {CITIES} from '../constants/Cities';
 import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -30,6 +31,7 @@ class ProductDetail extends React.Component {
       soLuong: '',
       soLuongOrder: '',
       total: '',
+      codeVerification: '',
     };
   }
 
@@ -50,6 +52,29 @@ class ProductDetail extends React.Component {
       soLuong: soLuong,
     });
   }
+
+  //xac thuc so dien thoai
+  // verifyPhoneNumber = async (phoneNumber)=>{
+  //   const confirmation = await auth().verifyPhoneNumber(phoneNumber);
+  //   this.setState({codeVerification: confirmation});
+  // }
+
+  //  // Handle confirm code button press
+  // confirmCode = async () =>{
+  //   try {
+  //     const credential = auth.PhoneAuthProvider.credential(
+  //       confirm.verificationId,
+  //       this.state.codeVerification,
+  //     );
+    
+  //   } catch (error) {
+  //     if (error.code == 'auth/invalid-verification-code') {
+  //       console.log('Invalid code.');
+  //     } else {
+  //       console.log('Account linking error');
+  //     }
+  //   }
+  // }
 
   orderProduct() {
     Alert.alert(
@@ -90,7 +115,7 @@ class ProductDetail extends React.Component {
                 uid1: this.props.userId,
                 userName: this.props.userName,
                 uid2: this.state.idUserSell,
-                content: `${this.props.userName} đã order sản phẩm ${this.state.productName} của bạn`,
+                content: `${this.props.userName} đã đặt sản phẩm ${this.state.productName} của bạn`,
                 createdAt: new Date().toISOString(),
                 avatarUser: this.props.userPhoto,
                 attachment: this.state.productImage,
