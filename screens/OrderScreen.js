@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Alert,
+  Button,
   Image,
   ScrollView,
   StyleSheet,
@@ -14,6 +15,7 @@ import {connect} from 'react-redux';
 import {CITIES} from '../constants/Cities';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import PhoneNumberInput from '../Components/UI/PhoneNumberInput';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -32,8 +34,27 @@ class ProductDetail extends React.Component {
       soLuongOrder: '',
       total: '',
       codeVerification: '',
+      confirmation: null,
     };
   }
+
+  // Handle the button press
+  signInWithPhoneNumber = async (phoneNumber) => {
+    const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+    this.setState({confirmation: confirmation});
+  };
+
+  confirmCode = (code) => {
+    try {
+      this.state.confirmation.confirm(code).then(() => {
+        console.log('Success');
+        alert('Order successfully');
+      });
+    } catch (error) {
+      console.log('Invalid code.');
+      console.error('Error', error.message);
+    }
+  };
 
   componentDidMount() {
     const idProduct = this.props.navigation.getParam('idProduct');
@@ -66,7 +87,7 @@ class ProductDetail extends React.Component {
   //       confirm.verificationId,
   //       this.state.codeVerification,
   //     );
-    
+
   //   } catch (error) {
   //     if (error.code == 'auth/invalid-verification-code') {
   //       console.log('Invalid code.');
@@ -89,62 +110,64 @@ class ProductDetail extends React.Component {
         {
           text: 'Có',
           onPress: () => {
-            if (this.state.soLuongOrder <= this.state.soLuong) {
-              database()
-                .ref('Orders')
-                .push({
-                  idProduct: this.state.idProduct,
-                  productPrice: this.state.productPrice,
-                  productName: this.state.productName,
-                  productImage: this.state.productImage,
-                  idUser: this.props.userId,
-                  userName: this.props.userName,
-                  userPhoto: this.props.userPhoto,
-                  address: this.state.addressUser,
-                  phone: this.state.phoneUser,
-                  idUserSell: this.state.idUserSell,
-                  location: this.state.location,
-                  createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
-                  soLuong: this.state.soLuongOrder,
-                  total: this.state.soLuongOrder * this.state.productPrice,
-                });
+            console.log('Phone number', this.state.phoneUser);
+            this.signInWithPhoneNumber(this.state.phoneUser);
+            // if (this.state.soLuongOrder <= this.state.soLuong) {
+            //   database()
+            //     .ref('Orders')
+            //     .push({
+            //       idProduct: this.state.idProduct,
+            //       productPrice: this.state.productPrice,
+            //       productName: this.state.productName,
+            //       productImage: this.state.productImage,
+            //       idUser: this.props.userId,
+            //       userName: this.props.userName,
+            //       userPhoto: this.props.userPhoto,
+            //       address: this.state.addressUser,
+            //       phone: this.state.phoneUser,
+            //       idUserSell: this.state.idUserSell,
+            //       location: this.state.location,
+            //       createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
+            //       soLuong: this.state.soLuongOrder,
+            //       total: this.state.soLuongOrder * this.state.productPrice,
+            //     });
 
-              //post notification order
-              const newRef = database().ref('Notifications').push();
-              newRef.set({
-                uid1: this.props.userId,
-                userName: this.props.userName,
-                uid2: this.state.idUserSell,
-                content: `${this.props.userName} đã đặt sản phẩm ${this.state.productName} của bạn`,
-                createdAt: new Date().toISOString(),
-                avatarUser: this.props.userPhoto,
-                attachment: this.state.productImage,
-                idProduct: this.state.idProduct,
-                productName: this.state.productName,
-                productPrice: this.state.productPrice,
-                type: 'order',
-              });
+            //   //post notification order
+            //   const newRef = database().ref('Notifications').push();
+            //   newRef.set({
+            //     uid1: this.props.userId,
+            //     userName: this.props.userName,
+            //     uid2: this.state.idUserSell,
+            //     content: `${this.props.userName} đã đặt sản phẩm ${this.state.productName} của bạn`,
+            //     createdAt: new Date().toISOString(),
+            //     avatarUser: this.props.userPhoto,
+            //     attachment: this.state.productImage,
+            //     idProduct: this.state.idProduct,
+            //     productName: this.state.productName,
+            //     productPrice: this.state.productPrice,
+            //     type: 'order',
+            //   });
 
-              alert('Đặt hàng thành công');
-              this.props.navigation.navigate('OrderSuccess', {
-                idProduct: this.state.idProduct,
-              });
+            //   alert('Đặt hàng thành công');
+            //   this.props.navigation.navigate('OrderSuccess', {
+            //     idProduct: this.state.idProduct,
+            //   });
 
-              this.setState({
-                idProduct: null,
-                productName: null,
-                productDescription: null,
-                productPrice: null,
-                productImage: null,
-                addressUser: null,
-                phoneUser: null,
-                idUserSell: null,
-              });
-            } else {
-              alert(
-                'Số lượng đặt mua phải nhỏ hơn hoặc bằng số lượng của sản phẩm',
-              );
-            }
+            //   this.setState({
+            //     idProduct: null,
+            //     productName: null,
+            //     productDescription: null,
+            //     productPrice: null,
+            //     productImage: null,
+            //     addressUser: null,
+            //     phoneUser: null,
+            //     idUserSell: null,
+            //   });
+            // } else {
+            //   alert(
+            //     'Số lượng đặt mua phải nhỏ hơn hoặc bằng số lượng của sản phẩm',
+            //   );
+            // }
           },
         },
       ],
@@ -189,18 +212,35 @@ class ProductDetail extends React.Component {
               value={this.state.location}
             />
           </View>
-          <Text style={styles.title2}>Số điện thoại</Text>
-          <Input
-            placeholder="..."
-            keyboardType="numeric"
-            onChangeText={(value) => this.setState({phoneUser: value})}
-          />
           <Text style={styles.title2}>Số lượng</Text>
           <Input
             placeholder="..."
             keyboardType="numeric"
             onChangeText={(value) => this.setState({soLuongOrder: value})}
           />
+          <PhoneNumberInput
+            onChangeText={(text) => {
+              this.setState({phoneUser: text});
+            }}
+          />
+          {this.state.confirmation && (
+            <View>
+              <Text style={styles.title2}>Mã xác nhận</Text>
+              <Input
+                placeholder="..."
+                onChangeText={(value) =>
+                  this.setState({codeVerification: value})
+                }
+                keyboardType="number-pad"
+              />
+              <Button
+                title="Verify"
+                onPress={() => {
+                  this.confirmCode(this.state.codeVerification);
+                }}
+              />
+            </View>
+          )}
         </View>
 
         <ListItem bottomDivider>
