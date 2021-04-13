@@ -9,6 +9,9 @@ import {
 } from 'react-native';
 import { firebaseApp } from '../Components/FirebaseConfig';
 import {connect} from 'react-redux';
+import moment from 'moment';
+
+
 class ManagerSell extends React.Component {
   constructor(props) {
     super(props);
@@ -68,7 +71,7 @@ class ManagerSell extends React.Component {
           let attachment = <View />;
 
           let mainContentStyle;
-          if (Notification.attachment) {
+          if (Notification.productImage) {
             mainContentStyle = styles.mainContent;
             attachment = (
               <Image
@@ -96,7 +99,7 @@ class ManagerSell extends React.Component {
                   key: Notification.key,
                   location: Notification.location,
                   soLuong: Notification.soLuong,
-                  total: Notification.total
+                  total: Notification.total,
                 })
               }>
               <Image
@@ -111,12 +114,16 @@ class ManagerSell extends React.Component {
                       Đã đặt sản phẩm {Notification.productName} của bạn
                     </Text>
                   </View>
-                  <Text style={styles.timeAgo}>{Notification.createAt}</Text>
+                  <Text style={styles.timeAgo}>
+      
+                    {moment(new Date(Notification.createAt)).fromNow()}
+                  </Text>
                 </View>
-                <Image
+                {attachment}
+                {/* <Image
                   style={styles.attachment}
                   source={{uri: Notification.productImage}}
-                />
+                /> */}
               </View>
             </TouchableOpacity>
           );
@@ -152,7 +159,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginBottom: 5,
-    flexDirection: 'column',
+    flexDirection: 'row',
     flexWrap: 'wrap',
   },
   content: {

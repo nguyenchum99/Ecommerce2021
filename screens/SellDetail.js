@@ -161,20 +161,24 @@ class SellDetail extends React.Component {
               {this.state.productPrice} VND
             </Text>
             <Text style={styles.description}>
-              Số lượng hiện có: {this.state.soLuongProduct} 
+              Số lượng hiện có: {this.state.soLuongProduct}
             </Text>
           </View>
         </View>
         <ListItem bottomDivider>
           <ListItem.Content>
-            <ListItem.Title>Mã đơn hàng: {this.state.key}</ListItem.Title>
+            <ListItem.Title>
+              <Text style = {{color: '#000000', fontWeight: 'bold'}}>Mã đơn hàng: {this.state.key}</Text>
+            </ListItem.Title>
             <ListItem.Title>
               Tên người mua: {this.state.userName}
             </ListItem.Title>
             <ListItem.Title>
               Thời gian đặt: {this.state.createAt}
             </ListItem.Title>
-            <ListItem.Title>Số lượng đặt mua: {this.state.soLuong}</ListItem.Title>
+            <ListItem.Title>
+              Số lượng đặt mua: {this.state.soLuong}
+            </ListItem.Title>
             <ListItem.Title>
               Đơn giá: {this.state.productPrice} VNĐ
             </ListItem.Title>

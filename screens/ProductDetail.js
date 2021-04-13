@@ -10,12 +10,18 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Modal,
+  Pressable,
 } from 'react-native';
 import {SliderBox} from 'react-native-image-slider-box';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
 import * as helper from '../database/database-helper';
 import moment from 'moment';
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -43,8 +49,9 @@ class ProductDetail extends React.Component {
       listImage: '',
       isSoldOut: '',
       soLuong: '',
-      rating: ''
-      
+      rating: '',
+      modalVisible: false,
+      priceOffer: '',
     };
   }
 
@@ -86,8 +93,8 @@ class ProductDetail extends React.Component {
           type: 'comment',
         });
         break;
-      case 'order':
-        newRef.set({});
+      case 'offer':
+        break;
       case 'follow':
         newRef.set({});
         break;
@@ -170,22 +177,21 @@ class ProductDetail extends React.Component {
         });
       });
 
-     
-      //lay rating
-       firebaseApp
-         .database()
-         .ref('Ratings')
-         .orderByChild('idProduct')
-         .equalTo(idProduct)
-         .on('value', (snapshot) => {
-          var rating = 0;
-          snapshot.forEach((child) => {
-            rating += child.val().rating;
-          });
-          this.setState({rating: rating/2});
+    //lay rating
+    firebaseApp
+      .database()
+      .ref('Ratings')
+      .orderByChild('idProduct')
+      .equalTo(idProduct)
+      .on('value', (snapshot) => {
+        var rating = 0;
+        snapshot.forEach((child) => {
+          rating += child.val().rating;
         });
+        this.setState({rating: rating / 2});
+      });
 
-     // this.setState({rating: rating})
+    // this.setState({rating: rating})
   }
 
   _checkLikeState = (idProduct, userId) => {
@@ -270,6 +276,43 @@ class ProductDetail extends React.Component {
     });
   };
 
+  // gui gia de nghi cho nguoi ban
+  makeOfferPrice = () => {
+    if (this.state.productPrice == '') {
+      alert('Giá đề nghị phải cao hơn giá sản phẩm.');
+    } else if (this.state.priceOffer <= this.state.productPrice) {
+      alert('Giá đề nghị phải cao hơn giá sản phẩm.');
+    } else {
+      const newRef = firebaseApp.database().ref('Offers').push();
+      const newRef2 = firebaseApp.database().ref('Notifications').push();
+      newRef.set({
+        idProduct: this.state.idProduct,
+        idUser: this.props.userId,
+        nameUser: this.props.userName,
+        createAt: new Date().toISOString(),
+        avatarUser: this.props.userPhoto,
+        priceOffer: this.state.priceOffer,
+      });
+      newRef2.set({
+        idProduct: this.state.idProduct,
+        attachment: this.state.productImage1,
+        uid1: this.props.userId,
+        nameUser: this.props.userName,
+        uid2: this.state.idUser,
+        createdAt: new Date().toISOString(),
+        avatarUser: this.props.userPhoto,
+        priceOffer: this.state.priceOffer,
+        content: `${this.props.userName} đã đề nghị giá sản phẩm ${this.state.productName}: ${this.state.priceOffer} VND`,
+        type: 'offer',
+        productName: this.state.productName,
+        productPrice: this.state.productPrice,
+        productDescription: this.state.productDescription,
+      });
+      this.setState({modalVisible: false});
+      alert('Bạn đã đề nghị giá tới người bán.');
+    }
+  };
+
   render() {
     // console.log('iumages', this.state.listImage);
     return (
@@ -277,12 +320,13 @@ class ProductDetail extends React.Component {
         <ScrollView>
           <View style={styles.card}>
             <View style={styles.cardHeader}>
-              <Text>
-                <Text style={styles.name}>{this.state.productName} - </Text>
+              <View style = {{flexDirection: 'column'}}>
+                <Text style={styles.name}>{this.state.productName} </Text>
+
                 <Text style={styles.namePrice}>
                   {this.state.productPrice} VND
                 </Text>
-              </Text>
+              </View>
 
               {this.state.idUser !== this.props.userId ? (
                 <TouchableOpacity
@@ -293,15 +337,9 @@ class ProductDetail extends React.Component {
                     )
                   }>
                   {this.state.isLike ? (
-                    <Image
-                      style={styles.icon}
-                      source={require('../assets/icons/heart(1).png')}
-                    />
+                    <FontAwesome name="heart" size={24} color="red" />
                   ) : (
-                    <Image
-                      style={styles.icon}
-                      source={require('../assets/icons/icons8-heart.png')}
-                    />
+                    <Feather name="heart" size={24} color="red" />
                   )}
                 </TouchableOpacity>
               ) : null}
@@ -315,7 +353,7 @@ class ProductDetail extends React.Component {
               resizeMode="contain"
               dotColor="#FFEE58"
               inactiveDotColor="#90A4AE"
-              paginationBoxVerticalPadding={20}
+              paginationBoxVerticalPadding={10}
               autoplay
               circleLoop
             />
@@ -334,6 +372,11 @@ class ProductDetail extends React.Component {
               </Text>
             ) : this.state.idUser !== this.props.userId ? (
               <View style={styles.addToCarContainer}>
+                <TouchableOpacity
+                  style={styles.shareBtn}
+                  onPress={() => this.setState({modalVisible: true})}>
+                  <Text style={styles.shareBtnText}>Đề nghị giá</Text>
+                </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.shareBtn}
                   onPress={() => this.sendMessage()}>
@@ -380,7 +423,8 @@ class ProductDetail extends React.Component {
           <View style={styles.card}>
             <View style={styles.cardHeader2}>
               <Text style={styles.cardTitle}>
-               Đánh giá : {this.state.rating}{' '}
+                Đánh giá : {this.state.rating}{' '}
+                {<FontAwesome name="star" size={24} color="red" />}
               </Text>
               <Text style={styles.cardTitle}>
                 Phân loại: {this.state.productCategory}{' '}
@@ -495,6 +539,45 @@ class ProductDetail extends React.Component {
             />
           </View>
         </ScrollView>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            this.setState({modalVisible: !modalVisible});
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <TouchableOpacity
+                onPress={() => this.setState({modalVisible: false})}>
+                <AntDesign name="closecircle" size={24} color="red" />
+              </TouchableOpacity>
+
+              <Text style={styles.modalText}>Đề nghị giá</Text>
+              <TextInput
+                style={{
+                  height: 40,
+                  width: 200,
+                  margin: 12,
+                  borderWidth: 1,
+                  borderColor: '#bfbfbf',
+                  borderRadius: 5,
+                }}
+                onChangeText={(text) => this.setState({priceOffer: text})}
+                value={(text) => this.setState({priceOffer: text})}
+                placeholder="...VNĐ"
+                keyboardType="numeric"
+              />
+
+              <TouchableOpacity
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => this.makeOfferPrice()}>
+                <Text style={styles.textStyle}>Gửi</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -509,6 +592,54 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, null)(ProductDetail);
 
 const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  modalView: {
+    margin: 10,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+  
+    
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold'
+  },
   container: {
     flex: 1,
     marginTop: 20,
@@ -600,13 +731,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   name: {
-    fontSize: 20,
+    fontSize: 18,
     color: '#696969',
     fontWeight: 'bold',
   },
   namePrice: {
-    fontSize: 20,
-    color: '#696969',
+    fontSize: 15,
+    color: 'red',
     fontWeight: 'bold',
   },
   price: {
@@ -660,7 +791,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: '#00BFFF',
-    fontSize: 15
+    fontSize: 15,
   },
   image: {
     marginTop: 10,

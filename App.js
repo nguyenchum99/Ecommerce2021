@@ -41,7 +41,7 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer />
     </Provider>
-    //  <TestScreen/>
+     // <TestScreen/>
     //<ChartScreen/>
   );
 };

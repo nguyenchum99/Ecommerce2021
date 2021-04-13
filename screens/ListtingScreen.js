@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
-
+import {RecipeCard} from './AppStyles';
 
 const {width, height} = Dimensions.get('window');
 // orientation must fixed
@@ -110,33 +110,57 @@ class ListingScreen extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style = {{backgroundColor: '#ffffff', flex: 1}}>
         {this.state.isLoading == false ? (
           <ActivityIndicator size="large" />
         ) : (
+          // <FlatList
+          //   vertical
+          //   showsVerticalScrollIndicator={false}
+          //   numColumns={3}
+          //   data={this.state.data}
+          //   renderItem={({item}) => (
+          //     <TouchableOpacity
+          //       underlayColor="rgba(73,182,77,0.9)"
+          //       onPress={() => this.selectProductEdit(item.key)}>
+          //       <View style={styles.container}>
+          //         <Image
+          //           style={styles.photo}
+          //           source={{uri: item.productImage}}
+          //         />
+          //         <Text style={styles.title}>{item.productName}</Text>
+          //         <Text style={{color: 'grey'}}>{item.productPrice} VND</Text>
+          //       </View>
+          //     </TouchableOpacity>
+          //   )}
+          //   keyExtractor={(item) => `${item.key}`}
+          // />
           <FlatList
             vertical
             showsVerticalScrollIndicator={false}
-            numColumns={3}
+            numColumns={2}
             data={this.state.data}
             renderItem={({item}) => (
               <TouchableOpacity
                 underlayColor="rgba(73,182,77,0.9)"
-                onPress={() => this.selectProductEdit(item.key)}>
-                <View style={styles.container}>
+                onPress={() =>
+                  this.selectProductEdit(item.key)}
+                >
+                <View style={styles.containerCard}>
                   <Image
-                    style={styles.photo}
+                    style={styles.photoCard}
                     source={{uri: item.productImage}}
                   />
-                  <Text style={styles.title}>{item.productName}</Text>
-                  <Text style={{color: 'grey'}}>{item.productPrice} VND</Text>
+                  <Text style={styles.titleCard}>{item.productName}</Text>
+                  <Text style={styles.categoryCard}>
+                    {item.productPrice} VND
+                  </Text>
                 </View>
               </TouchableOpacity>
             )}
             keyExtractor={(item) => `${item.key}`}
           />
         )}
-
       </View>
     );
   }
@@ -153,24 +177,128 @@ export default connect(mapStateToProps, null)(ListingScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  containerCard: RecipeCard.container,
+  photoCard: RecipeCard.photo,
+  titleCard: RecipeCard.title,
+  categoryCard: RecipeCard.category,
+  formContent: {
+    flexDirection: 'row',
+  },
+  inputContainer: {
+    borderBottomColor: '#F5FCFF',
+    backgroundColor: '#d9d9d9',
+    borderRadius: 30,
+    borderBottomWidth: 1,
+    height: 45,
+    flexDirection: 'row',
     alignItems: 'center',
-    margin: RECIPE_ITEM_OFFSET,
-    marginTop: 30,
-    width:
-      (SCREEN_WIDTH - RECIPE_ITEM_MARGIN) / numColumns - RECIPE_ITEM_OFFSET,
-    height: RECIPE_ITEM_HEIGHT + 60,
-  },
-  title: {
+    flex: 1,
     margin: 10,
-    marginBottom: 5,
-    color: 'black',
-    fontSize: 13,
-    textAlign: 'center',
   },
-  photo: {
-    width:
-      (SCREEN_WIDTH - RECIPE_ITEM_MARGIN) / numColumns - RECIPE_ITEM_OFFSET,
-    height: RECIPE_ITEM_HEIGHT,
-    borderRadius: 60,
+  icon: {
+    width: 30,
+    height: 30,
+  },
+  iconBtnSearch: {
+    alignSelf: 'center',
+  },
+  inputs: {
+    height: 45,
+    marginLeft: 16,
+    borderBottomColor: '#FFFFFF',
+    flex: 1,
+  },
+  inputIcon: {
+    marginLeft: 15,
+    justifyContent: 'center',
+  },
+  list: {
+    paddingHorizontal: 5,
+  },
+  listContainer: {
+    alignItems: 'center',
+  },
+  separator: {
+    marginTop: 10,
+  },
+  /******** card **************/
+  card: {
+    shadowColor: '#00000021',
+    shadowOffset: {
+      width: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    marginVertical: 8,
+    backgroundColor: 'white',
+    flexBasis: '47%',
+    marginHorizontal: 5,
+  },
+  cardHeader: {
+    paddingVertical: 17,
+    paddingHorizontal: 16,
+    borderTopLeftRadius: 1,
+    borderTopRightRadius: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  cardContent: {
+    paddingVertical: 12.5,
+    paddingHorizontal: 16,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 12.5,
+    paddingBottom: 25,
+    paddingHorizontal: 16,
+    borderBottomLeftRadius: 1,
+    borderBottomRightRadius: 1,
+  },
+  cardImage: {
+    flex: 1,
+    height: 150,
+    width: null,
+  },
+  /******** card components **************/
+  title: {
+    fontSize: 18,
+    flex: 1,
+  },
+  price: {
+    fontSize: 16,
+    color: 'green',
+    marginTop: 5,
+  },
+  buyNow: {
+    color: 'purple',
+  },
+  icon: {
+    width: 25,
+    height: 25,
+  },
+  /******** social bar ******************/
+  socialBarContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    flex: 1,
+  },
+  socialBarSection: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    flex: 1,
+  },
+  socialBarlabel: {
+    marginLeft: 8,
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+  },
+  socialBarButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

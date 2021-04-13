@@ -254,6 +254,7 @@ export default connect(mapStateToProps, null)(EditProduct);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff'
   },
   button: {
     backgroundColor: '#ff8533',

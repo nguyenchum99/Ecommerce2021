@@ -8,7 +8,6 @@ import * as usersActions from '../store/actions/users';
 import {ButtonGroup} from 'react-native-elements';
 import ExpandScreen from './ExpandScreen';
 
-
 const UserScreen = (props) => {
   const dispatch = useDispatch();
   const logoutHandler = () => {
@@ -20,7 +19,6 @@ const UserScreen = (props) => {
   const userId = useSelector((state) => state.auth.userId);
   const users = useSelector((state) => state.users.users);
   const buttons = ['Hello', 'World', 'Buttons'];
-  
 
   const fetchUserData = async () => {
     await dispatch(usersActions.fetchUsers());
@@ -31,26 +29,21 @@ const UserScreen = (props) => {
     fetchUserData();
   }, [userId]);
 
-  const updateIndex = ()=> {
-
-  }
+  const updateIndex = () => {};
 
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Expand')}>
-          <GiftedAvatar
-            user={{name: userName, avatar: userPhoto}}
-            avatarStyle={styles.image}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Profile')}>
-          <View>
-            <Text style={styles.title}>{userName}</Text>
-            <Text style={styles.location}>{email}</Text>
-         
-          </View>
-        </TouchableOpacity>
+        <GiftedAvatar
+          user={{name: userName, avatar: userPhoto}}
+          avatarStyle={styles.image}
+        />
+
+        <View style={{marginTop: 10}}>
+          <Text style={styles.title}>{userName}</Text>
+          <Text style={styles.location}>{email}</Text>
+        </View>
+
         {/* <TouchableOpacity onPress={logoutHandler}>
           <Text>Logout</Text>
         </TouchableOpacity> */}
@@ -61,7 +54,7 @@ const UserScreen = (props) => {
         containerStyle={{height: 100}}
       /> */}
       {/* <UserTopNavigator /> */}
-      <ExpandScreen {...props}/>
+      <ExpandScreen {...props} />
     </View>
   );
 };

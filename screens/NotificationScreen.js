@@ -75,8 +75,6 @@ componentDidMount(){
             userName: child.val().userName,
             content: child.val().content,
             createdAt: child.val().createdAt,
-
-
           });
         });
         this.setState({
@@ -87,7 +85,7 @@ componentDidMount(){
     }
 
   render() {
-    // console.log(this.props.notifications);
+    console.log(this.state.notifications);
     return (
       <FlatList
         style={styles.root}

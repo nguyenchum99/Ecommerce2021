@@ -45,15 +45,63 @@ class ProductDetail extends React.Component {
   };
 
   confirmCode = (code) => {
-    try {
+    // alert('Order successfully');
+    
       this.state.confirmation.confirm(code).then(() => {
         console.log('Success');
-        alert('Order successfully');
+        alert('Đặt hàng thành công');
+        database()
+          .ref('Orders')
+          .push({
+            idProduct: this.state.idProduct,
+            productPrice: this.state.productPrice,
+            productName: this.state.productName,
+            productImage: this.state.productImage,
+            idUser: this.props.userId,
+            userName: this.props.userName,
+            userPhoto: this.props.userPhoto,
+            address: this.state.addressUser,
+            phone: this.state.phoneUser,
+            idUserSell: this.state.idUserSell,
+            location: this.state.location,
+            createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
+            soLuong: this.state.soLuongOrder,
+            total: this.state.soLuongOrder * this.state.productPrice,
+          });
+
+        //post notification order
+        const newRef = database().ref('Notifications').push();
+        newRef.set({
+          uid1: this.props.userId,
+          userName: this.props.userName,
+          uid2: this.state.idUserSell,
+          content: `${this.props.userName} đã đặt sản phẩm ${this.state.productName} của bạn`,
+          createdAt: new Date().toISOString(),
+          avatarUser: this.props.userPhoto,
+          attachment: this.state.productImage,
+          idProduct: this.state.idProduct,
+          productName: this.state.productName,
+          productPrice: this.state.productPrice,
+          type: 'order',
+        });
+
+        // alert('Đặt hàng thành công');
+        this.props.navigation.navigate('OrderSuccess', {
+          idProduct: this.state.idProduct,
+        });
+
+        this.setState({
+          idProduct: null,
+          productName: null,
+          productDescription: null,
+          productPrice: null,
+          productImage: null,
+          addressUser: null,
+          phoneUser: null,
+          idUserSell: null,
+        });
       });
-    } catch (error) {
-      console.log('Invalid code.');
-      console.error('Error', error.message);
-    }
+   
   };
 
   componentDidMount() {
@@ -110,64 +158,74 @@ class ProductDetail extends React.Component {
         {
           text: 'Có',
           onPress: () => {
-            console.log('Phone number', this.state.phoneUser);
-            this.signInWithPhoneNumber(this.state.phoneUser);
-            // if (this.state.soLuongOrder <= this.state.soLuong) {
-            //   database()
-            //     .ref('Orders')
-            //     .push({
-            //       idProduct: this.state.idProduct,
-            //       productPrice: this.state.productPrice,
-            //       productName: this.state.productName,
-            //       productImage: this.state.productImage,
-            //       idUser: this.props.userId,
-            //       userName: this.props.userName,
-            //       userPhoto: this.props.userPhoto,
-            //       address: this.state.addressUser,
-            //       phone: this.state.phoneUser,
-            //       idUserSell: this.state.idUserSell,
-            //       location: this.state.location,
-            //       createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
-            //       soLuong: this.state.soLuongOrder,
-            //       total: this.state.soLuongOrder * this.state.productPrice,
-            //     });
+            // console.log('Phone number', this.state.phoneUser);
+            // this.signInWithPhoneNumber(this.state.phoneUser);
+            if(this.state.addressUser == ''){
+              alert('Bạn phải nhập địa chỉ nhận hàng');
+            }
+            else if (
+              this.state.soLuongOrder == 0 ||
+              this.state.soLuongOrder == ''
+            ) {
+              alert('Bạn phải nhập số lượng đặt mua');
+            }
+            else if (this.state.soLuongOrder <= this.state.soLuong) {
+              this.signInWithPhoneNumber(this.state.phoneUser);
+              // database()
+              //   .ref('Orders')
+              //   .push({
+              //     idProduct: this.state.idProduct,
+              //     productPrice: this.state.productPrice,
+              //     productName: this.state.productName,
+              //     productImage: this.state.productImage,
+              //     idUser: this.props.userId,
+              //     userName: this.props.userName,
+              //     userPhoto: this.props.userPhoto,
+              //     address: this.state.addressUser,
+              //     phone: this.state.phoneUser,
+              //     idUserSell: this.state.idUserSell,
+              //     location: this.state.location,
+              //     createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
+              //     soLuong: this.state.soLuongOrder,
+              //     total: this.state.soLuongOrder * this.state.productPrice,
+              //   });
 
-            //   //post notification order
-            //   const newRef = database().ref('Notifications').push();
-            //   newRef.set({
-            //     uid1: this.props.userId,
-            //     userName: this.props.userName,
-            //     uid2: this.state.idUserSell,
-            //     content: `${this.props.userName} đã đặt sản phẩm ${this.state.productName} của bạn`,
-            //     createdAt: new Date().toISOString(),
-            //     avatarUser: this.props.userPhoto,
-            //     attachment: this.state.productImage,
-            //     idProduct: this.state.idProduct,
-            //     productName: this.state.productName,
-            //     productPrice: this.state.productPrice,
-            //     type: 'order',
-            //   });
+              // //post notification order
+              // const newRef = database().ref('Notifications').push();
+              // newRef.set({
+              //   uid1: this.props.userId,
+              //   userName: this.props.userName,
+              //   uid2: this.state.idUserSell,
+              //   content: `${this.props.userName} đã đặt sản phẩm ${this.state.productName} của bạn`,
+              //   createdAt: new Date().toISOString(),
+              //   avatarUser: this.props.userPhoto,
+              //   attachment: this.state.productImage,
+              //   idProduct: this.state.idProduct,
+              //   productName: this.state.productName,
+              //   productPrice: this.state.productPrice,
+              //   type: 'order',
+              // });
 
-            //   alert('Đặt hàng thành công');
-            //   this.props.navigation.navigate('OrderSuccess', {
-            //     idProduct: this.state.idProduct,
-            //   });
+              // // alert('Đặt hàng thành công');
+              // this.props.navigation.navigate('OrderSuccess', {
+              //   idProduct: this.state.idProduct,
+              // });
 
-            //   this.setState({
-            //     idProduct: null,
-            //     productName: null,
-            //     productDescription: null,
-            //     productPrice: null,
-            //     productImage: null,
-            //     addressUser: null,
-            //     phoneUser: null,
-            //     idUserSell: null,
-            //   });
-            // } else {
-            //   alert(
-            //     'Số lượng đặt mua phải nhỏ hơn hoặc bằng số lượng của sản phẩm',
-            //   );
-            // }
+              // this.setState({
+              //   idProduct: null,
+              //   productName: null,
+              //   productDescription: null,
+              //   productPrice: null,
+              //   productImage: null,
+              //   addressUser: null,
+              //   phoneUser: null,
+              //   idUserSell: null,
+              // });
+            } else {
+              alert(
+                'Số lượng đặt mua phải nhỏ hơn hoặc bằng số lượng của sản phẩm',
+              );
+            }
           },
         },
       ],
@@ -176,6 +234,7 @@ class ProductDetail extends React.Component {
   }
 
   render() {
+    console.log('number', this.state.addressUser + ' ' + this.state.soLuong);
     return (
       <ScrollView>
         <View style={styles.box}>
@@ -199,8 +258,8 @@ class ProductDetail extends React.Component {
             placeholder="..."
             onChangeText={(value) => this.setState({addressUser: value})}
           />
-          <View style={{marginTop: 10, marginLeft: 10}}>
-            <Text style={styles.title}>Chọn địa điểm</Text>
+          <View style={{marginTop: 10}}>
+            <Text style={styles.title2}>Chọn địa điểm</Text>
             <RNPickerSelect
               onValueChange={(location) => this.setState({location})}
               items={CITIES}
@@ -233,12 +292,13 @@ class ProductDetail extends React.Component {
                 }
                 keyboardType="number-pad"
               />
-              <Button
-                title="Verify"
+              <TouchableOpacity
+                style={[styles.buttonContainer, styles.loginButton]}
                 onPress={() => {
                   this.confirmCode(this.state.codeVerification);
-                }}
-              />
+                }}>
+                <Text style={{color: '#ffffff'}}>Xác thực mã code</Text>
+              </TouchableOpacity>
             </View>
           )}
         </View>
@@ -253,7 +313,7 @@ class ProductDetail extends React.Component {
           </ListItem.Content>
         </ListItem>
 
-        <View>
+        <View style = {{marginTop: 10}}>
           <TouchableOpacity
             style={[styles.buttonContainer, styles.loginButton]}
             onPress={() => this.orderProduct()}>
@@ -320,7 +380,7 @@ const styles = StyleSheet.create({
     color: '#151515',
   },
   title2: {
-    fontSize: 18,
+    fontSize: 15,
     color: '#151515',
     marginLeft: 10,
     marginBottom: 10,
