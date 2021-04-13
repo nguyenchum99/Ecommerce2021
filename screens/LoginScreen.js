@@ -14,6 +14,9 @@ import {
 import {useDispatch} from 'react-redux';
 import Input from '../Components/UI/Input';
 import * as authActions from '../store/actions/auth';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
@@ -141,76 +144,45 @@ const LoginScreen = (props) => {
   );
 
   return (
-    // <View style={styles.container}>
-    //   <View style={styles.inputView}>
-     
-    //     <Input
-    //       id="email"
-    //       label="Email"
-    //       keyboardType="email-address"
-    //       email
-    //       returnKeyType="next"
-    //       initialValue={initialEmail}
-    //       initiallyValid={!!initialEmail}
-    //       required
-    //       onInputChange={inputChangeHandler}
-    //       errorText="*Please enter a valid email!"
-    //     />
-    //     <Input
-    //       id="password"
-    //       label="Password"
-    //       required
-    //       initialValue={initialPassword}
-    //       initiallyValid={!!initialPassword}
-    //       keyboardType="number-pad"
-    //       onInputChange={inputChangeHandler}
-    //       secureTextEntry={true}
-    //       minLen={6}
-    //       maxLength={6}
-    //       returnKeyType="go"
-    //       errorText="*Please enter password with 6 numbers"
-    //     />
-    //   </View>
-    //   {isWaiting ? (
-    //     <ActivityIndicator size="large" corlor="white" />
-    //   ) : (
-    //     <TouchableOpacity
-    //       style={styles.buttonContainer}
-    //       onPress={authenticationHandler}>
-    //       <Text style={styles.buttonText}>{isSignup ? 'Signup' : 'Login'}</Text>
-    //     </TouchableOpacity>
-    //   )}
-    //   <TouchableOpacity
-    //     style={styles.buttonContainer}
-    //     onPress={() => {
-    //       setIsSignup((isSignup) => !isSignup);
-    //     }}>
-    //     <Text style={styles.buttonText}>
-    //       Switch to {isSignup ? 'Login' : 'Signup'}
-    //     </Text>
-    //   </TouchableOpacity>
-    //   <GoogleSigninButton
-    //     onPress={googleLoginHandler}
-    //     size={GoogleSigninButton.Size.Wide}
-    //     style={{width: '50%', height: 50}}
-    //     color={GoogleSigninButton.Color.Dark}
-    //   />
-    // </View>
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <Image style={[styles.icon, styles.inputIcon]} source={{ uri: 'https://png.icons8.com/password/androidL/40/3498db' }} />
-        <TextInput style={styles.inputs}
+      <FontAwesome name="opencart" size={100} color="red" />
+      <Text
+        style={{marginTop: 20, color: 'red', fontWeight: 'bold', fontSize: 20}}>
+        RE-Ecom
+      </Text>
+      <Text
+        style={{
+          marginTop: 5,
+          color: '#000000',
+          fontWeight: 'bold',
+          fontSize: 15,
+        }}>
+        Mua sắm miễn phí
+      </Text>
+      {/* <View style={styles.inputContainer}>
+        <Image
+          style={[styles.icon, styles.inputIcon]}
+          source={{uri: 'https://png.icons8.com/password/androidL/40/3498db'}}
+        />
+        <TextInput
+          style={styles.inputs}
           placeholder="Email"
           keyboardType="email-address"
-          underlineColorAndroid='transparent' />
+          underlineColorAndroid="transparent"
+        />
       </View>
 
       <View style={styles.inputContainer}>
-        <Image style={[styles.icon, styles.inputIcon]} source={{ uri: 'https://png.icons8.com/envelope/androidL/40/3498db' }} />
-        <TextInput style={styles.inputs}
+        <Image
+          style={[styles.icon, styles.inputIcon]}
+          source={{uri: 'https://png.icons8.com/envelope/androidL/40/3498db'}}
+        />
+        <TextInput
+          style={styles.inputs}
           placeholder="Mật khẩu"
           secureTextEntry={true}
-          underlineColorAndroid='transparent' />
+          underlineColorAndroid="transparent"
+        />
       </View>
 
       <TouchableOpacity style={styles.restoreButtonContainer}>
@@ -219,8 +191,7 @@ const LoginScreen = (props) => {
 
       <TouchableOpacity style={[styles.buttonContainer, styles.loginButton]}>
         <Text style={styles.loginText}>Đăng nhập</Text>
-      </TouchableOpacity>
-
+      </TouchableOpacity> */}
 
       {/* <TouchableOpacity style={[styles.buttonContainer, styles.fabookButton]}>
         <View style={styles.socialButtonContent}>
@@ -229,9 +200,11 @@ const LoginScreen = (props) => {
         </View>
       </TouchableOpacity> */}
 
-      <TouchableOpacity style={[styles.buttonContainer, styles.googleButton]} onPress={googleLoginHandler}>
+      <TouchableOpacity
+        style={[styles.buttonContainer, styles.googleButton]}
+        onPress={googleLoginHandler}>
+        <Entypo name="google-" size={24} color="#ffffff" />
         <View style={styles.socialButtonContent}>
-          <Image style={styles.icon} source={{ uri: 'https://png.icons8.com/google/androidL/40/FFFFFF' }} />
           <Text style={styles.loginText}>Đăng nhập với Google</Text>
         </View>
       </TouchableOpacity>
@@ -244,7 +217,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#B0E0E6',
+    
   },
   inputContainer: {
     borderBottomColor: '#F5FCFF',
@@ -279,6 +252,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: 250,
     borderRadius: 30,
+    marginTop: 20
   },
   loginButton: {
     backgroundColor: '#3498db',
@@ -291,6 +265,7 @@ const styles = StyleSheet.create({
   },
   loginText: {
     color: 'white',
+    fontWeight: 'bold'
   },
   restoreButtonContainer: {
     width: 250,
@@ -301,6 +276,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 10
   },
   socialIcon: {
     color: "#FFFFFF",

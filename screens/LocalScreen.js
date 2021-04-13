@@ -17,6 +17,8 @@ import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
 import {RecipeCard} from './AppStyles';
 import ButtonToggleGroup from 'react-native-button-toggle-group';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 
 class LocalScreen extends React.Component {
   constructor(props) {
@@ -92,11 +94,11 @@ class LocalScreen extends React.Component {
               />
             </View>
           </View>
-          <ButtonToggleGroup           
+          <ButtonToggleGroup
             highlightTextColor={'red'}
             inactiveBackgroundColor={'transparent'}
             inactiveTextColor={'red'}
-            values={['Phân loại',  'Gía 0 đồng']}
+            values={['Phân loại', 'Gía 0 đồng']}
             onSelect={(val) => this.chooseLocal(val)}
           />
           <FlatList
@@ -118,7 +120,10 @@ class LocalScreen extends React.Component {
                     source={{uri: item.imageUrl}}
                   />
                   <Text style={styles.titleCard}>{item.name}</Text>
-                  <Text style={styles.categoryCard}>{item.price} VND</Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <AntDesign name="shoppingcart" size={24} color="red" />
+                    <Text style={styles.categoryCard}>{item.price} VND</Text>
+                  </View>
                 </View>
               </TouchableOpacity>
             )}

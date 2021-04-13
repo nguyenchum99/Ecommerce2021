@@ -37,7 +37,7 @@ export const RecipeCard = StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#444444',
@@ -48,5 +48,7 @@ export const RecipeCard = StyleSheet.create({
   category: {
     marginTop: 5,
     marginBottom: 5,
+    marginLeft: 10,
+    color: 'red'
   },
 });

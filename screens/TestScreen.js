@@ -1,121 +1,145 @@
-import React, {useState} from 'react';
-import {Alert, Modal, StyleSheet, Text, Pressable, View} from 'react-native';
+import React, {Component} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
 
-const TestScreen = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  return (
-    <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </Pressable>
+export default class ProfileView extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [
+        {
+          id: 1,
+          image: 'https://img.icons8.com/color/70/000000/cottage.png',
+          title: 'Order',
+        },
+        {
+          id: 2,
+          image:
+            'https://img.icons8.com/color/70/000000/administrator-male.png',
+          title: 'Like',
+        },
+        {
+          id: 3,
+          image: 'https://img.icons8.com/color/70/000000/filled-like.png',
+          title: 'Comment',
+        },
+        {
+          id: 4,
+          image: 'https://img.icons8.com/color/70/000000/facebook-like.png',
+          title: 'Download',
+        },
+        {
+          id: 5,
+          image: 'https://img.icons8.com/color/70/000000/shutdown.png',
+          title: 'Edit',
+        },
+      ],
+    };
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.headerContent}>
+            <Image
+              style={styles.avatar}
+              source={{
+                uri: 'https://bootdey.com/img/Content/avatar/avatar3.png',
+              }}
+            />
+            <Text style={styles.name}>Jane Doe</Text>
           </View>
         </View>
-      </Modal>
-      <Pressable
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}>
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </Pressable>
-    </View>
-  );
-};
+
+        <View style={styles.body}>
+          <FlatList
+            style={styles.container}
+            enableEmptySections={true}
+            data={this.state.data}
+            keyExtractor={(item) => {
+              return item.id;
+            }}
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity>
+                  <View style={styles.box}>
+                    <Image style={styles.icon} source={{uri: item.image}} />
+                    <Text style={styles.title}>{item.title}</Text>
+                    <Image
+                      style={styles.btn}
+                      source={{
+                        uri: 'https://img.icons8.com/customer/office/40',
+                      }}
+                    />
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22
+  header: {
+    backgroundColor: '#EE82EE',
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center"
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
+  headerContent: {
+    padding: 30,
     alignItems: 'center',
-    marginTop: 22,
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
+  avatar: {
+    width: 130,
+    height: 130,
+    borderRadius: 63,
+    borderWidth: 4,
+    borderColor: '#FF6347',
+    marginBottom: 10,
+  },
+  icon: {
+    width: 40,
+    height: 40,
+  },
+  title: {
+    fontSize: 18,
+    color: '#EE82EE',
+    marginLeft: 4,
+  },
+  btn: {
+    marginLeft: 'auto',
+    width: 40,
+    height: 40,
+  },
+  body: {
+    backgroundColor: '#E6E6FA',
+  },
+  box: {
+    padding: 5,
+    marginBottom: 2,
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    shadowColor: 'black',
+    shadowOpacity: 0.2,
     shadowOffset: {
-      width: 0,
-      height: 2,
+      height: 1,
+      width: -2,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
     elevation: 2,
   },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
+  username: {
+    color: '#20B2AA',
+    fontSize: 22,
+    alignSelf: 'center',
+    marginLeft: 10,
   },
 });
-
-export default TestScreen;
