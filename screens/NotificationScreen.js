@@ -47,6 +47,21 @@ class NotificationScreen extends React.Component {
         productDescription: productDescription,
         comment: comment
       });
+    }else if(type == 'offer'){
+      alert("chat voi nguoi mua")
+      //  this.props.navigation.navigate('myCmt', {
+      //    avatarUser: avatarUser,
+      //    createdAt: createdAt,
+      //    eventId: eventId,
+      //    type: type,
+      //    userName: userName,
+      //    image: image,
+      //    idProduct: idProduct,
+      //    productName: productName,
+      //    productPrice: productPrice,
+      //    productDescription: productDescription,
+      //    comment: comment,
+      //  });
     }
   };
 

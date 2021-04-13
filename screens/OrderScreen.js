@@ -173,57 +173,57 @@ class ProductDetail extends React.Component {
               alert('Bạn phải nhập số lượng đặt mua');
             }
             else if (this.state.soLuongOrder <= this.state.soLuong) {
-              this.signInWithPhoneNumber(this.state.phoneUser);
-              // database()
-              //   .ref('Orders')
-              //   .push({
-              //     idProduct: this.state.idProduct,
-              //     productPrice: this.state.productPrice,
-              //     productName: this.state.productName,
-              //     productImage: this.state.productImage,
-              //     idUser: this.props.userId,
-              //     userName: this.props.userName,
-              //     userPhoto: this.props.userPhoto,
-              //     address: this.state.addressUser,
-              //     phone: this.state.phoneUser,
-              //     idUserSell: this.state.idUserSell,
-              //     location: this.state.location,
-              //     createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
-              //     soLuong: this.state.soLuongOrder,
-              //     total: this.state.soLuongOrder * this.state.productPrice,
-              //   });
+             // this.signInWithPhoneNumber(this.state.phoneUser);
+              database()
+                .ref('Orders')
+                .push({
+                  idProduct: this.state.idProduct,
+                  productPrice: this.state.productPrice,
+                  productName: this.state.productName,
+                  productImage: this.state.productImage,
+                  idUser: this.props.userId,
+                  userName: this.props.userName,
+                  userPhoto: this.props.userPhoto,
+                  address: this.state.addressUser,
+                  phone: this.state.phoneUser,
+                  idUserSell: this.state.idUserSell,
+                  location: this.state.location,
+                  createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
+                  soLuong: this.state.soLuongOrder,
+                  total: this.state.soLuongOrder * this.state.productPrice,
+                });
 
-              // //post notification order
-              // const newRef = database().ref('Notifications').push();
-              // newRef.set({
-              //   uid1: this.props.userId,
-              //   userName: this.props.userName,
-              //   uid2: this.state.idUserSell,
-              //   content: `${this.props.userName} đã đặt sản phẩm ${this.state.productName} của bạn`,
-              //   createdAt: new Date().toISOString(),
-              //   avatarUser: this.props.userPhoto,
-              //   attachment: this.state.productImage,
-              //   idProduct: this.state.idProduct,
-              //   productName: this.state.productName,
-              //   productPrice: this.state.productPrice,
-              //   type: 'order',
-              // });
+              //post notification order
+              const newRef = database().ref('Notifications').push();
+              newRef.set({
+                uid1: this.props.userId,
+                userName: this.props.userName,
+                uid2: this.state.idUserSell,
+                content: `${this.props.userName} đã đặt sản phẩm ${this.state.productName} của bạn`,
+                createdAt: new Date().toISOString(),
+                avatarUser: this.props.userPhoto,
+                attachment: this.state.productImage,
+                idProduct: this.state.idProduct,
+                productName: this.state.productName,
+                productPrice: this.state.productPrice,
+                type: 'order',
+              });
 
-              // // alert('Đặt hàng thành công');
-              // this.props.navigation.navigate('OrderSuccess', {
-              //   idProduct: this.state.idProduct,
-              // });
+              // alert('Đặt hàng thành công');
+              this.props.navigation.navigate('OrderSuccess', {
+                idProduct: this.state.idProduct,
+              });
 
-              // this.setState({
-              //   idProduct: null,
-              //   productName: null,
-              //   productDescription: null,
-              //   productPrice: null,
-              //   productImage: null,
-              //   addressUser: null,
-              //   phoneUser: null,
-              //   idUserSell: null,
-              // });
+              this.setState({
+                idProduct: null,
+                productName: null,
+                productDescription: null,
+                productPrice: null,
+                productImage: null,
+                addressUser: null,
+                phoneUser: null,
+                idUserSell: null,
+              });
             } else {
               alert(
                 'Số lượng đặt mua phải nhỏ hơn hoặc bằng số lượng của sản phẩm',

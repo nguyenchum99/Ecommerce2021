@@ -320,7 +320,7 @@ class ProductDetail extends React.Component {
         <ScrollView>
           <View style={styles.card}>
             <View style={styles.cardHeader}>
-              <View style = {{flexDirection: 'column'}}>
+              <View style={{flexDirection: 'column'}}>
                 <Text style={styles.name}>{this.state.productName} </Text>
 
                 <Text style={styles.namePrice}>
@@ -375,12 +375,22 @@ class ProductDetail extends React.Component {
                 <TouchableOpacity
                   style={styles.shareBtn}
                   onPress={() => this.setState({modalVisible: true})}>
-                  <Text style={styles.shareBtnText}>Đề nghị giá</Text>
+                  <View style={{flexDirection: 'row'}}>
+                    {/* <FontAwesome
+                      name="shopping-cart"
+                      size={20}
+                      color="#ffffff"
+                    /> */}
+                    <Text style={styles.shareBtnText}>Đề nghị giá</Text>
+                  </View>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.shareBtn}
                   onPress={() => this.sendMessage()}>
-                  <Text style={styles.shareBtnText}>Nhắn tin</Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <Entypo name="message" size={20} color="#ffffff" />
+                    <Text style={styles.shareBtnText}>Nhắn tin</Text>
+                  </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -396,7 +406,14 @@ class ProductDetail extends React.Component {
                       soLuong: this.state.soLuong,
                     })
                   }>
-                  <Text style={styles.shareBtnText}>Mua hàng</Text>
+                  <View style={{flexDirection: 'row'}}>
+                    <FontAwesome
+                      name="shopping-cart"
+                      size={20}
+                      color="#ffffff"
+                    />
+                    <Text style={styles.shareBtnText}>Mua hàng</Text>
+                  </View>
                 </TouchableOpacity>
               </View>
             ) : null}
@@ -649,10 +666,13 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     backgroundColor: '#00BFFF',
+    borderColor: '#ffffff',
+    borderWidth: 0.5
   },
   shareBtnText: {
     color: '#ffffff',
     fontSize: 15,
+    marginLeft: 5
   },
   addToCarContainer: {
     flexDirection: 'row',

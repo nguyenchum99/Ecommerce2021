@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
+import {RecipeCard} from './AppStyles';
 
 const {width, height} = Dimensions.get('window');
 // orientation must fixed
@@ -21,8 +22,7 @@ const RECIPE_ITEM_HEIGHT = 100;
 const RECIPE_ITEM_OFFSET = 10;
 const RECIPE_ITEM_MARGIN = RECIPE_ITEM_OFFSET * 2;
 
-
- class ProfileUser extends Component {
+class ProfileUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -67,43 +67,35 @@ const RECIPE_ITEM_MARGIN = RECIPE_ITEM_OFFSET * 2;
             createAt: child.val().createAt,
             sold: child.val().sold,
           });
-          
         });
-        console.log("lentgth" + li.length)
+        console.log('lentgth' + li.length);
         this.setState({
           listProduct: li,
           countProduct: li.length,
-         
         });
       });
 
-      //tinh so hang ban duọc
-      
-      //check follow
-      const key = this.props.userId + '_' + userIdProfile;
-      console.log('keyyyyyyyyyyy', key);
-      this.setState({keyFollwed: key});
-      firebaseApp
-        .database()
-        .ref('Follows/')
-        .orderByChild('myUserid_userId')
-        .equalTo(key)
-        .once('value', (snapshot) => {
-          console.log('follwoing', snapshot.val());
-          this.setState({isFollowed: snapshot.child('isFollowing').val()});
-          //this.state.isFollowed = snapshot.child('isFollowing').val();
-        });
+    //tinh so hang ban duọc
 
+    //check follow
+    const key = this.props.userId + '_' + userIdProfile;
+    console.log('keyyyyyyyyyyy', key);
+    this.setState({keyFollwed: key});
+    firebaseApp
+      .database()
+      .ref('Follows/')
+      .orderByChild('myUserid_userId')
+      .equalTo(key)
+      .once('value', (snapshot) => {
+        console.log('follwoing', snapshot.val());
+        this.setState({isFollowed: snapshot.child('isFollowing').val()});
+        //this.state.isFollowed = snapshot.child('isFollowing').val();
+      });
   }
 
-  clickFollowing = ()=> {
-    
-  }
-
+  clickFollowing = () => {};
 
   render() {
-
-    
     return (
       <View style={{backgroundColor: '#ffffff'}}>
         <View style={styles.header}>
@@ -116,28 +108,31 @@ const RECIPE_ITEM_MARGIN = RECIPE_ITEM_OFFSET * 2;
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <Text style={styles.name}>{this.state.userNameProfile}</Text>
-                <TouchableOpacity
-                  style={styles.followButton}
-                  onPress={() => this.clickFollowing()}>
-                  {this.state.isFollowed ? (
-                    <Text style={styles.followButtonText}>Bỏ theo dõi</Text>
-                  ) : (
-                    <Text style={styles.followButtonText}>Theo dõi</Text>
-                  )}
-                
-                </TouchableOpacity>
+                {this.props.userId == this.state.userIdProfile ? null : (
+                  <TouchableOpacity
+                    style={styles.followButton}
+                    onPress={() => this.clickFollowing()}>
+                    {this.state.isFollowed ? (
+                      <Text style={styles.followButtonText}>Bỏ theo dõi</Text>
+                    ) : (
+                      <Text style={styles.followButtonText}>Theo dõi</Text>
+                    )}
+                  </TouchableOpacity>
+                )}
               </View>
 
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text style={styles.nametxt}>Sản phẩm {this.state.countProduct}</Text>
+                <Text style={styles.nametxt}>
+                  Sản phẩm {this.state.countProduct}
+                </Text>
                 <Text style={styles.nametxt}>Đã bán 2</Text>
                 <Text style={styles.nametxt}>Người theo dõi 100</Text>
               </View>
             </View>
           </View>
         </View>
-        <FlatList
+        {/* <FlatList
           vertical
           showsVerticalScrollIndicator={false}
           numColumns={3}
@@ -158,12 +153,42 @@ const RECIPE_ITEM_MARGIN = RECIPE_ITEM_OFFSET * 2;
             </TouchableOpacity>
           )}
           keyExtractor={(item) => `${item.key}`}
+        /> */}
+
+        <FlatList
+          vertical
+          showsVerticalScrollIndicator={false}
+          numColumns={2}
+          data={this.state.listProduct}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              underlayColor="rgba(73,182,77,0.9)"
+              onPress={() =>
+                this.props.navigation.navigate('Detail', {
+                  idProduct: item.key,
+                })
+              }>
+              <View style={styles.containerCard}>
+                <Image
+                  style={styles.photoCard}
+                  source={{uri: item.productImage}}
+                />
+                <Text style={styles.titleCard}>{item.productName}</Text>
+                <View style={{flexDirection: 'row'}}>
+                  {/* <AntDesign name="shoppingcart" size={24} color="red" /> */}
+                  <Text style={styles.categoryCard}>
+                    {item.productPrice} VND
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => `${item.key}`}
         />
       </View>
     );
   }
 }
-
 
 const mapStateToProps = (state) => {
   return {
@@ -174,6 +199,13 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, null)(ProfileUser);
 
 const styles = StyleSheet.create({
+  containerCard: RecipeCard.container,
+  photoCard: RecipeCard.photo,
+  titleCard: RecipeCard.title,
+  categoryCard: RecipeCard.category,
+  formContent: {
+    flexDirection: 'row',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
@@ -236,7 +268,6 @@ const styles = StyleSheet.create({
     color: '#000000',
     marginLeft: 20,
     marginTop: 10,
-    
   },
   profileDetail: {
     alignSelf: 'center',
