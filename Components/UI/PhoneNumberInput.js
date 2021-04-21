@@ -21,6 +21,7 @@ const PhoneNumberInput = (props) => {
               setValue(text);
             }}
             countryPickerProps={{withAlphaFilter: true}}
+            placeholder= 'Sô điện thoại'
           />
         </SafeAreaView>
       </View>

@@ -3,8 +3,12 @@
 // git commit -m "commit-message (replace this by your commit message)"
 // git push -u origin master
 
-//Build apk run without metro
-// ./gradlew assembleRelease
+// Build apk run without metro
+// react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/
+// ./gradlew assembleDebug
+
+// Fix bug ps1
+// Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 
 import React from 'react';
 import {LogBox} from 'react-native';
@@ -41,7 +45,7 @@ const App = () => {
     <Provider store={store}>
       <NavigationContainer />
     </Provider>
-     // <TestScreen/>
+    //<TestScreen/>
     //<ChartScreen/>
   );
 };

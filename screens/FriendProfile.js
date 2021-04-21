@@ -41,7 +41,6 @@ class FriendProfile extends Component {
     const userId = this.props.navigation.getParam('userId');
     const userName = this.props.navigation.getParam('userName');
     const userPhoto = this.props.navigation.getParam('userPhoto');
-    console.log(userName);
     this.setState({
       userNameProfile: userName,
       userAvatarProfile: userPhoto
@@ -80,7 +79,6 @@ class FriendProfile extends Component {
             sold: child.val().sold,
           });
         });
-        console.log('lentgth' + li.length);
         this.setState({
           listProduct: li,
           countProduct: li.length,

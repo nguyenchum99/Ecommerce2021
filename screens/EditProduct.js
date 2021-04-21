@@ -4,7 +4,7 @@ import {TextInput} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 import {firebaseApp} from '../Components/FirebaseConfig';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import ImagePicker from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import {ActivityIndicator} from 'react-native';
 
@@ -45,6 +45,8 @@ class EditProduct extends React.Component {
       listImage: '',
       isSoldOut: '',
       isUploading: false,
+      soLuongBanDau: '',
+      soLuongHienCon: ''
     };
   }
 
@@ -83,6 +85,8 @@ class EditProduct extends React.Component {
         this.state.productCategory = snapshot.child('category').val();
         this.state.userAvatar = snapshot.child('userAvatar').val();
         this.state.isSoldOut = snapshot.child('sold').val();
+        this.state.soLuongBanDau = snapshot.child('soLuongBanDau').val();
+        this.state.soLuongHienCon = snapshot.child('soLuong').val();
       });
   }
   takeImage = (productImage) => {
@@ -93,24 +97,22 @@ class EditProduct extends React.Component {
     } else if (productImage == 'productImage3' && !!this.state.productImage3) {
       return;
     }
-    ImagePicker.showImagePicker(options, (response) => {
-      if (productImage == 'productImage1') {
-        this.setState({
-          productImage1: response.uri,
-          productImage1Changed: true,
-        });
-      } else if (productImage == 'productImage2') {
-        this.setState({
-          productImage2: response.uri,
-          productImage2Changed: true,
-        });
-      } else if (productImage == 'productImage3') {
-        this.setState({
-          productImage3: response.uri,
-          productImage3Changed: true,
-        });
-      }
-    });
+
+     launchImageLibrary(
+       {
+         mediaType: 'photo',
+         includeBase64: false,
+       },
+       (response) => {
+         if (productImage == 'productImage1') {
+           this.setState({productImage1: response.uri});
+         } else if (productImage == 'productImage2') {
+           this.setState({productImage2: response.uri});
+         } else if (productImage == 'productImage3') {
+           this.setState({productImage3: response.uri});
+         }
+       },
+     );
   };
 
   deleteImage = (productImage) => {
@@ -146,14 +148,42 @@ class EditProduct extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Tên sản phẩm: {this.state.productName}</Text>
         <Text style={styles.title}>
-          Phân loại: {this.state.productCategory}
+          Tên sản phẩm:{' '}
+          <Text style={{color: 'tomato'}}>{this.state.productName}</Text>
         </Text>
-        <Text style={styles.title}>Tạo : {this.state.productCreateAt}</Text>
-        <Text style={styles.title}>Mô tả</Text>
+        <Text style={styles.title}>
+          Phân loại:{' '}
+          <Text style={{color: 'tomato'}}>{this.state.productCategory}</Text>
+        </Text>
+        <Text style={styles.title}>
+          Tạo :{' '}
+          <Text style={{color: 'tomato'}}>{this.state.productCreateAt}</Text>
+        </Text>
+        <Text style={styles.title}>
+          Địa điểm :{' '}
+          <Text style={{color: 'tomato'}}>{this.state.location}</Text>
+        </Text>
+        <Text style={styles.title}>
+          Số lượng ban đầu :{' '}
+          <Text style={{color: 'tomato'}}>{this.state.soLuongBanDau}</Text>
+        </Text>
+        <Text style={styles.title}>
+          Số lượng hiện còn :{' '}
+          <Text style={{color: 'tomato'}}>{this.state.soLuongHienCon}</Text>
+        </Text>
+        <Text style={styles.title}>Mô tả:</Text>
         <TextInput
-          style={styles.input}
+          style={{
+            textAlignVertical: 'top',
+            borderWidth: 1,
+            borderColor: '#3399ff',
+            borderRadius: 10,
+            marginTop: 10,
+            marginLeft: 20,
+            marginRight: 20,
+          }}
+          numberOfLines={3}
           onChangeText={(text) => this.setState({productDescription: text})}
           value={this.state.productDescription}></TextInput>
         <Text style={styles.title}>Giá (VNĐ)</Text>
@@ -257,11 +287,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff'
   },
   button: {
-    backgroundColor: '#ff8533',
+    backgroundColor: 'tomato',
     padding: 10,
     borderRadius: 10,
     marginLeft: 20,
     marginRight: 20,
+    marginTop: 50,
     justifyContent: 'flex-end',
   },
   textbutton: {
@@ -307,6 +338,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 10,
     fontSize: 15,
+ 
   },
   location: {
     fontSize: 15,

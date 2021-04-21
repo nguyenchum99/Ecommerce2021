@@ -21,7 +21,6 @@ const ChatScreen = (props) => {
       const user = await helper.lookUpUserFromUserId(uid);
       setOtherUser(user);
       if (user && idProduct) {
-        console.log('ID Product:', idProduct);
         const product = await helper.lookUpProductFromId(idProduct);
         if (product) {
           const message = {

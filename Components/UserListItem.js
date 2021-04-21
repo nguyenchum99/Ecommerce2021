@@ -93,6 +93,7 @@ class UserListItem extends Component {
         <View style={styles.cardContent}>
           <Text style={styles.name}>{this.props.item.name}</Text>
           <TouchableOpacity
+          // style = {{backgroundColor: 'tomato'}}
             onPress={() => {
               this._toggleFollowState(this.props.userId, this.props.item.uid);
             }}>
@@ -131,7 +132,14 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
   },
-
+  shareBtn: {
+    marginBottom: 10,
+    padding: 10,
+    alignItems: 'center',
+    backgroundColor: 'tomato',
+    borderColor: '#ffffff',
+    borderWidth: 0.5,
+  },
   card: {
     shadowColor: '#00000021',
     shadowOffset: {
@@ -165,7 +173,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 30,
-    backgroundColor: '#00BFFF',
+    backgroundColor: 'tomato',
     alignContent: 'center',
     color: '#FFFFFF',
     fontSize: 13,

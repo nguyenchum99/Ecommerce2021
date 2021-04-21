@@ -9,10 +9,13 @@ import {
   TouchableOpacity,
   View,
   Alert,
+
 } from 'react-native';
 import {connect} from 'react-redux';
 import {ListItem, Icon} from 'react-native-elements';
 import {firebaseApp} from '../Components/FirebaseConfig';
+import {DataTable} from 'react-native-paper';
+
 
 class SellDetail extends React.Component {
   constructor(props) {
@@ -36,6 +39,8 @@ class SellDetail extends React.Component {
       soLuongProduct: '',
       confirmOrder: '',
       cancelOrder: '',
+      district: '',
+      ward: '',
     };
   }
 
@@ -55,6 +60,8 @@ class SellDetail extends React.Component {
     const soLuong = this.props.navigation.getParam('soLuong');
     const total = this.props.navigation.getParam('total');
     const key = this.props.navigation.getParam('key');
+     const district = this.props.navigation.getParam('district');
+     const ward = this.props.navigation.getParam('ward');
 
     this.setState({
       address: address,
@@ -72,6 +79,8 @@ class SellDetail extends React.Component {
       location: location,
       total: total,
       soLuong: soLuong,
+      district: district,
+      ward: ward,
     });
 
     //lay so luong cua san pham
@@ -95,6 +104,7 @@ class SellDetail extends React.Component {
   }
 
   xacThucDonHang() {
+   
     Alert.alert('Xác thực', 'Xác nhận đơn hàng', [
       {
         text: 'Cancel',
@@ -152,7 +162,7 @@ class SellDetail extends React.Component {
 
   render() {
     return (
-      <View>
+      <ScrollView style={{backgroundColor: '#ffffff'}}>
         <View style={styles.box}>
           <Image style={styles.image} source={{uri: this.state.productImage}} />
           <View style={styles.boxContent}>
@@ -165,43 +175,74 @@ class SellDetail extends React.Component {
             </Text>
           </View>
         </View>
-        <ListItem bottomDivider>
-          <ListItem.Content>
-            <ListItem.Title>
-              <Text style = {{color: '#000000', fontWeight: 'bold'}}>Mã đơn hàng: {this.state.key}</Text>
-            </ListItem.Title>
-            <ListItem.Title>
-              Tên người mua: {this.state.userName}
-            </ListItem.Title>
-            <ListItem.Title>
-              Thời gian đặt: {this.state.createAt}
-            </ListItem.Title>
-            <ListItem.Title>
-              Số lượng đặt mua: {this.state.soLuong}
-            </ListItem.Title>
-            <ListItem.Title>
-              Đơn giá: {this.state.productPrice} VNĐ
-            </ListItem.Title>
-            <ListItem.Title>
-              <Text>Phí ship: </Text>
-            </ListItem.Title>
-            <ListItem.Title>
-              <Text>Thuế: </Text>
-            </ListItem.Title>
-            <ListItem.Title>
-              <Text>Địa chỉ: {this.state.address} </Text>
-            </ListItem.Title>
-            <ListItem.Title>
-              <Text>Tỉnh: {this.state.location} </Text>
-            </ListItem.Title>
-            <ListItem.Title>
-              <Text>Số điện thoại: {this.state.phone} </Text>
-            </ListItem.Title>
-            <ListItem.Title>
-              <Text>Tổng đơn hàng: {this.state.total} VNĐ</Text>
-            </ListItem.Title>
-          </ListItem.Content>
-        </ListItem>
+        <View>
+          <DataTable>
+            <DataTable.Row>
+              <DataTable.Cell>1. Mã đơn hàng</DataTable.Cell>
+              <DataTable.Cell numeric>{this.state.key}</DataTable.Cell>
+            </DataTable.Row>
+
+            <DataTable.Row>
+              <DataTable.Cell>2. Tên người mua</DataTable.Cell>
+              <DataTable.Cell numeric>{this.state.userName}</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>3. Số điện thoại</DataTable.Cell>
+              <DataTable.Cell numeric>{this.state.phone}</DataTable.Cell>
+            </DataTable.Row>
+
+            <DataTable.Row>
+              <DataTable.Cell>4. Thời gian đặt</DataTable.Cell>
+              <DataTable.Cell numeric>{this.state.createAt}</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>5. Số lượng đặt mua</DataTable.Cell>
+              <DataTable.Cell numeric>{this.state.soLuong}</DataTable.Cell>
+            </DataTable.Row>
+
+            <DataTable.Row>
+              <DataTable.Cell>6. Đơn giá</DataTable.Cell>
+              <DataTable.Cell numeric>
+                {this.state.productPrice} VNĐ
+              </DataTable.Cell>
+            </DataTable.Row>
+
+            <DataTable.Row>
+              <DataTable.Cell>7. Địa chỉ cụ thể</DataTable.Cell>
+              <DataTable.Cell numeric>{this.state.address}</DataTable.Cell>
+            </DataTable.Row>
+
+            <DataTable.Row>
+              <DataTable.Cell>8. Xã/Phường</DataTable.Cell>
+              <DataTable.Cell numeric>{this.state.ward}</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>9. Quận/Huyện</DataTable.Cell>
+              <DataTable.Cell numeric>{this.state.district}</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>10. Tỉnh</DataTable.Cell>
+              <DataTable.Cell numeric>{this.state.location}</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+              <DataTable.Cell>
+                <Text style={{color: 'red', fontWeight: 'bold'}}>
+                  Tổng đơn hàng
+                </Text>
+              </DataTable.Cell>
+              <DataTable.Cell numeric>
+                <Text style={{color: 'red', fontWeight: 'bold'}}>
+                  {this.state.total} VNĐ
+                </Text>
+              </DataTable.Cell>
+            </DataTable.Row>
+          </DataTable>
+        </View>
+        {/* <TouchableOpacity
+          style={[styles.buttonContainer, styles.loginButton]}
+          onPress={() => this.xacThucDonHang()}>
+          <Text style={styles.loginText}>Xác nhận đơn hàng</Text>
+        </TouchableOpacity> */}
         {this.state.cancelOrder ? (
           <Text
             style={{marginLeft: 20, marginTop: 10, color: 'red', fontSize: 18}}>
@@ -226,7 +267,7 @@ class SellDetail extends React.Component {
             </TouchableOpacity>
           </View>
         )}
-      </View>
+      </ScrollView>
     );
   }
 }

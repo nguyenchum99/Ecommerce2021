@@ -1,16 +1,16 @@
 import storage from '@react-native-firebase/storage';
 import React from 'react';
-import {ActivityIndicator} from 'react-native';
-import {Image} from 'react-native';
 import {
+  ActivityIndicator,
   Alert,
+  Image,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import RNPickerSelect from 'react-native-picker-select';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {connect} from 'react-redux';
@@ -73,7 +73,19 @@ class CameraScreen extends React.Component {
       productImage2: null,
       productImage3: null,
     });
+    this.getCityAPI();
+
   }
+
+  getCityAPI = async () => {
+    try {
+      let response = await fetch('https://thongtindoanhnghiep.co/api/city');
+      let json = await response.json();
+      console.log(json.LtsItem);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   uploadImage = async (image) => {
     this.setState({isUploading: true});
@@ -182,15 +194,39 @@ class CameraScreen extends React.Component {
     } else if (productImage == 'productImage3' && !!this.state.productImage3) {
       return;
     }
-    ImagePicker.showImagePicker(options, (response) => {
-      if (productImage == 'productImage1') {
-        this.setState({productImage1: response.uri});
-      } else if (productImage == 'productImage2') {
-        this.setState({productImage2: response.uri});
-      } else if (productImage == 'productImage3') {
-        this.setState({productImage3: response.uri});
-      }
-    });
+    // launchImageLibrary(options, (response) => {
+    //   if (productImage == 'productImage1') {
+    //     this.setState({productImage1: response.uri});
+    //   } else if (productImage == 'productImage2') {
+    //     this.setState({productImage2: response.uri});
+    //   } else if (productImage == 'productImage3') {
+    //     this.setState({productImage3: response.uri});
+    //   }
+    // });
+    // ImagePicker.showImagePicker(options, (response) => {
+    //   if (productImage == 'productImage1') {
+    //     this.setState({productImage1: response.uri});
+    //   } else if (productImage == 'productImage2') {
+    //     this.setState({productImage2: response.uri});
+    //   } else if (productImage == 'productImage3') {
+    //     this.setState({productImage3: response.uri});
+    //   }
+    // });
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        includeBase64: false,
+      },
+      (response) => {
+        if (productImage == 'productImage1') {
+          this.setState({productImage1: response.uri});
+        } else if (productImage == 'productImage2') {
+          this.setState({productImage2: response.uri});
+        } else if (productImage == 'productImage3') {
+          this.setState({productImage3: response.uri});
+        }
+      },
+    );
   };
 
   deleteImage = (productImage) => {
@@ -441,7 +477,7 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   button: {
-    backgroundColor: '#ff8533',
+    backgroundColor: 'tomato',
     padding: 10,
     borderRadius: 10,
     marginLeft: 20,

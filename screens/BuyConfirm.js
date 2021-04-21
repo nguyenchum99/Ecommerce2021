@@ -13,6 +13,7 @@ import {
 import {connect} from 'react-redux';
 import {ListItem, Icon} from 'react-native-elements';
 import {firebaseApp} from '../Components/FirebaseConfig';
+import {DataTable} from 'react-native-paper';
 
 class BuyConfirm extends React.Component {
   constructor(props) {
@@ -36,6 +37,8 @@ class BuyConfirm extends React.Component {
       key: '',
       cancelOrder: '',
       receiveProductSuccess: '',
+      district: '',
+      ward: ''
     };
   }
 
@@ -56,6 +59,8 @@ class BuyConfirm extends React.Component {
     const soLuong = this.props.navigation.getParam('soLuong');
     const total = this.props.navigation.getParam('total');
     const location = this.props.navigation.getParam('location');
+    const district = this.props.navigation.getParam('district');
+    const ward = this.props.navigation.getParam('ward');
     const cancelOrder = this.props.navigation.getParam('cancelOrder');
 
     this.setState({
@@ -75,6 +80,8 @@ class BuyConfirm extends React.Component {
       soLuong: soLuong,
       total: total,
       location: location,
+      district: district,
+      ward: ward,
       cancelOrder: cancelOrder,
     });
 
@@ -116,9 +123,10 @@ class BuyConfirm extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style = {{backgroundColor: '#ffffff'}}>
         <View style={styles.box}>
           <Image style={styles.image} source={{uri: this.state.productImage}} />
+
           <View style={styles.boxContent}>
             <Text style={styles.title}>{this.state.productName}</Text>
             <Text style={styles.description}>
@@ -126,44 +134,77 @@ class BuyConfirm extends React.Component {
             </Text>
           </View>
         </View>
+
+        <DataTable>
+         
+
+          <DataTable.Row>
+            <DataTable.Cell>1. Mã đơn hàng</DataTable.Cell>
+            <DataTable.Cell numeric>{this.state.key}</DataTable.Cell>
+          </DataTable.Row>
+
+          <DataTable.Row>
+            <DataTable.Cell>2. Tên người mua</DataTable.Cell>
+            <DataTable.Cell numeric>{this.state.userName}</DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>3. Số điện thoại</DataTable.Cell>
+            <DataTable.Cell numeric>{this.state.phone}</DataTable.Cell>
+          </DataTable.Row>
+
+          <DataTable.Row>
+            <DataTable.Cell>4. Thời gian đặt</DataTable.Cell>
+            <DataTable.Cell numeric>{this.state.createAt}</DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>5. Số lượng đặt mua</DataTable.Cell>
+            <DataTable.Cell numeric>{this.state.soLuong}</DataTable.Cell>
+          </DataTable.Row>
+
+          <DataTable.Row>
+            <DataTable.Cell>6. Đơn giá</DataTable.Cell>
+            <DataTable.Cell numeric>
+              {this.state.productPrice} VNĐ
+            </DataTable.Cell>
+          </DataTable.Row>
+
+          <DataTable.Row>
+            <DataTable.Cell>7. Địa chỉ cụ thể</DataTable.Cell>
+            <DataTable.Cell numeric>{this.state.address}</DataTable.Cell>
+          </DataTable.Row>
+
+          <DataTable.Row>
+            <DataTable.Cell>8. Xã/Phường</DataTable.Cell>
+            <DataTable.Cell numeric>{this.state.ward}</DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>9. Quận/Huyện</DataTable.Cell>
+            <DataTable.Cell numeric>{this.state.district}</DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>10. Tỉnh</DataTable.Cell>
+            <DataTable.Cell numeric>{this.state.location}</DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>
+    
+              <Text style={{color: 'red', fontWeight: 'bold'}}>
+                Tổng đơn hàng
+              </Text>
+            </DataTable.Cell>
+            <DataTable.Cell numeric><Text style={{color: 'red', fontWeight: 'bold'}}>{this.state.total} VNĐ</Text></DataTable.Cell>
+          </DataTable.Row>
+        </DataTable>
         <ListItem bottomDivider>
           <ListItem.Content>
-            <ListItem.Title>Mã đơn hàng: {this.state.key}</ListItem.Title>
-            <ListItem.Title>
-              Tên người mua: {this.state.userName}
-            </ListItem.Title>
-            <ListItem.Title>
-              Thời gian đặt: {this.state.createAt}
-            </ListItem.Title>
-            <ListItem.Title>Số lượng: {this.state.soLuong}</ListItem.Title>
-            <ListItem.Title>
-              Đơn giá: {this.state.productPrice} VNĐ
-            </ListItem.Title>
-            <ListItem.Title>
-              <Text>Phí ship: </Text>
-            </ListItem.Title>
-            <ListItem.Title>
-              <Text>Thuế: </Text>
-            </ListItem.Title>
-            <ListItem.Title>
-              <Text>Địa chỉ cụ thể: {this.state.address} </Text>
-            </ListItem.Title>
-            <ListItem.Title>
-              <Text>Tỉnh: {this.state.location} </Text>
-            </ListItem.Title>
-            <ListItem.Title>
-              <Text>Số điện thoại: {this.state.phone} </Text>
-            </ListItem.Title>
-            <ListItem.Title>
-              Tổng đơn hàng: {this.state.total} VNĐ
-            </ListItem.Title>
+           
             <ListItem.Title>
               {this.state.cancelOrder ? (
-                <Text style={{color: 'red', fontSize: 18}}>
+                <Text style={{color: 'blue', fontSize: 18}}>
                   Đơn hàng của bạn đã bị hủy
                 </Text>
               ) : (
-                <Text style={{color: 'red', fontSize: 18}}>
+                <Text style={{color: 'tomato', fontSize: 18}}>
                   Trạng thái giao dịch{' '}
                   {this.state.orderSuccess ? (
                     <Text>thành công</Text>
@@ -176,7 +217,7 @@ class BuyConfirm extends React.Component {
           </ListItem.Content>
         </ListItem>
 
-{/* check da dat hang thanh cong va da danh gia hay chua, chi duoc danh gia 1 lan */}
+        {/* check da dat hang thanh cong va da danh gia hay chua, chi duoc danh gia 1 lan */}
         {this.state.orderSuccess ? (
           this.state.receiveProductSuccess ? null : (
             <TouchableOpacity
@@ -237,10 +278,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     color: '#151515',
+    fontWeight: 'bold'
   },
   description: {
     fontSize: 15,
-    color: '#646464',
+    color: 'red',
+    fontWeight: 'bold'
   },
   buttons: {
     flexDirection: 'row',

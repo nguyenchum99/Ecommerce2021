@@ -45,6 +45,8 @@ class ManagerSell extends React.Component {
             location: child.val().location,
             soLuong: child.val().soLuong,
             total: child.val().total,
+            district: child.val().district,
+            ward: child.val().ward,
           });
         });
         this.setState({
@@ -100,6 +102,8 @@ class ManagerSell extends React.Component {
                   location: Notification.location,
                   soLuong: Notification.soLuong,
                   total: Notification.total,
+                  district: Notification.district,
+                  ward: Notification.ward
                 })
               }>
               <Image
@@ -115,7 +119,6 @@ class ManagerSell extends React.Component {
                     </Text>
                   </View>
                   <Text style={styles.timeAgo}>
-      
                     {moment(new Date(Notification.createAt)).fromNow()}
                   </Text>
                 </View>

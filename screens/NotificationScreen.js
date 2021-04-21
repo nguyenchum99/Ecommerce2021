@@ -100,7 +100,6 @@ componentDidMount(){
     }
 
   render() {
-    console.log(this.state.notifications);
     return (
       <FlatList
         style={styles.root}

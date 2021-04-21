@@ -6,7 +6,6 @@ const StartUpScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const tryLogin = async () => {
-      console.log('Getting save account');
       try {
         const userData = await AsyncStorage.getItem('$userAccount');
 

@@ -14,6 +14,9 @@ import {
 import {firebaseApp} from '../Components/FirebaseConfig';
 import {connect} from 'react-redux';
 import moment from 'moment';
+import {Card, Icon} from 'react-native-elements';
+
+
 class MyComment extends Component {
   constructor(props) {
     super(props);
@@ -91,8 +94,22 @@ class MyComment extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Card>
+          <Card.Title>
+            {this.state.productName} - {this.state.productPrice} VND
+          </Card.Title>
+          <Card.Divider />
+          <Card.Image
+            resizeMode="cover"
+            source={{
+              uri: this.state.productImage,
+            }}></Card.Image>
+          <Text style={{marginBottom: 10, marginTop: 10}}>
+            {this.state.productDescription}
+          </Text>
+        </Card>
         <ScrollView>
-          <View style={[styles.card, styles.profileCard]}>
+          {/* <View style={[styles.card, styles.profileCard]}>
             <Image
               style={styles.avatar}
               source={{
@@ -107,7 +124,7 @@ class MyComment extends Component {
             <Text style={styles.description}>
               {this.state.productDescription}
             </Text>
-          </View>
+          </View> */}
           <View style={styles.containerItem}>
             <Image style={styles.image} source={{uri: this.state.avatarUser}} />
 

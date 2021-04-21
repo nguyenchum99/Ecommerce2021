@@ -68,7 +68,6 @@ class ProfileUser extends Component {
             sold: child.val().sold,
           });
         });
-        console.log('lentgth' + li.length);
         this.setState({
           listProduct: li,
           countProduct: li.length,
@@ -79,7 +78,6 @@ class ProfileUser extends Component {
 
     //check follow
     const key = this.props.userId + '_' + userIdProfile;
-    console.log('keyyyyyyyyyyy', key);
     this.setState({keyFollwed: key});
     firebaseApp
       .database()
@@ -87,7 +85,6 @@ class ProfileUser extends Component {
       .orderByChild('myUserid_userId')
       .equalTo(key)
       .once('value', (snapshot) => {
-        console.log('follwoing', snapshot.val());
         this.setState({isFollowed: snapshot.child('isFollowing').val()});
         //this.state.isFollowed = snapshot.child('isFollowing').val();
       });

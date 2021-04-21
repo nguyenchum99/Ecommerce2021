@@ -16,6 +16,7 @@ import {CITIES} from '../constants/Cities';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import PhoneNumberInput from '../Components/UI/PhoneNumberInput';
+import axios from 'axios';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -29,85 +30,106 @@ class ProductDetail extends React.Component {
       addressUser: '',
       idProduct: '',
       idUserSell: '',
-      location: 'Hà Nội',
       soLuong: '',
       soLuongOrder: '',
       total: '',
       codeVerification: '',
       confirmation: null,
+      cities: [],
+      districts: [],
+      wards: [],
+      location: 'Tỉnh',
+      district: 'Quận/Huyện',
+      ward: 'Xã/Phường',
+      idCity: '',
+      idDistrict: '',
     };
   }
 
   // Handle the button press
   signInWithPhoneNumber = async (phoneNumber) => {
-    console.log(phoneNumber)
     const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
     this.setState({confirmation: confirmation});
   };
 
-  confirmCode = (code) => {
-    alert('Order successfully');
-   // alert(code);
-      this.state.confirmation._auth
-        ._nativeModule.confirmationResultConfirm(code)
-        .then(() => {
-          console.log('Success');
-          alert('Đặt hàng thành công');
-          database()
-            .ref('Orders')
-            .push({
-              idProduct: this.state.idProduct,
-              productPrice: this.state.productPrice,
-              productName: this.state.productName,
-              productImage: this.state.productImage,
-              idUser: this.props.userId,
-              userName: this.props.userName,
-              userPhoto: this.props.userPhoto,
-              address: this.state.addressUser,
-              phone: this.state.phoneUser,
-              idUserSell: this.state.idUserSell,
-              location: this.state.location,
-              createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
-              soLuong: this.state.soLuongOrder,
-              total: this.state.soLuongOrder * this.state.productPrice,
-            });
+  addOrder = () => {
+    database()
+      .ref('Orders')
+      .push({
+        idProduct: this.state.idProduct,
+        productPrice: this.state.productPrice,
+        productName: this.state.productName,
+        productImage: this.state.productImage,
+        idUser: this.props.userId,
+        userName: this.props.userName,
+        userPhoto: this.props.userPhoto,
+        address: this.state.addressUser,
+        phone: this.state.phoneUser,
+        idUserSell: this.state.idUserSell,
+        location: this.state.location,
+        district: this.state.district,
+        ward: this.state.ward,
+        createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
+        soLuong: this.state.soLuongOrder,
+        total: this.state.soLuongOrder * this.state.productPrice,
+      });
+  };
 
-          //post notification order
-          const newRef = database().ref('Notifications').push();
-          newRef.set({
-            uid1: this.props.userId,
-            userName: this.props.userName,
-            uid2: this.state.idUserSell,
-            content: `${this.props.userName} đã đặt sản phẩm ${this.state.productName} của bạn`,
-            createdAt: new Date().toISOString(),
-            avatarUser: this.props.userPhoto,
-            attachment: this.state.productImage,
-            idProduct: this.state.idProduct,
-            productName: this.state.productName,
-            productPrice: this.state.productPrice,
-            type: 'order',
-          });
+  pushOrderNotification = () => {
+    const newRef = database().ref('Notifications').push();
+    newRef.set({
+      uid1: this.props.userId,
+      userName: this.props.userName,
+      uid2: this.state.idUserSell,
+      content: `${this.props.userName} đã đặt sản phẩm ${this.state.productName} của bạn`,
+      createdAt: new Date().toISOString(),
+      avatarUser: this.props.userPhoto,
+      attachment: this.state.productImage,
+      idProduct: this.state.idProduct,
+      productName: this.state.productName,
+      productPrice: this.state.productPrice,
+      type: 'order',
+    });
+  };
 
-          // alert('Đặt hàng thành công');
-          this.props.navigation.navigate('OrderSuccess', {
-            idProduct: this.state.idProduct,
-          });
+  resetState = () => {
+    this.setState({
+      idProduct: null,
+      productName: null,
+      productDescription: null,
+      productPrice: null,
+      productImage: null,
+      addressUser: null,
+      phoneUser: null,
+      idUserSell: null,
+    });
+  };
 
-          this.setState({
-            idProduct: null,
-            productName: null,
-            productDescription: null,
-            productPrice: null,
-            productImage: null,
-            addressUser: null,
-            phoneUser: null,
-            idUserSell: null,
-          });
-        });
-   
+  confirmCode = async (code) => {
+    try {
+      await this.state.confirmation.confirm(code);
+      // alert('Đặt hàng thành công');
+      alert('Đặt hàng thành công');
+
+      // Add order to database
+      this.addOrder();
+      // post notification order
+      this.pushOrderNotification();
+
+      // Navigate to Order Success Screen
+      this.props.navigation.navigate('OrderSuccess', {
+        idProduct: this.state.idProduct,
+      });
+
+      // reset state
+      this.resetState();
+    } catch (error) {
+      console.log('Invalid code.', error.message);
+    }
   };
 
   componentDidMount() {
+    this.getCityAPI();
     const idProduct = this.props.navigation.getParam('idProduct');
     const name = this.props.navigation.getParam('productName');
     const price = this.props.navigation.getParam('productPrice');
@@ -125,29 +147,6 @@ class ProductDetail extends React.Component {
     });
   }
 
-  //xac thuc so dien thoai
-  // verifyPhoneNumber = async (phoneNumber)=>{
-  //   const confirmation = await auth().verifyPhoneNumber(phoneNumber);
-  //   this.setState({codeVerification: confirmation});
-  // }
-
-  //  // Handle confirm code button press
-  // confirmCode = async () =>{
-  //   try {
-  //     const credential = auth.PhoneAuthProvider.credential(
-  //       confirm.verificationId,
-  //       this.state.codeVerification,
-  //     );
-
-  //   } catch (error) {
-  //     if (error.code == 'auth/invalid-verification-code') {
-  //       console.log('Invalid code.');
-  //     } else {
-  //       console.log('Account linking error');
-  //     }
-  //   }
-  // }
-
   orderProduct() {
     Alert.alert(
       'Xác nhận đặt hàng',
@@ -161,69 +160,19 @@ class ProductDetail extends React.Component {
         {
           text: 'Có',
           onPress: () => {
-            // console.log('Phone number', this.state.phoneUser);
-            // this.signInWithPhoneNumber(this.state.phoneUser);
-            if(this.state.addressUser == ''){
+            if (this.state.addressUser == '') {
               alert('Bạn phải nhập địa chỉ nhận hàng');
-            }
-            else if (
+            } else if (
               this.state.soLuongOrder == 0 ||
               this.state.soLuongOrder == ''
             ) {
               alert('Bạn phải nhập số lượng đặt mua');
-            }
-            else if (this.state.soLuongOrder <= this.state.soLuong) {
-             // this.signInWithPhoneNumber(this.state.phoneUser);
-              database()
-                .ref('Orders')
-                .push({
-                  idProduct: this.state.idProduct,
-                  productPrice: this.state.productPrice,
-                  productName: this.state.productName,
-                  productImage: this.state.productImage,
-                  idUser: this.props.userId,
-                  userName: this.props.userName,
-                  userPhoto: this.props.userPhoto,
-                  address: this.state.addressUser,
-                  phone: this.state.phoneUser,
-                  idUserSell: this.state.idUserSell,
-                  location: this.state.location,
-                  createAt: new Date().toString('YYYY-MM-DD hh:mm:ss'),
-                  soLuong: this.state.soLuongOrder,
-                  total: this.state.soLuongOrder * this.state.productPrice,
-                });
-
-              //post notification order
-              const newRef = database().ref('Notifications').push();
-              newRef.set({
-                uid1: this.props.userId,
-                userName: this.props.userName,
-                uid2: this.state.idUserSell,
-                content: `${this.props.userName} đã đặt sản phẩm ${this.state.productName} của bạn`,
-                createdAt: new Date().toISOString(),
-                avatarUser: this.props.userPhoto,
-                attachment: this.state.productImage,
-                idProduct: this.state.idProduct,
-                productName: this.state.productName,
-                productPrice: this.state.productPrice,
-                type: 'order',
-              });
-
-              // alert('Đặt hàng thành công');
-              this.props.navigation.navigate('OrderSuccess', {
-                idProduct: this.state.idProduct,
-              });
-
-              this.setState({
-                idProduct: null,
-                productName: null,
-                productDescription: null,
-                productPrice: null,
-                productImage: null,
-                addressUser: null,
-                phoneUser: null,
-                idUserSell: null,
-              });
+            } else if (this.state.soLuongOrder <= this.state.soLuong) {
+              if (this.state.phoneUser == '') {
+                alert('Bạn phải nhập số điện thoại');
+              } else {
+                this.signInWithPhoneNumber(this.state.phoneUser);
+              }
             } else {
               alert(
                 'Số lượng đặt mua phải nhỏ hơn hoặc bằng số lượng của sản phẩm',
@@ -236,8 +185,81 @@ class ProductDetail extends React.Component {
     );
   }
 
+  //get thanh pho
+  getCityAPI = async () => {
+    try {
+      let json = await axios.get('https://thongtindoanhnghiep.co/api/city');
+      json = json.data;
+      // let response = await fetch('https://thongtindoanhnghiep.co/api/city');
+      // let json = await response.json();
+      this.setState({data: json.LtsItem});
+      let cities = json.LtsItem.map((item) => ({
+        label: item.Title,
+        value: item.Title,
+        key: item.ID,
+      }));
+
+      this.setState({
+        cities: cities,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  //get huyen cua tinh
+  fetchDistricts = async () => {
+    try {
+      let response = await fetch(
+        `https://thongtindoanhnghiep.co/api/city/${this.state.idCity}/district`,
+        {
+          headers: {
+            Accept: 'application/json, text/plain, */*', // It can be used to overcome cors errors
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      let json = await response.json();
+      let districts = json.map((item) => ({
+        label: item.Title,
+        value: item.Title,
+        key: item.ID,
+      }));
+      this.setState({
+        districts: districts,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  //get xa cua tinh
+  fetchWards = async () => {
+    try {
+      let response = await fetch(
+        `https://thongtindoanhnghiep.co/api/district/${this.state.idDistrict}/ward`,
+        {
+          headers: {
+            Accept: 'application/json, text/plain, */*', // It can be used to overcome cors errors
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      let json = await response.json();
+      let wards = json.map((item) => ({
+        label: item.Title,
+        value: item.Title,
+        key: item.ID,
+      }));
+      this.setState({
+        wards: wards,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   render() {
-    console.log(this.state.confirmation)
     return (
       <ScrollView>
         <View style={styles.box}>
@@ -256,22 +278,79 @@ class ProductDetail extends React.Component {
           <Text style={styles.title2}>
             Tên người nhận: {this.props.userName}
           </Text>
-          <Text style={styles.title2}>Địa chỉ nhận hàng</Text>
+          <Text style={styles.title2}>Địa chỉ cụ thể</Text>
           <Input
             placeholder="..."
             onChangeText={(value) => this.setState({addressUser: value})}
           />
           <View style={{marginTop: 10}}>
-            <Text style={styles.title2}>Chọn địa điểm</Text>
+            <Text style={styles.title2}>Tỉnh/Thành phố</Text>
+
             <RNPickerSelect
-              onValueChange={(location) => this.setState({location})}
-              items={CITIES}
+              onValueChange={(location, index) => {
+                if (this.state.idCity !== 0 && index === 0) {
+                  return;
+                }
+                this.setState(
+                  {
+                    location,
+                    idCity: index,
+                    district: '',
+                  },
+                  () => {
+                    this.fetchDistricts();
+                  },
+                );
+              }}
+              items={this.state.cities}
               useNativeAndroidPickerStyle={true}
               placeholder={{
                 label: this.state.location,
                 value: this.state.location,
               }}
               value={this.state.location}
+            />
+            <Text style={styles.title2}>Quận/Huyện</Text>
+
+            <RNPickerSelect
+              onValueChange={(district, index) => {
+                if (this.state.idDistrict !== 0 && index === 0) {
+                  return;
+                }
+                const item = this.state.districts.find(
+                  (item) => item.value === district,
+                );
+                this.setState(
+                  {
+                    idDistrict: item.key,
+                    district: district,
+                    ward: '',
+                  },
+                  () => {
+                    this.fetchWards();
+                  },
+                );
+              }}
+              items={this.state.districts}
+              useNativeAndroidPickerStyle={true}
+              placeholder={{
+                label: this.state.district,
+                value: this.state.district,
+              }}
+              value={this.state.district}
+            />
+            <Text style={styles.title2}>Phường/Xã</Text>
+            <RNPickerSelect
+              onValueChange={(ward) => {
+                this.setState({ward: ward});
+              }}
+              items={this.state.wards}
+              useNativeAndroidPickerStyle={true}
+              placeholder={{
+                label: this.state.ward,
+                value: this.state.ward,
+              }}
+              value={this.state.ward}
             />
           </View>
           <Text style={styles.title2}>Số lượng</Text>
@@ -280,7 +359,9 @@ class ProductDetail extends React.Component {
             keyboardType="numeric"
             onChangeText={(value) => this.setState({soLuongOrder: value})}
           />
+          <Text style={styles.title2}>Số điện thoại</Text>
           <PhoneNumberInput
+            
             onChangeText={(text) => {
               this.setState({phoneUser: text});
             }}
@@ -316,7 +397,7 @@ class ProductDetail extends React.Component {
           </ListItem.Content>
         </ListItem>
 
-        <View style = {{marginTop: 10}}>
+        <View style={{marginTop: 10}}>
           <TouchableOpacity
             style={[styles.buttonContainer, styles.loginButton]}
             onPress={() => this.orderProduct()}>
@@ -350,7 +431,7 @@ const styles = StyleSheet.create({
     marginLeft: 80,
   },
   loginButton: {
-    backgroundColor: '#3498db',
+    backgroundColor: 'tomato',
   },
   image: {
     width: 80,

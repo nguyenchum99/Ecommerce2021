@@ -62,7 +62,6 @@ class FollowingScreen extends Component {
   };
 
   render() {
-    console.log(this.props.followingUsers.length);
     return (
       <View style={styles.container}>
         <FlatList
@@ -174,7 +173,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 30,
-    backgroundColor: '#00BFFF',
+    backgroundColor: 'tomato',
     alignContent: 'center',
     color: '#FFFFFF',
     fontSize: 13,

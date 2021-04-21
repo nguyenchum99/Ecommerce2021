@@ -22,6 +22,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {ListItem, Avatar} from 'react-native-elements';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -319,6 +320,19 @@ class ProductDetail extends React.Component {
       <View style={{flex: 1, backgroundColor: '#ffffff'}}>
         <ScrollView>
           <View style={styles.card}>
+            <SliderBox
+              images={this.state.listImage}
+              sliderBoxHeight={300}
+              onCurrentImagePressed={(index) =>
+                console.warn(`image ${index} pressed`)
+              }
+              resizeMode="contain"
+              dotColor="#FFEE58"
+              inactiveDotColor="#90A4AE"
+              paginationBoxVerticalPadding={10}
+              autoplay
+              circleLoop
+            />
             <View style={styles.cardHeader}>
               <View style={{flexDirection: 'column'}}>
                 <Text style={styles.name}>{this.state.productName} </Text>
@@ -344,20 +358,6 @@ class ProductDetail extends React.Component {
                 </TouchableOpacity>
               ) : null}
             </View>
-            <SliderBox
-              images={this.state.listImage}
-              sliderBoxHeight={300}
-              onCurrentImagePressed={(index) =>
-                console.warn(`image ${index} pressed`)
-              }
-              resizeMode="contain"
-              dotColor="#FFEE58"
-              inactiveDotColor="#90A4AE"
-              paginationBoxVerticalPadding={10}
-              autoplay
-              circleLoop
-            />
-
             {this.state.soLuong == 0 ? (
               <Text
                 style={{
@@ -376,11 +376,6 @@ class ProductDetail extends React.Component {
                   style={styles.shareBtn}
                   onPress={() => this.setState({modalVisible: true})}>
                   <View style={{flexDirection: 'row'}}>
-                    {/* <FontAwesome
-                      name="shopping-cart"
-                      size={20}
-                      color="#ffffff"
-                    /> */}
                     <Text style={styles.shareBtnText}>Đề nghị giá</Text>
                   </View>
                 </TouchableOpacity>
@@ -420,6 +415,30 @@ class ProductDetail extends React.Component {
           </View>
 
           <TouchableOpacity
+            onPress={() =>
+              this.props.navigation.navigate('UserProfile', {
+                userName: this.state.userName,
+                userAvatar: this.state.userAvatar,
+                userId: this.state.idUser,
+              })
+            }>
+            <View>
+              <ListItem>
+                <Avatar
+                  rounded
+                  source={{uri: this.state.userAvatar}}
+                  size="medium"
+                />
+                <ListItem.Content>
+                  <ListItem.Title>{this.state.userName}</ListItem.Title>
+                  {/* <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle> */}
+                </ListItem.Content>
+                <ListItem.Chevron />
+              </ListItem>
+            </View>
+          </TouchableOpacity>
+
+          {/* <TouchableOpacity
             style={styles.card}
             onPress={() =>
               this.props.navigation.navigate('UserProfile', {
@@ -435,7 +454,7 @@ class ProductDetail extends React.Component {
               />
               <Text style={styles.username}>{this.state.userName}</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View style={styles.card}>
             <View style={styles.cardHeader2}>
@@ -637,14 +656,14 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 20,
     padding: 10,
-  
+    width: 100,
     
   },
   buttonOpen: {
     backgroundColor: '#F194FF',
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: 'tomato',
   },
   textStyle: {
     color: 'white',
@@ -655,7 +674,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   container: {
     flex: 1,
@@ -665,14 +684,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     alignItems: 'center',
-    backgroundColor: '#00BFFF',
+    backgroundColor: 'tomato',
     borderColor: '#ffffff',
-    borderWidth: 0.5
+    borderWidth: 0.5,
   },
   shareBtnText: {
     color: '#ffffff',
     fontSize: 15,
-    marginLeft: 5
+    marginLeft: 5,
   },
   addToCarContainer: {
     flexDirection: 'row',
@@ -810,7 +829,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 1,
   },
   cardTitle: {
-    color: '#00BFFF',
+    color: 'tomato',
     fontSize: 15,
   },
   image: {

@@ -14,11 +14,11 @@ const list = [
     icon: 'group',
   },
   {
-    title: 'Quản lý đơn bán',
+    title: 'Quản lý đơn hàng bán',
     icon: 'history',
   },
   {
-    title: 'Đơn hàng mua',
+    title: 'Quản lý đơn hàng mua',
     icon: 'shopping-cart',
   },
   {

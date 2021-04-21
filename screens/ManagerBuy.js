@@ -47,6 +47,8 @@ class ManagerBuy extends Component {
             soLuong: child.val().soLuong,
             total: child.val().total,
             location: child.val().location,
+            district: child.val().district,
+            ward: child.val().ward,
             cancelOrder: child.val().cancelOrder,
           });
         });
@@ -84,7 +86,9 @@ class ManagerBuy extends Component {
                   soLuong: item.soLuong,
                   total: item.total,
                   location: item.location,
-                  cancelOrder: item.cancelOrder
+                  district: item.district,
+                  ward: item.ward,
+                  cancelOrder: item.cancelOrder,
                 });
             }}>
               <Image style={styles.image} source={{uri: item.productImage}} />

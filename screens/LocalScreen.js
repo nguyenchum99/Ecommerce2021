@@ -18,7 +18,12 @@ import {firebaseApp} from '../Components/FirebaseConfig';
 import {RecipeCard} from './AppStyles';
 import ButtonToggleGroup from 'react-native-button-toggle-group';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {SliderBox} from 'react-native-image-slider-box';
 
+const images = [
+  'https://source.unsplash.com/1024x768/?nature',
+  'https://source.unsplash.com/1024x768/?water',
+];
 
 class LocalScreen extends React.Component {
   constructor(props) {
@@ -68,8 +73,7 @@ class LocalScreen extends React.Component {
     if (val == 'Phân loại') {
       this.props.navigation.navigate('Category');
     } else if (val == 'Khu vực') {
-    }
-    else if (val == 'Gía 0 đồng') {
+    } else if (val == 'Gía 0 đồng') {
       this.props.navigation.navigate('Free');
     }
   }
@@ -94,13 +98,27 @@ class LocalScreen extends React.Component {
               />
             </View>
           </View>
-          <ButtonToggleGroup
+          <View style={styles.addToCarContainer}>
+            <TouchableOpacity
+              style={styles.shareBtn}
+              onPress={() => this.props.navigation.navigate('Category')}>
+              <Text style={styles.shareBtnText}>Phân loại</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.shareBtn}
+              onPress={() => this.props.navigation.navigate('Free')}>
+              <Text style={styles.shareBtnText}>Giá 0 đồng</Text>
+            </TouchableOpacity>
+          </View>
+          {/* <ButtonToggleGroup
             highlightTextColor={'red'}
-            inactiveBackgroundColor={'transparent'}
-            inactiveTextColor={'red'}
+            inactiveBackgroundColor={'tomato'}
+            inactiveTextColor={'tomato'}
             values={['Phân loại', 'Gía 0 đồng']}
             onSelect={(val) => this.chooseLocal(val)}
-          />
+          /> */}
+
           <FlatList
             vertical
             showsVerticalScrollIndicator={false}
@@ -147,6 +165,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+  },
+  shareBtn: {
+    alignItems: 'center',
+    backgroundColor: 'tomato',
+    borderColor: '#ffffff',
+    borderWidth: 0.5,
+    width: '50%',
+    paddingTop: 10,
+    paddingBottom: 10,
+    
+  },
+  shareBtnText: {
+    color: '#ffffff',
+    fontSize: 15,
+    marginLeft: 5,
+  },
+  addToCarContainer: {
+    flexDirection: 'row',
+    marginLeft: 20,
+    marginRight: 20,
+  
   },
   containerCard: RecipeCard.container,
   photoCard: RecipeCard.photo,

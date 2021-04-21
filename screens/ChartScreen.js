@@ -14,66 +14,9 @@ import {
 
 import {firebaseApp} from '../Components/FirebaseConfig';
 import {Dimensions} from 'react-native';
-const screenWidth = Dimensions.get('window').width;
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart,
-} from 'react-native-chart-kit';
-const data = [
-  {
-    name: 'Seoul',
-    population: 21500000,
-    color: 'rgba(131, 167, 234, 1)',
-    legendFontColor: '#7F7F7F',
-    legendFontSize: 15,
-  },
-  {
-    name: 'Toronto',
-    population: 2800000,
-    color: '#F00',
-    legendFontColor: '#7F7F7F',
-    legendFontSize: 15,
-  },
-  {
-    name: 'Beijing',
-    population: 527612,
-    color: 'red',
-    legendFontColor: '#7F7F7F',
-    legendFontSize: 15,
-  },
-  {
-    name: 'New York',
-    population: 8538000,
-    color: '#ffffff',
-    legendFontColor: '#7F7F7F',
-    legendFontSize: 15,
-  },
-  {
-    name: 'Moscow',
-    population: 11920000,
-    color: 'rgb(0, 0, 255)',
-    legendFontColor: '#7F7F7F',
-    legendFontSize: 15,
-  },
-];
+import {connect} from 'react-redux';
 
-const chartConfig = {
-  backgroundGradientFrom: '#1E2923',
-  backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: '#08130D',
-  backgroundGradientToOpacity: 0.5,
-  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-  // optional, default 3
-
- 
-};
-
-
-export default class ChartScreen extends React.Component {
+class ChartScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -85,64 +28,148 @@ export default class ChartScreen extends React.Component {
   }
 
   componentDidMount() {
-
     //tinh so san pham duoc ban
     firebaseApp
       .database()
-      .ref('Likes')   
+      .ref('Orders')
+      .orderByChild('idUserSell')
+      .equalTo(this.props.userId)
       .on('value', (snapshot) => {
         const li = [];
         snapshot.forEach((child) => {
-          li.push({
-            key: child.key,
-            name: child.val().name,
-            description: child.val().description,
-            price: child.val().price,
-            imageUrl: child.val().imageUrl1,
-            isLike: false,
-          });
+          if (child.val().orderSuccess == 'true') {
+            li.push({
+              key: child.key,
+              name: child.val().productName,
+              image: child.val().productImage,
+              total: child.val().total,
+              quantity: child.val().soLuong,
+            });
+          }
         });
         this.setState({
           data: li,
-          isLoading: false,
         });
       });
-   
   }
-
 
   render() {
     return (
- 
-        <PieChart
-          data={data}
-          width={screenWidth}
-          height={200}
-          chartConfig={{
-            backgroundColor: '#e26a00',
-            backgroundGradientFrom: '#fb8c00',
-            backgroundGradientTo: '#ffa726',
-            decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-           
+      <View>
+        <FlatList
+          enableEmptySections={true}
+          data={this.state.data}
+          keyExtractor={(item) => {
+            return item.key;
           }}
-          accessor={'population'}
-          backgroundColor={'transparent'}
-          paddingLeft={'8'}        
-          absolute
+          ListEmptyComponent={() => {
+            return (
+              <View
+                style={{
+                  height: 100,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text>Không có sản phẩm nào</Text>
+              </View>
+            );
+          }}
+          renderItem={({item}) => {
+            return (
+              <View style={styles.box}>
+                <Image style={styles.image} source={{uri: item.image}} />
+                <View style={styles.boxContent}>
+                  <Text style={styles.title}>{item.name}</Text>
+                  <Text
+                    style={styles.description}
+                    numberOfLines={2}
+                    ellipsizeMode="tail">
+                    {item.total} VND
+                  </Text>
+                  <Text
+                    style={styles.description}
+                    numberOfLines={2}
+                    ellipsizeMode="tail">
+                    {item.soLuong} VND
+                  </Text>
+                </View>
+              </View>
+            );
+          }}
         />
-      
+      </View>
     );
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    ...state.auth,
+  };
+};
 
+export default connect(mapStateToProps, null)(ChartScreen);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
+  screen: {flex: 1},
+  header: {
+    padding: 10,
+    backgroundColor: 'lightgray',
   },
-
+  textHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'red',
+  },
+  image: {
+    width: 100,
+    height: 100,
+  },
+  box: {
+    padding: 20,
+    marginTop: 5,
+    marginBottom: 5,
+    backgroundColor: 'white',
+    flexDirection: 'row',
+  },
+  boxContent: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginLeft: 10,
+  },
+  title: {
+    fontSize: 18,
+    color: '#151515',
+  },
+  description: {
+    fontSize: 15,
+    color: '#646464',
+  },
+  buttons: {
+    flexDirection: 'row',
+  },
+  button: {
+    height: 35,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    width: 50,
+    marginRight: 5,
+    marginTop: 5,
+  },
+  icon: {
+    width: 20,
+    height: 20,
+  },
+  view: {
+    backgroundColor: '#eee',
+  },
+  profile: {
+    backgroundColor: '#1E90FF',
+  },
+  message: {
+    backgroundColor: '#228B22',
+  },
 });
