@@ -1,7 +1,9 @@
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
+import axios from 'axios';
 import React from 'react';
 import {
   Alert,
-  Button,
   Image,
   ScrollView,
   StyleSheet,
@@ -12,11 +14,9 @@ import {
 import {Input, ListItem} from 'react-native-elements';
 import RNPickerSelect from 'react-native-picker-select';
 import {connect} from 'react-redux';
-import {CITIES} from '../constants/Cities';
-import database from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth';
 import PhoneNumberInput from '../Components/UI/PhoneNumberInput';
-import axios from 'axios';
+
+const BASE_URL = 'https://vapi.vnappmob.com/api';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -188,15 +188,12 @@ class ProductDetail extends React.Component {
   //get thanh pho
   getCityAPI = async () => {
     try {
-      let json = await axios.get('https://thongtindoanhnghiep.co/api/city');
+      let json = await axios.get(`${BASE_URL}/province`);
       json = json.data;
-      // let response = await fetch('https://thongtindoanhnghiep.co/api/city');
-      // let json = await response.json();
-      this.setState({data: json.LtsItem});
-      let cities = json.LtsItem.map((item) => ({
-        label: item.Title,
-        value: item.Title,
-        key: item.ID,
+      let cities = json.results.map((item) => ({
+        label: item.province_name,
+        value: item.province_name,
+        key: item.province_id,
       }));
 
       this.setState({
@@ -210,20 +207,14 @@ class ProductDetail extends React.Component {
   //get huyen cua tinh
   fetchDistricts = async () => {
     try {
-      let response = await fetch(
-        `https://thongtindoanhnghiep.co/api/city/${this.state.idCity}/district`,
-        {
-          headers: {
-            Accept: 'application/json, text/plain, */*', // It can be used to overcome cors errors
-            'Content-Type': 'application/json',
-          },
-        },
+      let json = await axios.get(
+        `${BASE_URL}/province/district/${this.state.idCity}`,
       );
-      let json = await response.json();
+      json = json.data.results;
       let districts = json.map((item) => ({
-        label: item.Title,
-        value: item.Title,
-        key: item.ID,
+        label: item.district_name,
+        value: item.district_name,
+        key: item.district_id,
       }));
       this.setState({
         districts: districts,
@@ -236,20 +227,14 @@ class ProductDetail extends React.Component {
   //get xa cua tinh
   fetchWards = async () => {
     try {
-      let response = await fetch(
-        `https://thongtindoanhnghiep.co/api/district/${this.state.idDistrict}/ward`,
-        {
-          headers: {
-            Accept: 'application/json, text/plain, */*', // It can be used to overcome cors errors
-            'Content-Type': 'application/json',
-          },
-        },
+      let json = await axios.get(
+        `${BASE_URL}/province/ward/${this.state.idDistrict}`,
       );
-      let json = await response.json();
+      json = json.data.results;
       let wards = json.map((item) => ({
-        label: item.Title,
-        value: item.Title,
-        key: item.ID,
+        label: item.ward_name,
+        value: item.ward_name,
+        key: item.ward_id,
       }));
       this.setState({
         wards: wards,
@@ -288,13 +273,14 @@ class ProductDetail extends React.Component {
 
             <RNPickerSelect
               onValueChange={(location, index) => {
+                console.log('Item', location, index);
                 if (this.state.idCity !== 0 && index === 0) {
                   return;
                 }
                 this.setState(
                   {
                     location,
-                    idCity: index,
+                    idCity: this.state.cities[index - 1].key,
                     district: '',
                   },
                   () => {
@@ -317,13 +303,10 @@ class ProductDetail extends React.Component {
                 if (this.state.idDistrict !== 0 && index === 0) {
                   return;
                 }
-                const item = this.state.districts.find(
-                  (item) => item.value === district,
-                );
                 this.setState(
                   {
-                    idDistrict: item.key,
-                    district: district,
+                    district,
+                    idDistrict: this.state.districts[index - 1].key,
                     ward: '',
                   },
                   () => {
@@ -361,7 +344,6 @@ class ProductDetail extends React.Component {
           />
           <Text style={styles.title2}>Số điện thoại</Text>
           <PhoneNumberInput
-            
             onChangeText={(text) => {
               this.setState({phoneUser: text});
             }}

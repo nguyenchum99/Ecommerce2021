@@ -15,6 +15,7 @@ import {
 import {firebaseApp} from '../Components/FirebaseConfig';
 import {Dimensions} from 'react-native';
 import {connect} from 'react-redux';
+import moment from 'moment';
 
 class ChartScreen extends React.Component {
   constructor(props) {
@@ -29,6 +30,7 @@ class ChartScreen extends React.Component {
 
   componentDidMount() {
     //tinh so san pham duoc ban
+    // console.log(this.props);
     firebaseApp
       .database()
       .ref('Orders')
@@ -37,19 +39,40 @@ class ChartScreen extends React.Component {
       .on('value', (snapshot) => {
         const li = [];
         snapshot.forEach((child) => {
-          if (child.val().orderSuccess == 'true') {
-            li.push({
-              key: child.key,
-              name: child.val().productName,
-              image: child.val().productImage,
-              total: child.val().total,
-              quantity: child.val().soLuong,
-            });
+           // console.log(child.key);
+          if (child.val().orderSuccess) {
+            firebaseApp
+              .database()
+              .ref('Ratings')
+              .orderByChild('key')
+              .equalTo(child.key)
+              .on('value', (snap) => {
+                console.log(snap.child('rating').val());
+                li.push({
+                  key: child.key,
+                  name: child.val().productName,
+                  image: child.val().productImage,
+                  total: child.val().total,
+                  soLuong: child.val().soLuong,
+                  createAt: child.val().createAt,
+                  rating : snap.child('rating').val(),
+                });
+               
+              });
+            // li.push({
+            //   key: child.key,
+            //   name: child.val().productName,
+            //   image: child.val().productImage,
+            //   total: child.val().total,
+            //   soLuong: child.val().soLuong,
+            //   createAt: child.val().createAt,
+            // });
           }
         });
         this.setState({
           data: li,
         });
+        // console.log(this.state.data)
       });
   }
 
@@ -84,13 +107,25 @@ class ChartScreen extends React.Component {
                     style={styles.description}
                     numberOfLines={2}
                     ellipsizeMode="tail">
-                    {item.total} VND
+                    Tổng tiền: {item.total} VND
                   </Text>
                   <Text
                     style={styles.description}
                     numberOfLines={2}
                     ellipsizeMode="tail">
-                    {item.soLuong} VND
+                    Số lượng đã bán: {item.soLuong}
+                  </Text>
+                  <Text
+                    style={{color: '#000000', fontSize: 12}}
+                    numberOfLines={2}
+                    ellipsizeMode="tail">
+                    {moment(new Date(item.createAt)).fromNow()}
+                  </Text>
+                  <Text
+                    style={{color: '#000000', fontSize: 12}}
+                    numberOfLines={2}
+                    ellipsizeMode="tail">
+                    {item.rating}
                   </Text>
                 </View>
               </View>
@@ -122,11 +157,11 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
   },
   box: {
-    padding: 20,
+    padding: 10,
     marginTop: 5,
     marginBottom: 5,
     backgroundColor: 'white',
@@ -139,12 +174,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   title: {
-    fontSize: 18,
+    fontSize: 15,
     color: '#151515',
   },
   description: {
-    fontSize: 15,
-    color: '#646464',
+    fontSize: 12,
+    color: 'tomato',
   },
   buttons: {
     flexDirection: 'row',

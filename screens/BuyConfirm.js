@@ -38,7 +38,7 @@ class BuyConfirm extends React.Component {
       cancelOrder: '',
       receiveProductSuccess: '',
       district: '',
-      ward: ''
+      ward: '',
     };
   }
 
@@ -123,7 +123,7 @@ class BuyConfirm extends React.Component {
 
   render() {
     return (
-      <View style = {{backgroundColor: '#ffffff'}}>
+      <ScrollView style={{backgroundColor: '#ffffff'}}>
         <View style={styles.box}>
           <Image style={styles.image} source={{uri: this.state.productImage}} />
 
@@ -136,8 +136,6 @@ class BuyConfirm extends React.Component {
         </View>
 
         <DataTable>
-         
-
           <DataTable.Row>
             <DataTable.Cell>1. Mã đơn hàng</DataTable.Cell>
             <DataTable.Cell numeric>{this.state.key}</DataTable.Cell>
@@ -187,17 +185,19 @@ class BuyConfirm extends React.Component {
           </DataTable.Row>
           <DataTable.Row>
             <DataTable.Cell>
-    
               <Text style={{color: 'red', fontWeight: 'bold'}}>
                 Tổng đơn hàng
               </Text>
             </DataTable.Cell>
-            <DataTable.Cell numeric><Text style={{color: 'red', fontWeight: 'bold'}}>{this.state.total} VNĐ</Text></DataTable.Cell>
+            <DataTable.Cell numeric>
+              <Text style={{color: 'red', fontWeight: 'bold'}}>
+                {this.state.total} VNĐ
+              </Text>
+            </DataTable.Cell>
           </DataTable.Row>
         </DataTable>
         <ListItem bottomDivider>
           <ListItem.Content>
-           
             <ListItem.Title>
               {this.state.cancelOrder ? (
                 <Text style={{color: 'blue', fontSize: 18}}>
@@ -227,7 +227,7 @@ class BuyConfirm extends React.Component {
             </TouchableOpacity>
           )
         ) : null}
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     marginLeft: 80,
   },
   loginButton: {
-    backgroundColor: '#3498db',
+    backgroundColor: 'tomato',
   },
   image: {
     width: 80,
@@ -278,12 +278,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     color: '#151515',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   description: {
     fontSize: 15,
     color: 'red',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   buttons: {
     flexDirection: 'row',

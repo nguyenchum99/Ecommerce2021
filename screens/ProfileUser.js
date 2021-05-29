@@ -78,13 +78,14 @@ class ProfileUser extends Component {
 
     //check follow
     const key = this.props.userId + '_' + userIdProfile;
-    this.setState({keyFollwed: key});
+   // this.setState({keyFollwed: key});
     firebaseApp
       .database()
       .ref('Follows/')
       .orderByChild('myUserid_userId')
       .equalTo(key)
-      .once('value', (snapshot) => {
+      .on('value', (snapshot) => {
+        console.log(snapshot);
         this.setState({isFollowed: snapshot.child('isFollowing').val()});
         //this.state.isFollowed = snapshot.child('isFollowing').val();
       });
@@ -94,14 +95,14 @@ class ProfileUser extends Component {
 
   render() {
     return (
-      <View style={{backgroundColor: '#ffffff'}}>
+      <View style={{backgroundColor: '#ffffff', flex: 1}}>
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <Image
               style={styles.avatar}
               source={{uri: this.state.userAvatarProfile}}
             />
-            <View>
+            <View style={{flexDirection: 'column'}}>
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <Text style={styles.name}>{this.state.userNameProfile}</Text>
@@ -119,38 +120,15 @@ class ProfileUser extends Component {
               </View>
 
               <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                style={{flexDirection: 'row'}}>
                 <Text style={styles.nametxt}>
                   Sản phẩm {this.state.countProduct}
                 </Text>
                 <Text style={styles.nametxt}>Đã bán 2</Text>
-                <Text style={styles.nametxt}>Người theo dõi 100</Text>
               </View>
             </View>
           </View>
         </View>
-        {/* <FlatList
-          vertical
-          showsVerticalScrollIndicator={false}
-          numColumns={3}
-          data={this.state.listProduct}
-          renderItem={({item}) => (
-            <TouchableOpacity
-              underlayColor="rgba(73,182,77,0.9)"
-              onPress={() =>
-                this.props.navigation.navigate('Detail', {
-                  idProduct: item.key,
-                })
-              }>
-              <View style={styles.container}>
-                <Image style={styles.photo} source={{uri: item.productImage}} />
-                <Text style={styles.title}>{item.productName}</Text>
-                <Text style={{color: 'grey'}}>{item.productPrice} VND</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => `${item.key}`}
-        /> */}
 
         <FlatList
           vertical
@@ -248,7 +226,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 30,
-    backgroundColor: '#00BFFF',
+    backgroundColor: 'tomato',
+    marginLeft: 80
   },
   followButtonText: {
     color: '#ffffff',
@@ -262,7 +241,7 @@ const styles = StyleSheet.create({
   },
   nametxt: {
     fontSize: 12,
-    color: '#000000',
+    color: 'red',
     marginLeft: 20,
     marginTop: 10,
   },

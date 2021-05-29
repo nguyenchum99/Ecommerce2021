@@ -23,6 +23,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {ListItem, Avatar} from 'react-native-elements';
+import {Input} from 'react-native-elements';
+import {Icon} from 'react-native-elements';
 
 class ProductDetail extends React.Component {
   constructor(props) {
@@ -53,6 +55,7 @@ class ProductDetail extends React.Component {
       rating: '',
       modalVisible: false,
       priceOffer: '',
+      soLuongBanDau: '',
     };
   }
 
@@ -145,6 +148,7 @@ class ProductDetail extends React.Component {
         this.state.userAvatar = snapshot.child('userAvatar').val();
         this.state.isSoldOut = snapshot.child('sold').val();
         this.state.soLuong = snapshot.child('soLuong').val();
+        this.state.soLuongBanDau = snapshot.child('soLuongBanDau').val();
       });
 
     this._checkLikeState(idProduct, this.props.userId);
@@ -189,7 +193,7 @@ class ProductDetail extends React.Component {
         snapshot.forEach((child) => {
           rating += child.val().rating;
         });
-        this.setState({rating: rating / 2});
+        this.setState({rating: rating / this.state.soLuongBanDau});
       });
 
     // this.setState({rating: rating})
@@ -430,7 +434,11 @@ class ProductDetail extends React.Component {
                   size="medium"
                 />
                 <ListItem.Content>
-                  <ListItem.Title>{this.state.userName}</ListItem.Title>
+                  <ListItem.Title>
+                    <Text style={{fontWeight: 'bold'}}>
+                      {this.state.userName}
+                    </Text>
+                  </ListItem.Title>
                   {/* <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle> */}
                 </ListItem.Content>
                 <ListItem.Chevron />
@@ -487,18 +495,25 @@ class ProductDetail extends React.Component {
             {this.state.idUser !== this.props.userId ? (
               <View style={styles.footer}>
                 <View style={styles.inputContainercmt}>
-                  <TextInput
-                    style={styles.inputscmt}
+                  {/* <TextInput
+                  style={styles.inputscmt}
+                  placeholder="Bình luận..."
+                  underlineColorAndroid="transparent"
+                  value={this.state.comment}
+                  onChangeText={(text) => this.setState({comment: text})}
+                /> */}
+                  <Input
                     placeholder="Bình luận..."
-                    underlineColorAndroid="transparent"
-                    value={this.state.comment}
-                    onChangeText={(text) => this.setState({comment: text})}
+                    leftIcon={{type: 'font-awesome', name: 'comment', color: 'tomato'}}
+                    style={styles.inputscmt}
+                    onChangeText={(value) => this.setState({comment: value})}
                   />
                 </View>
 
                 <TouchableOpacity
                   style={styles.btnSend}
                   onPress={() => this.postComment()}>
+                  {/* <Icon name="send" type="material" color="#517fa4"  /> */}
                   <Image
                     source={{
                       uri:
@@ -540,9 +555,17 @@ class ProductDetail extends React.Component {
                           <Text style={styles.nameusercmt}>
                             {item.nameUser}
                           </Text>
-                          <Text style={styles.timecmt}>{item.createAt}</Text>
+
+                          <Text
+                            style={{
+                              fontSize: 13,
+                            }}>
+                            {item.content}
+                          </Text>
+                          <Text style={styles.timecmt}>
+                            {moment(new Date(item.createAt)).fromNow()}
+                          </Text>
                         </View>
-                        <Text rkType="primary3 mediumLine">{item.content}</Text>
                       </View>
                     </View>
                     {/* binh luan cua shop */}
@@ -555,17 +578,20 @@ class ProductDetail extends React.Component {
                         <View style={styles.contentCmt}>
                           <View style={styles.contentHeadercmt}>
                             <Text style={styles.nameusercmt}>
-                              {' '}
-                              {this.state.userName}
+                              Phản hồi của người bán
                             </Text>
-                            <Text style={styles.timecmt}>
-                              {' '}
-                              {item.createAtCmtMyProduct}
+                            <Text
+                              style={{
+                                fontSize: 13,
+                              }}>
+                              {item.myComment}
+                            </Text>
+                            <Text style={styles.timecmt2}>
+                              {moment(
+                                new Date(item.createAtCmtMyProduct),
+                              ).fromNow()}
                             </Text>
                           </View>
-                          <Text rkType="primary3 mediumLine">
-                            {item.myComment}
-                          </Text>
                         </View>
                       </View>
                     )}
@@ -657,7 +683,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     width: 100,
-    
   },
   buttonOpen: {
     backgroundColor: '#F194FF',
@@ -701,14 +726,14 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     height: 60,
-    backgroundColor: '#eeeeee',
+    backgroundColor: '#ffffff',
     paddingHorizontal: 10,
     padding: 5,
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
   btnSend: {
-    backgroundColor: '#00BFFF',
+    backgroundColor: 'tomato',
     width: 40,
     height: 40,
     borderRadius: 360,
@@ -732,10 +757,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   inputscmt: {
-    height: 40,
     marginLeft: 16,
-    borderBottomColor: '#FFFFFF',
-    flex: 1,
+
   },
   icon: {
     width: 30,
@@ -833,7 +856,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   image: {
-    marginTop: 10,
     marginLeft: 20,
     width: 45,
     height: 45,
@@ -851,32 +873,31 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   containerItem: {
-    paddingRight: 10,
-    paddingVertical: 12,
-    borderRadius: 10,
-    marginRight: 10,
     flexDirection: 'row',
-    alignItems: 'flex-start',
   },
   containerItem2: {
-    paddingRight: 10,
-    paddingVertical: 12,
+    marginTop: 5,
     flexDirection: 'row',
     alignItems: 'flex-start',
     borderRadius: 10,
-    marginRight: 10,
     marginLeft: 50,
-    backgroundColor: '#e6e6e6',
+    backgroundColor: '#ffffff',
   },
   contentCmt: {
     marginLeft: 10,
     flex: 1,
+    borderRadius: 10,
+    marginRight: 20,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    backgroundColor: '#e6e6e6',
   },
   contentHeadercmt: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
-    marginBottom: 6,
-    marginTop: 5,
+    // marginBottom: 6,
+    // marginTop: 5,
+    paddingLeft: 10,
   },
   separatorcmt: {
     height: 1,
@@ -889,11 +910,16 @@ const styles = StyleSheet.create({
   },
   timecmt: {
     fontSize: 11,
-    color: '#808080',
+    color: '#000000',
+  },
+  timecmt2: {
+    fontSize: 11,
+    color: '#000000',
   },
   nameusercmt: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
+    paddingTop: 5,
   },
   input: {
     flex: 1,

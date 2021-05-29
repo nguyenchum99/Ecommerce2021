@@ -65,6 +65,9 @@ const StackUser = createStackNavigator({
   },
   Active: {
     screen: ChartScreen,
+    navigationOptions: {
+      title: 'Sản phẩm đã bán',
+    },
   },
   Edit: {
     screen: EditProduct,

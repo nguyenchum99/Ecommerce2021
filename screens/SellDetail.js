@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   loginButton: {
-    backgroundColor: '#3498db',
+    backgroundColor: 'tomato',
   },
   image: {
     width: 80,

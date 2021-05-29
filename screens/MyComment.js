@@ -93,97 +93,84 @@ class MyComment extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Card>
-          <Card.Title>
-            {this.state.productName} - {this.state.productPrice} VND
-          </Card.Title>
-          <Card.Divider />
-          <Card.Image
-            resizeMode="cover"
+      <ScrollView style={styles.container}>
+        <View style={styles.profileCard}>
+          <Image
+            style={styles.avatar}
             source={{
               uri: this.state.productImage,
-            }}></Card.Image>
-          <Text style={{marginBottom: 10, marginTop: 10}}>
-            {this.state.productDescription}
+            }}
+          />
+          <Text style={styles.name}>
+            {this.state.productName} - {this.state.productPrice} VND
           </Text>
-        </Card>
-        <ScrollView>
-          {/* <View style={[styles.card, styles.profileCard]}>
-            <Image
-              style={styles.avatar}
-              source={{
-                uri: this.state.productImage,
-              }}
-            />
-            <Text style={styles.name}>
-              {this.state.productName} - {this.state.productPrice} VND
-            </Text>
+        </View>
+        <View style={styles.card}>
+          <Text style={styles.description}>
+            Mô tả: {this.state.productDescription}
+          </Text>
+        </View>
+        <View style={styles.containerItem}>
+          <Image style={styles.image} source={{uri: this.state.avatarUser}} />
+          <View style={styles.contentCmt}>
+            <View style={styles.contentHeadercmt}>
+              <Text style={styles.nameusercmt}>{this.state.userName}</Text>
+              <Text
+                style={{
+                  fontSize: 13,
+                }}>
+                {this.state.comment}
+              </Text>
+              <Text style={styles.timecmt}>
+                {moment(new Date(this.state.createdAt)).fromNow()}
+              </Text>
+            </View>
           </View>
-          <View style={styles.card}>
-            <Text style={styles.description}>
-              {this.state.productDescription}
-            </Text>
-          </View> */}
-          <View style={styles.containerItem}>
-            <Image style={styles.image} source={{uri: this.state.avatarUser}} />
+        </View>
 
+        {this.state.cmtDisplay == '' ? null : (
+          <View style={styles.containerItem2}>
+            <Image style={styles.image} source={{uri: this.props.userPhoto}} />
             <View style={styles.contentCmt}>
               <View style={styles.contentHeadercmt}>
-                <Text style={styles.nameusercmt}>{this.state.userName}</Text>
-                <Text style={styles.timecmt}>
-                  {moment(new Date(this.state.createdAt)).fromNow()}
-                </Text>
-              </View>
-              <Text rkType="primary3 mediumLine">{this.state.comment}</Text>
-            </View>
-          </View>
-
-          {this.state.cmtDisplay == '' ? null : (
-            <View style={styles.containerItem2}>
-              <Image
-                style={styles.image}
-                source={{uri: this.props.userPhoto}}
-              />
-              <View style={styles.contentCmt}>
-                <View style={styles.contentHeadercmt}>
-                  <Text style={styles.nameusercmt}>{this.props.userName}</Text>
-                  <Text style={styles.timecmt}>
-                    {' '}
-                    {moment(new Date(this.state.cmtCreate)).fromNow()}
-                  </Text>
-                </View>
-                <Text rkType="primary3 mediumLine">
+                <Text style={styles.nameusercmt}>{this.props.userName}</Text>
+                <Text
+                  style={{
+                    fontSize: 13,
+                  }}>
                   {this.state.cmtDisplay}
                 </Text>
+                <Text style={styles.timecmt}>
+                  {moment(new Date(this.state.cmtCreate)).fromNow()}
+                </Text>
               </View>
             </View>
-          )}
-
-          {/* binh luan cua ban */}
-          <View style={styles.footer}>
-            <View style={styles.inputContainercmt}>
-              <TextInput
-                style={styles.inputscmt}
-                placeholder="Bình luận..."
-                underlineColorAndroid="transparent"
-                value={this.state.myComment}
-                onChangeText={(text) => this.setState({myComment: text})}
-              />
-            </View>
-            <TouchableOpacity
-              style={styles.btnSend}
-              onPress={() => this.postComment()}>
-              <Image
-                source={{
-                  uri: 'https://img.icons8.com/small/75/ffffff/filled-sent.png',
-                }}
-                style={styles.iconSend}
-              />
-            </TouchableOpacity>
           </View>
-        </ScrollView>
-      </View>
+        )}
+
+        {/* binh luan cua ban */}
+        <View style={styles.footer}>
+          <View style={styles.inputContainercmt}>
+            <TextInput
+              style={styles.inputscmt}
+              placeholder="Bình luận..."
+              underlineColorAndroid="transparent"
+              value={this.state.myComment}
+              onChangeText={(text) => this.setState({myComment: text})}
+            />
+          </View>
+          <TouchableOpacity
+            style={styles.btnSend}
+            onPress={() => this.postComment()}>
+            <Image
+              source={{
+                uri: 'https://img.icons8.com/small/75/ffffff/filled-sent.png',
+              }}
+              style={styles.iconSend}
+            />
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     );
   }
 }
@@ -199,54 +186,53 @@ export default connect(mapStateToProps, null)(MyComment);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ffffff',
   },
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
-    padding: 10,
-    height: 100,
   },
   profileCard: {
-    height: 200,
     alignItems: 'center',
-    marginTop: 20,
   },
   avatar: {
     width: 150,
     height: 150,
+    marginTop: 20,
   },
   containerItem: {
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingVertical: 12,
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    borderRadius: 10,
+    marginTop: 20,
   },
   containerItem2: {
-    padding: 10,
+    marginTop: 5,
     flexDirection: 'row',
     alignItems: 'flex-start',
+    borderRadius: 10,
     marginLeft: 50,
     backgroundColor: '#ffffff',
-    borderRadius: 10,
   },
   contentCmt: {
     marginLeft: 10,
     flex: 1,
+    borderRadius: 10,
+    marginRight: 20,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    backgroundColor: '#e6e6e6',
+  },
+  contentHeadercmt: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    // marginBottom: 6,
+    // marginTop: 5,
+    paddingLeft: 10,
   },
   image: {
-    marginTop: 10,
     marginLeft: 20,
     width: 45,
     height: 45,
     borderRadius: 50,
-  },
-  contentHeadercmt: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 6,
-    marginTop: 5,
   },
   separatorcmt: {
     height: 1,
@@ -259,11 +245,16 @@ const styles = StyleSheet.create({
   },
   timecmt: {
     fontSize: 11,
-    color: '#808080',
+    color: '#000000',
+  },
+  timecmt2: {
+    fontSize: 11,
+    color: '#000000',
   },
   nameusercmt: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
+    paddingTop: 5,
   },
   footer: {
     flexDirection: 'row',
@@ -273,9 +264,10 @@ const styles = StyleSheet.create({
     padding: 5,
     alignItems: 'center',
     justifyContent: 'flex-end',
+    marginTop: 20
   },
   btnSend: {
-    backgroundColor: '#00BFFF',
+    backgroundColor: 'tomato',
     width: 40,
     height: 40,
     borderRadius: 360,
@@ -309,9 +301,10 @@ const styles = StyleSheet.create({
     height: 200,
   },
   name: {
-    fontSize: 28,
+    fontSize: 18,
     color: '#696969',
     fontWeight: 'bold',
+    marginTop: 20,
   },
   price: {
     marginTop: 10,

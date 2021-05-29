@@ -73,7 +73,7 @@ export default class RatingProduct extends Component {
       idProduct: this.state.idProduct,
       idUser: this.state.idUser,
       rating: this.state.rating,
-      key: this.state.key
+      key: this.state.key,
     });
 
     alert('Cảm ơn bạn đã đánh giá');
@@ -82,7 +82,7 @@ export default class RatingProduct extends Component {
 
   setRating(rating) {
     console.log('Rating is: ' + rating);
-   //this.setState({rating: rating});
+    //this.setState({rating: rating});
   }
 
   render() {
@@ -97,7 +97,7 @@ export default class RatingProduct extends Component {
               }}
             />
             <Text style={styles.name}>{this.state.productName}</Text>
-            <Text style={styles.price}>{this.state.productPrice}</Text>
+            <Text style={styles.price}>{this.state.productPrice} VND</Text>
           </View>
           <AirbnbRating
             showRating
@@ -107,7 +107,7 @@ export default class RatingProduct extends Component {
             size={25}
             onFinishRating={(text) => this.setState({rating: text})}
           />
-        
+
           <View style={styles.addToCarContainer}>
             <TouchableOpacity
               style={styles.shareButton}
@@ -200,13 +200,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 30,
-    backgroundColor: '#00BFFF',
+    backgroundColor: 'tomato',
   },
   shareButtonText: {
     color: '#FFFFFF',
     fontSize: 20,
   },
   addToCarContainer: {
-    marginHorizontal: 30,
+    marginHorizontal: 70,
   },
 });

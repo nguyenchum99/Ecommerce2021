@@ -7,10 +7,9 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import { firebaseApp } from '../Components/FirebaseConfig';
+import {firebaseApp} from '../Components/FirebaseConfig';
 import {connect} from 'react-redux';
 import moment from 'moment';
-
 
 class ManagerSell extends React.Component {
   constructor(props) {
@@ -47,12 +46,12 @@ class ManagerSell extends React.Component {
             total: child.val().total,
             district: child.val().district,
             ward: child.val().ward,
+            orderSuccess: child.val().orderSuccess,
           });
         });
         this.setState({
           data: li,
         });
-
       });
   }
 
@@ -82,7 +81,7 @@ class ManagerSell extends React.Component {
               />
             );
           }
-          return (
+          return Notification.orderSuccess ? (
             <TouchableOpacity
               style={styles.container}
               onPress={() =>
@@ -103,7 +102,55 @@ class ManagerSell extends React.Component {
                   soLuong: Notification.soLuong,
                   total: Notification.total,
                   district: Notification.district,
-                  ward: Notification.ward
+                  ward: Notification.ward,
+                })
+              }>
+              <Image
+                source={{uri: Notification.userPhoto}}
+                style={styles.avatar}
+              />
+
+
+              
+              <View style={styles.content}>
+                <View style={mainContentStyle}>
+                  <View style={styles.text}>
+                    <Text style={styles.name}>{Notification.userName}</Text>
+                    <Text style= {{color: 'red'}}>Đơn hàng thành công</Text>
+                  </View>
+                  <Text style={styles.timeAgo}>
+                    {moment(new Date(Notification.createAt)).fromNow()}
+                  </Text>
+                </View>
+                {attachment}
+                {/* <Image
+                  style={styles.attachment}
+                  source={{uri: Notification.productImage}}
+                /> */}
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.container}
+              onPress={() =>
+                this.props.navigation.navigate('SellDetail', {
+                  address: Notification.address,
+                  createAt: Notification.createAt,
+                  idProduct: Notification.idProduct,
+                  idUser: Notification.idUser,
+                  idUserSell: Notification.idUserSell,
+                  phone: Notification.phone,
+                  productImage: Notification.productImage,
+                  productName: Notification.productName,
+                  userName: Notification.userName,
+                  userPhoto: Notification.userPhoto,
+                  productPrice: Notification.productPrice,
+                  key: Notification.key,
+                  location: Notification.location,
+                  soLuong: Notification.soLuong,
+                  total: Notification.total,
+                  district: Notification.district,
+                  ward: Notification.ward,
                 })
               }>
               <Image
@@ -162,7 +209,7 @@ const styles = StyleSheet.create({
   },
   text: {
     marginBottom: 5,
-    flexDirection: 'row',
+    flexDirection: 'column',
     flexWrap: 'wrap',
   },
   content: {
@@ -194,6 +241,6 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
-    color: '#1E90FF',
+    color: '#000000',
   },
 });

@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import {firebaseApp} from '../Components/FirebaseConfig';
 import {connect} from 'react-redux';
+import moment from 'moment';
+
 class ManagerBuy extends Component {
   constructor(props) {
     super(props);
@@ -67,8 +69,10 @@ class ManagerBuy extends Component {
           return item.id;
         }}
         renderItem={({item}) => {
-          return (
-            <TouchableOpacity style={styles.box} onPress = {()=> {
+          return item.orderSuccess ? (
+            <TouchableOpacity
+              style={styles.box1}
+              onPress={() => {
                 this.props.navigation.navigate('BuyDetail', {
                   key: item.key,
                   address: item.address,
@@ -90,7 +94,42 @@ class ManagerBuy extends Component {
                   ward: item.ward,
                   cancelOrder: item.cancelOrder,
                 });
-            }}>
+              }}>
+              <Image style={styles.image} source={{uri: item.productImage}} />
+              <View style={styles.boxContent}>
+                <Text style={styles.title}>{item.productName}</Text>
+                <Text style={{color: 'red'}}>Đơn hàng đặt mua thành công</Text>
+                <Text>
+                  {moment(new Date(item.createAt)).fromNow()}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.box}
+              onPress={() => {
+                this.props.navigation.navigate('BuyDetail', {
+                  key: item.key,
+                  address: item.address,
+                  createAt: item.createAt,
+                  idProduct: item.idProduct,
+                  idUser: item.idUser,
+                  idUserSell: item.idUserSell,
+                  phone: item.phone,
+                  productImage: item.productImage,
+                  productName: item.productName,
+                  userName: item.userName,
+                  userPhoto: item.userPhoto,
+                  productPrice: item.productPrice,
+                  orderSuccess: item.orderSuccess,
+                  soLuong: item.soLuong,
+                  total: item.total,
+                  location: item.location,
+                  district: item.district,
+                  ward: item.ward,
+                  cancelOrder: item.cancelOrder,
+                });
+              }}>
               <Image style={styles.image} source={{uri: item.productImage}} />
               <View style={styles.boxContent}>
                 <Text style={styles.title}>{item.productName}</Text>
@@ -115,8 +154,15 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, null)(ManagerBuy);
 const styles = StyleSheet.create({
   image: {
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
+  },
+  box1: {
+    padding: 10,
+    marginTop: 5,
+    marginBottom: 5,
+    backgroundColor: '#ffffff',
+    flexDirection: 'row',
   },
   box: {
     padding: 10,
@@ -132,7 +178,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   title: {
-    fontSize: 18,
+    fontSize: 15,
     color: '#151515',
   },
   description: {

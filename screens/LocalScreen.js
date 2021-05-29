@@ -86,7 +86,7 @@ class LocalScreen extends React.Component {
             <ActivityIndicator size="large" color="#000" />
           )}
         </>
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
           <View style={styles.formContent}>
             <View style={styles.inputContainer}>
               <Icon name="search" style={styles.inputIcon} />
@@ -111,43 +111,39 @@ class LocalScreen extends React.Component {
               <Text style={styles.shareBtnText}>Giá 0 đồng</Text>
             </TouchableOpacity>
           </View>
-          {/* <ButtonToggleGroup
-            highlightTextColor={'red'}
-            inactiveBackgroundColor={'tomato'}
-            inactiveTextColor={'tomato'}
-            values={['Phân loại', 'Gía 0 đồng']}
-            onSelect={(val) => this.chooseLocal(val)}
-          /> */}
-
-          <FlatList
-            vertical
-            showsVerticalScrollIndicator={false}
-            numColumns={2}
-            data={this.filterProduct()}
-            renderItem={({item}) => (
-              <TouchableOpacity
-                underlayColor="rgba(73,182,77,0.9)"
-                onPress={() =>
-                  this.props.navigation.navigate('Detail', {
-                    idProduct: item.key,
-                  })
-                }>
-                <View style={styles.containerCard}>
-                  <Image
-                    style={styles.photoCard}
-                    source={{uri: item.imageUrl}}
-                  />
-                  <Text style={styles.titleCard}>{item.name}</Text>
-                  <View style={{flexDirection: 'row'}}>
-                    <AntDesign name="shoppingcart" size={24} color="red" />
-                    <Text style={styles.categoryCard}>{item.price} VND</Text>
+    
+          <View>
+    
+            <FlatList
+              vertical
+              showsVerticalScrollIndicator={false}
+              numColumns={2}
+              data={this.filterProduct()}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  underlayColor="rgba(73,182,77,0.9)"
+                  onPress={() =>
+                    this.props.navigation.navigate('Detail', {
+                      idProduct: item.key,
+                    })
+                  }>
+                  <View style={styles.containerCard}>
+                    <Image
+                      style={styles.photoCard}
+                      source={{uri: item.imageUrl}}
+                    />
+                    <Text style={styles.titleCard}>{item.name}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                      <AntDesign name="shoppingcart" size={24} color="red" />
+                      <Text style={styles.categoryCard}>{item.price} VND</Text>
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item) => `${item.key}`}
-          />
-        </View>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => `${item.key}`}
+            />
+          </View>
+        </ScrollView>
       </>
     );
   }
@@ -170,22 +166,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'tomato',
     borderColor: '#ffffff',
-    borderWidth: 0.5,
     width: '50%',
     paddingTop: 10,
     paddingBottom: 10,
-    
   },
   shareBtnText: {
     color: '#ffffff',
     fontSize: 15,
     marginLeft: 5,
+
   },
   addToCarContainer: {
     flexDirection: 'row',
-    marginLeft: 20,
-    marginRight: 20,
-  
+    backgroundColor: 'tomato',
   },
   containerCard: RecipeCard.container,
   photoCard: RecipeCard.photo,
@@ -193,10 +186,11 @@ const styles = StyleSheet.create({
   categoryCard: RecipeCard.category,
   formContent: {
     flexDirection: 'row',
+    backgroundColor: 'tomato',
   },
   inputContainer: {
     borderBottomColor: '#F5FCFF',
-    backgroundColor: '#d9d9d9',
+    backgroundColor: '#ffffff',
     borderRadius: 30,
     borderBottomWidth: 1,
     height: 45,

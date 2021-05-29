@@ -81,7 +81,7 @@ class CameraScreen extends React.Component {
     try {
       let response = await fetch('https://thongtindoanhnghiep.co/api/city');
       let json = await response.json();
-      console.log(json.LtsItem);
+      //console.log(json.LtsItem);
     } catch (error) {
       console.error(error);
     }
